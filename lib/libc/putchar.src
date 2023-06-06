@@ -1,0 +1,28 @@
+; comments added
+; Paul Cawte 03/06/2023
+
+; int putchar(int char)
+;
+; The putchar(int char) method in C is used to write a character, of unsigned char type, to stdout.
+; This character is passed as the parameter to this method.
+;
+; Parameters:
+; This method accepts a mandatory parameter char which is the character to be written to stdout.
+; Return Value:
+; This function returns the character written on the stdout as an unsigned char.
+; It also returns EOF when some error occurs.
+
+	assume	adl=1
+
+	section	.text
+	public	_putchar
+_putchar:
+	pop	de
+	ex	(sp),hl
+	push	de
+	push	hl
+	call	_outchar
+	pop	hl
+	ret
+
+	extern	_outchar

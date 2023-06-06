@@ -1,0 +1,39 @@
+; Changed to remove bug of typecasting from singed char to int - should be from unsigned
+; Paul Cawte 03/06/2023
+
+; int getchar(void)
+;
+; is a standard library function that takes a single input character from standard input.
+; The major difference between getchar and getc is that getc can take input from any no of
+; input streams but getchar can take input from a single standard input stream.
+;
+; Parameters:
+; None.
+; Return Value:
+; The input from the standard input is read as an unsigned char and then it is typecast
+; and returned as an integer value(int).
+; EOF is returned in two cases:
+; - When the file end is reached
+; - When there is an error during the execution
+
+; BUG warning
+; typecasts from signed char, not unsigned char - behaviour left unchanged
+
+	assume	adl=1
+
+	section	.text
+	public	_getchar
+_getchar:
+	call	_inchar			; get character from OS - in A
+
+	or 		a				; clear carry flag
+	sbc		hl,hl 			; HL = 0 
+	ld		l,a 			; typecast unsigned char (A) to int (HL)
+
+	push	hl
+	call	_outchar		; echo the character on the console
+	pop	hl
+	ret
+
+	extern	_inchar
+	extern	_outchar

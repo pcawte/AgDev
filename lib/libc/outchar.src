@@ -1,0 +1,17 @@
+; modified for Agon
+; Paul Cawte 03/06/2023
+;
+; Called by putchar to output character to stdout (the console)
+; This character is passed as the parameter to this method (unsigned char).
+
+	assume	adl=1
+
+	section	.text
+	weak	_outchar
+_outchar:
+	pop		de
+	ex		(sp),hl
+	push	de
+	ld		a,l 				;get character in A
+	rst.lil 010h				;send to MOS / VDP
+	ret
