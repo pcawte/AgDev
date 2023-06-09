@@ -46,6 +46,32 @@ require __start
 library "../lib/libload/libload.lib" neveroptional
 require lib.LibLoad if .libs.length
 
+; Adding missing compiler runtime routines
+
+source "../lib/crt/fpadd.src"
+source "../lib/crt/fpcmp.src"
+source "../lib/crt/fpdiv.src"
+source "../lib/crt/fpftol.src"
+source "../lib/crt/fpltof.src"
+source "../lib/crt/fpmul.src"
+source "../lib/crt/fppack.src"
+source "../lib/crt/fpsub.src"
+source "../lib/crt/fpultof.src"
+source "../lib/crt/imul_b.src"
+source "../lib/crt/inchar.src"
+source "../lib/crt/indcall.src"
+source "../lib/crt/ishl_b.src"
+source "../lib/crt/ishrs_b.src"
+source "../lib/crt/ishru_b.src"
+source "../lib/crt/itol.src"
+source "../lib/crt/setflag.src"
+source "../lib/crt/sshl_b.src"
+source "../lib/crt/sshrs_b.src"
+source "../lib/crt/stoi.src"
+source "../lib/crt/stoiu.src"
+
+; Original compiler runtime from CE Toolchain distribution
+
 source "../lib/crt/bbitrev.src"
 source "../lib/crt/bctlz.src"
 source "../lib/crt/bdivs.src"
@@ -222,6 +248,7 @@ source "../lib/crt/sshru.src"
 source "../lib/crt/sxor.src"
 source "../lib/crt/sxor_fast.src"
 source "../lib/crt/ulltof.src"
+
 source "../lib/ce/atomic_load_32.src"
 source "../lib/ce/atomic_load_decreasing_32.src"
 source "../lib/ce/atomic_load_increasing_32.src"

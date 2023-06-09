@@ -21,9 +21,9 @@ NAME ?= DEMO
 DESCRIPTION ?=
 COMPRESSED ?= NO
 ARCHIVED ?= YES
-BSSHEAP_LOW ?= 041000
-BSSHEAP_HIGH ?= 042000
-STACK_HIGH ?= 04FFFF
+BSSHEAP_LOW ?= 050000
+BSSHEAP_HIGH ?= 05FFFF
+STACK_HIGH ?= 06FFFF
 INIT_LOC ?= 040000
 OUTPUT_MAP ?= YES
 CFLAGS ?= -Wall -Wextra -Oz
@@ -222,6 +222,7 @@ FASMGFLAGS = \
 	-i $(call QUOTE_ARG,PREFER_OS_LIBC := $(LDPREFER_OS_LIBC)) \
 	-i $(call QUOTE_ARG,include $(call FASMG_FILES,$(LINKER_SCRIPT))) \
 	-i $(call QUOTE_ARG,range .bss $$$(BSSHEAP_LOW) : $$$(BSSHEAP_HIGH)) \
+	-i $(call QUOTE_ARG,provide __stack = $$$(STACK_HIGH)) \
 	-i $(call QUOTE_ARG,locate .header at $$$(INIT_LOC)) \
 	$(LDMAPFLAG) \
 	-i $(call QUOTE_ARG,source $(LDICON)$(call FASMG_FILES,$(LDFILES))) \

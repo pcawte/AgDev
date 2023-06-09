@@ -24,8 +24,6 @@ Install the CE Toolchain - see [getting started]([Getting Started &mdash; CE C/C
 
 To adapt the the tool-chain for Agon, for this proof of concept, a number of files should be replaced 
 
-
-
 ## Build process for proof of concept
 
 In the `AgExamples/hello_world` issue the `make` command (use V=1 not necessary but provides much more details on the commands used): 
@@ -67,8 +65,6 @@ Arguments: 3
 - argv[1]: Hello
 - argv[2]: AgDev
 ```
-
-
 
 ### Step 1 compilation:
 
@@ -142,7 +138,7 @@ fasmg -n '/AgDev/meta/ld.alm'
   -i 'PREFER_OS_CRT := 0'
   -i 'PREFER_OS_LIBC := 1'
   -i 'include "/AgDev/meta/linker_script"'
-  -i 'range .bss $041000 : $042000'
+  -i 'range .bss $050000 : $05ffff'
   -i 'locate .header at $040000'
   -i map
   -i 'source "obj/icon.src",
@@ -235,9 +231,9 @@ Updated with Agon specific addresses / memory locations:
 
 - INIT_LOC = 040000: executable location - should change to 0B0000 for MOS binary executable that can be run from the command line (not sure what else needs to be changed)
 
-- BSSHEAP_LOW = 041000: this seems to work for a small programme - but not sure what should really be used
+- BSSHEAP_LOW = 050000: this seems to work for a small programme - but not sure what should really be used
 
-- BSSHEAP_HIGH = 042000: as above
+- BSSHEAP_HIGH = 05FFFF: as above
 
 - STACK_HIGH = 04FFFF: this seems to work - but not sure what should really be used - or even if this really needs to be set. For the moment this has been removed from the fasmg flags and whatever stack that is provided by MOS is used.
 
@@ -250,9 +246,43 @@ DEFINE __len_bss = length of BSS
 
 In the Release.linkcmd, but not given any actual numeric values.
 
-### C-compiler runtime - crt0.src
+### C runtime - crt0.src
 
 This has been re-written based on a combination of code from the original [Agon projects]([GitHub - breakintoprogram/agon-projects: Official AGON QUARK Firmware: Projects](https://github.com/breakintoprogram/agon-projects)) which used the Zilog toolchain, and the CE Toolkit version. Note that the Zilog assembler, fasmg assembler used by CE toolkit and ez80asm used by many in the Agon community all have different formats and different waves of organising program sections, etc. Part of the challenge of this proof of concept has been in understanding the fasmg assembler.
+
+## Compiler runtime (compiler-rt)
+
+These are short assembly language subroutines that are output as part of the LLVM compiler eZ80 code generation (see discussion here https://github.com/jacobly0/llvm-project/pull/10). There are a number of these not included in the CE Toolkit, instead it calls routines in the CE ROM. The list of compile runtimes is contained in the file: `llvm/lib/Target/Z80/Z80ISelLowering.cpp`which is part of the eZ80 LLVM distribution. This list the calling convention to use. There is no detailed documentation on function of each, but in most cases it can be guessed from the naming. These are thought to derive from the original Zilog compiler distribution. There is documentation for each function at the start of the Zilog files - but it is not clear whether any functionality has been changed. Given that the routines in the CE ROM were most likely compiled using the Zilog compiler, one could reasonably assume that the routines still used in the ROM are the same as the original Zilog routines. 
+
+The compiler-rt routines that are include are in the C runtime directory `lib/crt` of the CE Toolchain. The call address of the routines were the ROM is used is listed in `lib/crt/os.src`, see condensed version below:
+
+```
+__fadd      := 000270h
+__fcmp      := 000274h
+__fdiv      := 000278h
+__fmul      := 000288h
+__fsub      := 000290h
+__ftol      := 00027Ch
+__ftoul     := __ftol
+__dtol      := __ftol
+__dtoul     := __ftoul
+__imul_b    := 000150h
+__indcall   := 00015Ch
+__ishl_b    := 000178h
+__ishrs_b   := 000180h
+__ishru_b   := 000188h
+__itol      := 000194h
+__ltof      := 000284h
+__ltod      := __ltof
+__setflag   := 000218h
+__sshl_b    := 000244h
+__sshrs_b   := 00024Ch
+__sshru_b   := 000254h
+__stoi      := 000260h
+__stoiu     := 000264h
+__ultof     := 000280h
+__ultod     := __ultof
+```
 
 ## Libraries
 
@@ -285,3 +315,188 @@ Items mentioned have been checked - see details. Others have not been checked.
 ### Libload (dynamic library - I think)
 
 Contains .lib library files - needs to be investigated further
+
+## MOS Calling Conventions
+
+From the MOS documentation:
+
+1. Commands can be abbreviated with a dot, so `DELETE myfile` and `DEL. myfile` are equivalent.
+2. Commands are case-insensitive and parameters are space delimited.
+3. In the syntax description, optional parameters are written as `<param>`
+4. The dot (.) character can be used as a substitution for an optional numeric parameter
+5. Default LOAD and RUN address is set to 0x040000
+6. Numbers are in decimal and can be prefixed by '&' for hexadecimal.
+7. Addresses are 24-bit, unless otherwise specified
+   - `&000000 - &01FFFF`: MOS (Flash ROM)
+   - `&040000 - &0BDFFF`: User RAM
+   - `&0B0000 - &0B7FFF`: Storage for loading MOS star command executables off SD card
+   - `&0BC000 - 0BFFFFF`: Global heap and stack
+8. The RUN command checks a header embedded from byte 64 of the executable and can run either Z80 or ADL mode executables
+9. MOS will also search the `mos` folder on the SD card for any executables, and will run those like built-in MOS commands
+
+Additionally, the following has been assumed:
+
+- On entry, HL contains the address of the command line parameter string - used for argc / argv processing
+
+- Save AF, BC, DE, IX and IY registers
+
+- Return with HL=0
+
+## Appendix - eZ80 compile runtime
+
+```
+//===-- Z80ISelLowering.cpp - Z80 DAG Lowering Implementation -------------===//
+//
+//                     The LLVM Compiler Infrastructure
+//
+// This file is distributed under the University of Illinois Open Source
+// License. See LICENSE.TXT for details.
+//
+//===----------------------------------------------------------------------===//
+//
+// This file defines the interfaces that Z80 uses to lower LLVM code into a
+// selection DAG.
+//
+//===----------------------------------------------------------------------===//
+
+  setLibcall(RTLIB::ZEXT_I16_I24,     "_stoiu",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SEXT_I16_I24,     "_stoi",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SEXT_I24_I32,     "_itol",     CallingConv::Z80_LibCall   );
+
+  setLibcall(RTLIB::NOT_I16,          "_snot",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::NOT_I24,          "_inot",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::NOT_I32,          "_lnot",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::NOT_I64,          "_llnot",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::AND_I16,          "_sand",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::AND_I24,          "_iand",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::AND_I32,          "_land",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::AND_I64,          "_lland",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::OR_I16,           "_sor",      CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::OR_I24,           "_ior",      CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::OR_I32,           "_lor",      CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::OR_I64,           "_llor",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::XOR_I16,          "_sxor",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::XOR_I24,          "_ixor",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::XOR_I32,          "_lxor",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::XOR_I64,          "_llxor",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SHL_I8,           "_bshl",     CallingConv::Z80_LibCall_AB);
+  setLibcall(RTLIB::SHL_I16,          "_sshl",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SHL_I16_I8,       "_sshl_b",   CallingConv::Z80_LibCall_AC);
+  setLibcall(RTLIB::SHL_I24,          "_ishl",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SHL_I24_I8,       "_ishl_b",   CallingConv::Z80_LibCall_AC);
+  setLibcall(RTLIB::SHL_I32,          "_lshl",     CallingConv::Z80_LibCall_L );
+  setLibcall(RTLIB::SHL_I64,          "_llshl",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SRA_I8,           "_bshrs",    CallingConv::Z80_LibCall_AB);
+  setLibcall(RTLIB::SRA_I16,          "_sshrs",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SRA_I16_I8,       "_sshrs_b",  CallingConv::Z80_LibCall_AC);
+  setLibcall(RTLIB::SRA_I24,          "_ishrs",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SRA_I24_I8,       "_ishrs_b",  CallingConv::Z80_LibCall_AC);
+  setLibcall(RTLIB::SRA_I32,          "_lshrs",    CallingConv::Z80_LibCall_L );
+  setLibcall(RTLIB::SRA_I64,          "_llshrs",   CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SRL_I8,           "_bshru",    CallingConv::Z80_LibCall_AB);
+  setLibcall(RTLIB::SRL_I16,          "_sshru",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SRL_I16_I8,       "_sshru_b",  CallingConv::Z80_LibCall_AC);
+  setLibcall(RTLIB::SRL_I24,          "_ishru",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SRL_I24_I8,       "_ishru_b",  CallingConv::Z80_LibCall_AC);
+  setLibcall(RTLIB::SRL_I32,          "_lshru",    CallingConv::Z80_LibCall_L );
+  setLibcall(RTLIB::SRL_I64,          "_llshru",   CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::CMP_I32,          "_lcmpu",    CallingConv::Z80_LibCall_F );
+  setLibcall(RTLIB::CMP_I64,          "_llcmpu",   CallingConv::Z80_LibCall_F );
+  setLibcall(RTLIB::CMP_I16_0,        "_scmpzero", CallingConv::Z80_LibCall_F );
+  setLibcall(RTLIB::CMP_I24_0,        "_icmpzero", CallingConv::Z80_LibCall_F );
+  setLibcall(RTLIB::CMP_I32_0,        "_lcmpzero", CallingConv::Z80_LibCall_F );
+  setLibcall(RTLIB::CMP_I64_0,        "_llcmpzero",CallingConv::Z80_LibCall_F );
+  setLibcall(RTLIB::SCMP_I32,         "_lcmps",    CallingConv::Z80_LibCall_F );
+  setLibcall(RTLIB::SCMP_I64,         "_llcmps",   CallingConv::Z80_LibCall_F );
+  setLibcall(RTLIB::SCMP,             "_setflag",  CallingConv::Z80_LibCall_F );
+  setLibcall(RTLIB::NEG_I16,          "_sneg",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::NEG_I24,          "_ineg",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::NEG_I32,          "_lneg",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::NEG_I64,          "_llneg",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::ADD_I32,          "_ladd",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::ADD_I32_I8,       "_ladd_b",   CallingConv::Z80_LibCall_AC);
+  setLibcall(RTLIB::ADD_I64,          "_lladd",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SUB_I32,          "_lsub",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SUB_I64,          "_llsub",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::MUL_I8,           "_bmulu",    CallingConv::Z80_LibCall_BC);
+  setLibcall(RTLIB::MUL_I16,          "_smulu",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::MUL_I24,          "_imulu",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::MUL_I24_I8,       "_imul_b",   CallingConv::Z80_LibCall_AC);
+  setLibcall(RTLIB::MUL_I32,          "_lmulu",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::MUL_I64,          "_llmulu",   CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SDIV_I8,          "_bdivs",    CallingConv::Z80_LibCall_BC);
+  setLibcall(RTLIB::SDIV_I16,         "_sdivs",    CallingConv::Z80_LibCall_16);
+  setLibcall(RTLIB::SDIV_I24,         "_idivs",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SDIV_I32,         "_ldivs",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SDIV_I64,         "_lldivs",   CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::UDIV_I8,          "_bdivu",    CallingConv::Z80_LibCall_BC);
+  setLibcall(RTLIB::UDIV_I16,         "_sdivu",    CallingConv::Z80_LibCall_16);
+  setLibcall(RTLIB::UDIV_I24,         "_idivu",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::UDIV_I32,         "_ldivu",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::UDIV_I64,         "_lldivu",   CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SREM_I8,          "_brems",    CallingConv::Z80_LibCall_AC);
+  setLibcall(RTLIB::SREM_I16,         "_srems",    CallingConv::Z80_LibCall_16);
+  setLibcall(RTLIB::SREM_I24,         "_irems",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SREM_I32,         "_lrems",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SREM_I64,         "_llrems",   CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::UREM_I8,          "_bremu",    CallingConv::Z80_LibCall_AC);
+  setLibcall(RTLIB::UREM_I16,         "_sremu",    CallingConv::Z80_LibCall_16);
+  setLibcall(RTLIB::UREM_I24,         "_iremu",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::UREM_I32,         "_lremu",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::UREM_I64,         "_llremu",   CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::UDIVREM_I24,      "_idvrmu",   CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::UDIVREM_I32,      "_ldvrmu",   CallingConv::Z80_LibCall   );
+
+  setLibcall(RTLIB::CTLZ_I8,          "_bctlz",    CallingConv::Z80_LibCall_AC);
+  setLibcall(RTLIB::CTLZ_I16,         "_sctlz",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::CTLZ_I24,         "_ictlz",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::CTLZ_I32,         "_lctlz",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::CTLZ_I64,         "_llctlz",   CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::POPCNT_I8,        "_bpopcnt",  CallingConv::Z80_LibCall_AC);
+  setLibcall(RTLIB::POPCNT_I16,       "_spopcnt",  CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::POPCNT_I24,       "_ipopcnt",  CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::POPCNT_I32,       "_lpopcnt",  CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::POPCNT_I64,       "_llpopcnt", CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::BITREV_I8,        "_bbitrev",  CallingConv::Z80_LibCall_AC);
+  setLibcall(RTLIB::BITREV_I16,       "_sbitrev",  CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::BITREV_I24,       "_ibitrev",  CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::BITREV_I32,       "_lbitrev",  CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::BITREV_I64,       "_llbitrev", CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::BSWAP_I32,        "_lbswap",   CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::BSWAP_I64,        "_llbswap",  CallingConv::Z80_LibCall   );
+
+  setLibcall(RTLIB::ADD_F32,          "_fadd",     CallingConv::Z80_LibCall_L );
+  setLibcall(RTLIB::SUB_F32,          "_fsub",     CallingConv::Z80_LibCall_L );
+  setLibcall(RTLIB::MUL_F32,          "_fmul",     CallingConv::Z80_LibCall_L );
+  setLibcall(RTLIB::DIV_F32,          "_fdiv",     CallingConv::Z80_LibCall_L );
+  setLibcall(RTLIB::REM_F32,          "_frem",     CallingConv::Z80_LibCall_L );
+  setLibcall(RTLIB::NEG_F32,          "_fneg",     CallingConv::Z80_LibCall_L );
+  setLibcall(RTLIB::CMP_F32,          "_fcmp",     CallingConv::Z80_LibCall_F );
+  setLibcall(RTLIB::FPTOSINT_F32_I32, "_ftol",     CallingConv::Z80_LibCall_L );
+  setLibcall(RTLIB::FPTOSINT_F32_I64, "_ftoll",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::FPTOUINT_F32_I32, "_ftoul",    CallingConv::Z80_LibCall_L );
+  setLibcall(RTLIB::FPTOUINT_F32_I64, "_ftoull",   CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SINTTOFP_I32_F32, "_ltof",     CallingConv::Z80_LibCall_L );
+  setLibcall(RTLIB::SINTTOFP_I64_F32, "_lltof",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::UINTTOFP_I32_F32, "_ultof",    CallingConv::Z80_LibCall_L );
+  setLibcall(RTLIB::UINTTOFP_I64_F32, "_ulltof",   CallingConv::Z80_LibCall   );
+
+  setLibcall(RTLIB::ADD_F64,          "_dadd",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SUB_F64,          "_dsub",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::MUL_F64,          "_dmul",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::DIV_F64,          "_ddiv",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::REM_F64,          "_drem",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::NEG_F64,          "_dneg",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::CMP_F64,          "_dcmp",     CallingConv::Z80_LibCall_F );
+  setLibcall(RTLIB::FPEXT_F32_F64,    "_ftod",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::FPROUND_F64_F32,  "_dtof",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::FPTOSINT_F64_I32, "_dtol",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::FPTOSINT_F64_I64, "_dtoll",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::FPTOUINT_F64_I32, "_dtoul",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::FPTOUINT_F64_I64, "_dtoull",   CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SINTTOFP_I32_F64, "_ltod",     CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::SINTTOFP_I64_F64, "_lltod",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::UINTTOFP_I32_F64, "_ultod",    CallingConv::Z80_LibCall   );
+  setLibcall(RTLIB::UINTTOFP_I64_F64, "_ulltod",   CallingConv::Z80_LibCall   );
+}
+```
