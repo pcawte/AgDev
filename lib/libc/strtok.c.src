@@ -1,0 +1,93 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_strtok
+_strtok:
+	ld	hl, -3
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	de, (ix + 9)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB0_2
+	ld	hl, (_strtok.ptr)
+	jr	BB0_3
+BB0_2:
+	ld	(_strtok.ptr), hl
+BB0_3:
+	ld	(ix - 3), hl
+	push	de
+	push	hl
+	call	_strspn
+	ld	iy, (ix - 3)
+	push	hl
+	pop	de
+	pop	hl
+	pop	hl
+	push	de
+	pop	hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB0_6
+	ld	a, (iy)
+	or	a, a
+	jr	nz, BB0_6
+	ld	hl, 0
+	jr	BB0_10
+BB0_6:
+	add	iy, de
+	ld	(ix - 3), iy
+	ld	hl, (ix + 9)
+	push	hl
+	push	iy
+	call	_strpbrk
+	pop	de
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB0_8
+	ld	hl, (ix - 3)
+	push	hl
+	call	_strlen
+	push	hl
+	pop	de
+	pop	hl
+	ld	bc, (ix - 3)
+	push	bc
+	pop	hl
+	add	hl, de
+	ld	(_strtok.ptr), hl
+	ex	de, hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	push	bc
+	pop	de
+	ld	hl, 0
+	jr	nz, BB0_9
+	jr	BB0_10
+BB0_8:
+	ld	(hl), 0
+	inc	hl
+	ld	(_strtok.ptr), hl
+	ld	de, (ix - 3)
+BB0_9:
+	ex	de, hl
+BB0_10:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.bss,"aw",@nobits
+	private	_strtok.ptr
+_strtok.ptr:
+	rb	3
+
+	extern	_strpbrk
+	extern	__frameset
+	extern	_strspn
+	extern	_strlen

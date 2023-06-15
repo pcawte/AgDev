@@ -1,4 +1,77 @@
-# AgDev proof of concept - based on CEdev
+# AgDev - an Agon Light port of CE C/C++ Toolchain
+
+Based on LLVM toolchain, generating eZ80 ADL code.
+
+### Installation
+
+Install the CE Toolchain - see [getting started]([Getting Started — CE C/C++ Toolchain documentation](https://ce-programming.github.io/toolchain/static/getting-started.html)) page. The tool-chain can be installed on Windows, Linux or MacOS. Follow the instructions to complete the install, and test that the toolchain works by compiling some of the examples for the TI calculator.
+
+To adapt the the tool-chain for Agon, for this proof of concept, a number of files should be replaced with the files from the repository ([GitHub - pcawte/AgDev: Port to Agon Light of TI 84 plus CE Toolchain](https://github.com/pcawte/AgDev)). Clone the repository and copy over the top of the CE toolchain. For example, if the CE Toolchain is installed in AgDev and the downloaded repository in GitHub/AgDev copy the files over the top using:
+
+```
+cp -R -f GitHub/AgDev/ AgDev`
+```
+
+Which should work for MacOS / Linux - not sure the equivalent for windows.
+
+### Building programs using AgDev toolchain
+
+This follows the same make approach as the original CE Toolchain, see bottom of the getting [started page]([Getting Started &mdash; CE C/C++ Toolchain documentation](https://ce-programming.github.io/toolchain/static/getting-started.html)). The build process had been modified to stop on the generation of the `.bin` file. This is the Agon Light executable.
+
+I recommend to use:
+
+```
+make clean
+make V=1
+```
+
+In the relevant: example, test or any other directory created at the same level. The makefile should be edited to contained the desired name of the .bin executable.
+
+### Change Log:
+
+04/06/2023: initial proof of concept completed
+
+06/06/2023: hosted on github
+
+09/06/2023: missing compile run-time routines added (these previously called routines in CE ROM)
+
+12/06/2023:
+
+- correct operation of malloc verified - comments added to `sbrk.src` as part of this
+
+- `crt0.src` updated to initialise stack
+
+- `makefile.mk`
+  
+  - updated to include program name in the program header
+  
+  - default locations of stack and BSS adjusted
+
+13/06/2023: 
+
+- missing string and long jump routes added (these previously called routing in the CE ROM)
+  
+  - `strcasecmp` removed from the library - this previously called the CE ROM. Use the alternative `strncasecmp`. 
+
+- `puts` modified to output CR / LF pair rather than just LF
+
+- `getchar` updated to echo character as per standard C
+
+### To-Do:
+
+- Testing / validation
+
+- Port / replace / expand library where necessary to the Agon Light. Especially:
+  
+  - Standard IO library 
+
+- Add back in support for C++
+
+- Test / proof of concept for other LLVM front-ends. See, for example, [GitHub - maddymakesgames/Rust-CE: A proof-of-concept of rust on the ti-84+ce](https://github.com/maddymakesgames/Rust-CE), which is a proof of concept for running Rust on the TI-84-CE calculator. 
+
+
+
+The rest of this file documents the process of porting the CE Toolchain to the Agon Light. This includes the process of discovery with respect to how the CE Toolchain works and the Agon Light, and the steps / decisions made in the porting process. This intended as reminder for myself and a guide to others who follow in my steps.
 
 ## Introduction
 
@@ -20,9 +93,15 @@ Although this toolchain is focused heavily optimised for the TI calculator, work
 
 ## Installation
 
-Install the CE Toolchain - see [getting started]([Getting Started &mdash; CE C/C++ Toolchain documentation](https://ce-programming.github.io/toolchain/static/getting-started.html)) page. The tool-chain can be installed on Windows, Linux or MacOS.  Follow the instructions to complete the install, and test that the tool-chain works by compiling some of the examples for the TI calculator.
+Install the CE Toolchain - see [getting started]([Getting Started &mdash; CE C/C++ Toolchain documentation](https://ce-programming.github.io/toolchain/static/getting-started.html)) page. The tool-chain can be installed on Windows, Linux or MacOS.  Follow the instructions to complete the install, and test that the toolchain works by compiling some of the examples for the TI calculator.
 
-To adapt the the tool-chain for Agon, for this proof of concept, a number of files should be replaced 
+To adapt the the tool-chain for Agon, for this proof of concept, a number of files should be replaced  with the files from the repository ([GitHub - pcawte/AgDev: Port to Agon Light of TI 84 plus CE Toolchain](https://github.com/pcawte/AgDev)). Clone the repository and copy over the top of the CE toolchain. For example, if the CE Toolchain is installed in AgDev and the downloaded repository in GitHub/AgDev copy the files over the top using:
+
+```
+cp -R -f GitHub/AgDev/ AgDev`
+```
+
+Which should work for MacOS / Linux - not sure the equivalent for windows.
 
 ## Build process for proof of concept
 
@@ -235,20 +314,75 @@ Updated with Agon specific addresses / memory locations:
 
 - BSSHEAP_HIGH = 05FFFF: as above
 
-- STACK_HIGH = 04FFFF: this seems to work - but not sure what should really be used - or even if this really needs to be set. For the moment this has been removed from the fasmg flags and whatever stack that is provided by MOS is used.
+- STACK_HIGH = 0AFFFF: this seems to work - but not sure what should really be used - or even if this really needs to be set. For the moment this has been removed from the fasmg flags and whatever stack that is provided by MOS is used.
 
-Note BSS is the heap - it used for memory allocated by malloc, etc. I don't what this should be set to, or can we just arbitrarily use memory. In the examples from the Zilog C-toolchain, `__low_bss`and `len_bss`are defined by
-
-```
-DEFINE __low_bss = base of BSS
-DEFINE __len_bss = length of BSS
-```
-
-In the Release.linkcmd, but not given any actual numeric values.
+See details below for memory layout.
 
 ### C runtime - crt0.src
 
 This has been re-written based on a combination of code from the original [Agon projects]([GitHub - breakintoprogram/agon-projects: Official AGON QUARK Firmware: Projects](https://github.com/breakintoprogram/agon-projects)) which used the Zilog toolchain, and the CE Toolkit version. Note that the Zilog assembler, fasmg assembler used by CE toolkit and ez80asm used by many in the Agon community all have different formats and different waves of organising program sections, etc. Part of the challenge of this proof of concept has been in understanding the fasmg assembler.
+
+### Memory layout
+
+From the MOS documentation, the memory layout for the Agon is as follows:
+
+- &000000 - &01FFFF: MOS (Flash ROM)
+- &040000 - &0BDFFF: User RAM
+- &0B0000 - &0B7FFF: Storage for loading MOS star command executables off SD card
+- &0BC000 - 0BFFFFF: Global heap and stack
+
+Consequently we assume that the memory from 040000h to 0AFFFFh is useable for programs compiled with the AgDev toolchain (this can be adjusted)
+
+The layout of sections of the program is in the following order with each section immediately following the proceeding one:
+
+- `section .header`: 040000h
+
+- `section .init`: 040045h (this can be referenced by the label `__start`)
+
+- `section .text`: this is where the main program code is located. The code is entered by calling `_main` or `___main_argc_argv` depending on whether `main(void)` or `main(int argc, char *argv[])` is used. Note that is almost certainly not at the beginning of of .text section. 
+
+- `section .data`: contains static and global variables defined in the program code.
+
+- `section .rodata`:  contains constant data, such as string literals in the program code.
+
+There is then a gap before:
+
+- `section .bss`: contains uninitialised global and static variables. This is zeroed as part of the as part of the C-runtime setup (by crt0). 
+
+- `heap`: this is used by malloc to programmatically allocate memory. This grows upwards towards the stack.
+
+- `stack`: used for storing return addresses, parameters for function calls and local variables. This grows downwards towards the heap.
+
+The layout in memory can be checked by examining the `.map` file generated as part of the final linking process.
+
+The location of .bss, heap and stack are configured in the `makefile.mk` which controls the build process:
+
+```
+BSSHEAP_LOW ?= 050000
+BSSHEAP_HIGH ?= 05FFFF
+STACK_HIGH ?= 0AFFFF
+```
+
+The layout can be checked by examining the following labels in the `.map` file.
+
+```
+___low_bss             = 050000
+___len_bss             = 000000
+___heaptop             = 05FFFF
+___heapbot             = 050000
+__stack                = 0AFFFF
+```
+
+Memory in heap is managed by the `malloc` function . The malloc used is from Zilog, the comments state:
+
+```
+/*   This implements a straight forward version of malloc, allocating   */
+/*   memory between the first unused address in RAM (__heapbot) and     */
+/*   the current stack pointer; the stack pointer being initialized to  */
+/*   the top of RAM (__heaptop).                                        */
+```
+
+Note however, in this AgDev Toolchain, `___heaptop` is set up independently of the stack, so that the heap should not overwrite the stack (unless insufficient space has been reserved for the stack).
 
 ## Compiler runtime (compiler-rt)
 
@@ -298,7 +432,7 @@ Items mentioned have been checked - see details. Others have not been checked.
 
 ### CRT (C-runtime)
 
-- crt0 (public): updated to target Agon - sufficient for the proof of concept, will likely need to be developed further to support the full library and C++. 
+- crt0 (public): updated to target Agon - sufficient for the proof of concept, will need to be developed further to support the full library and C++ (constructors, destructors, etc. - this was in the original crt0 - needs to be added back in and tested)
 
 - inchar.src (weak): updated to input from MOS rst 008h GETKEY command
 
@@ -308,7 +442,69 @@ Items mentioned have been checked - see details. Others have not been checked.
 
 - putchar.src (public): okay. Calls outchar (which needs to be modified)
 
-- getchar.src (public): updated to remove bug now typecasts from unsigned char to int (the CE version typecasts from signed char - which is contrary to the C-standard) . Call inchar to get character and outchar to echo on consolse
+- getchar.src (public): updated to remove bug now typecasts from unsigned char to int (the CE version typecasts from signed char - which is contrary to the C-standard) . Call inchar to get character and outchar to echo on console
+
+In general the libc library has been derived from a number of sources:
+
+- Floating point comes from Zilog ZDS. Note that the some additional functions have been added such as hyperbolic trig functions, cubic root, etc. These use calculations from other floating point functions.
+
+- Sort and search from Zilog ZDS, including bsearch and qsort
+
+- Standard IO: uses nanoprintf, there is no scanf
+
+- File IO
+
+- Time
+
+- Memory management from Zilog ZDS. Includes free, malloc, realloc
+
+- Exception handling
+
+- String conversion from Zilog ZDS. Includes: strtof, strtol, strtoll, strtoul, strtoull
+
+#### String Library (and longjmp / setjmp)
+
+In the CE Toolchain, many of the string library routines that are part of libc are called in the CE ROM,  as listed in the `lib/libc/os.src` file. Condensed version below:
+
+```
+_longjmp    := 000098h
+_memchr     := 00009Ch
+_memcmp     := 0000A0h
+_memcpy     := 0000A4h
+_memmove    := 0000A8h
+_setjmp     := 0000B8h
+_strcat     := 0000C0h
+_strchr     := 0000C4h
+_strcmp     := 0000C8h
+_strcpy     := 0000CCh
+_strcspn    := 0000D0h
+_strlen     := 0000D4h
+_strncat    := 0000D8h
+_strncmp    := 0000DCh
+_strcasecmp := 021E3Ch
+_strncpy    := 0000E0h
+_strpbrk    := 0000E4h
+_strspn     := 0000ECh
+_strstr     := 0000F0h
+_strtok     := 0000F4h
+```
+
+These are all available in the Zilog distribution as assembly source code, apart from:
+
+- `strcasecmp`: this is not part of standard libc - and has been deleted. There is, however, `strncasecmp`.
+
+- `strtok`: available as c source code
+
+All of these with the exception of `strcasecmp` have been added to the AgDev toolchain as part of libc .src files.
+
+#### File IO
+
+In the CE Toolchain the file IO functions are wrappers around the fileioc library. This library is CE specific and needs to be replaced. There is already provision in the CE library for doing this, see the CE Toolchain documentation: [Using File I/O Functions ](https://ce-programming.github.io/toolchain/static/fileio.html). This includes adjusting the makefile for "custom" file operations.
+
+```
+HAS_CUSTOM_FILE := YES
+CUSTOM_FILE_FILE := stdio_file.h
+```
 
 ### Libcxx (standard C++ library)
 

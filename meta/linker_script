@@ -425,6 +425,27 @@ if HAS_LIBC
 	source "../lib/libc/tanh.src"
 	source "../lib/libc/tolower.src"
 	source "../lib/libc/toupper.src"
+
+; added missing libc string and long jump routines
+
+	source "../lib/libc/longjmp.src"
+	source "../lib/libc/setjmp.src"
+	source "../lib/libc/memchr.src"
+	source "../lib/libc/memcpy.src"
+	source "../lib/libc/memmove.src"
+	source "../lib/libc/strcat.src"
+	source "../lib/libc/strchr.src"
+	source "../lib/libc/strcmp.src"
+	source "../lib/libc/strcpy.src"
+	source "../lib/libc/strcspn.src"
+	source "../lib/libc/strlen.src"
+	source "../lib/libc/strncat.src"
+	source "../lib/libc/strncpy.src"
+	source "../lib/libc/strpbrk.src"
+	source "../lib/libc/strspn.src"
+	source "../lib/libc/strstr.src"
+	source "../lib/libc/strtok.c.src"
+
 end if
 if HAS_LIBCXX
 	source "../lib/libcxx/abort_message.cpp.src"

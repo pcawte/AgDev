@@ -1,5 +1,5 @@
 ;
-; Title:	Hello World - Initialisation Code
+; Title:	C Runtime Initialisation Code
 ; Author:	Paul Cawte
 ; Created:	04/06/2023
 ; 
@@ -19,10 +19,12 @@ section .header
 ; The header stuff
 ;
 _exec_name:
-	db 	"HELLO.BIN", 0			; The executable name, only used in argv
-
+	db	PROG_NAME, ".bin", 0		; The executable name, only used in argv
+	
 
 	align	64				; The executable header is from byte 64 onwards
+	weak	__mos_header
+__mos_header:
 	db	"MOS"				; Flag for MOS - to confirm this is a valid MOS command
 	db	00h				; MOS header version 0
 	db	01h				; Flag for run mode (0: Z80, 1: ADL)
@@ -217,7 +219,7 @@ section .data					; need private directive to make visible in .init section
 private argv_ptrs
 argv_ptrs:
 repeat argv_ptrs_max
-	db	0, 0, 0			
+	dl	0			
 end repeat
 
 extern _main
