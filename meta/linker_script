@@ -446,6 +446,12 @@ if HAS_LIBC
 	source "../lib/libc/strstr.src"
 	source "../lib/libc/strtok.c.src"
 
+; added other missing / additional items
+
+	source "../lib/libc/errno.c.src"
+	source "../lib/libc/mos_api.src"
+	source "../lib/libc/gets_s.c.src"
+
 end if
 if HAS_LIBCXX
 	source "../lib/libcxx/abort_message.cpp.src"

@@ -1,0 +1,70 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_fseek
+_fseek:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	bc, _stderr
+	ld	de, -1
+	lea	hl, iy
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB0_4
+	ld	bc, _stdout
+	lea	hl, iy
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB0_4
+	lea	hl, iy
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB0_4
+	ld	bc, _stdin
+	lea	hl, iy
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB0_7
+BB0_4:
+	ld	hl, 2
+BB0_5:
+	ld	(_errno), hl
+BB0_6:
+	ex	de, hl
+	pop	ix
+	ret
+BB0_7:
+	ld	hl, (ix + 15)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB0_9
+	ld	hl, (ix + 9)
+	ld	a, (iy)
+	ld	e, (ix + 12)
+	push	de
+	push	hl
+	ld	l, a
+	push	hl
+	call	_mos_flseek
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	de, 0
+	ld	e, a
+	jr	BB0_6
+BB0_9:
+	ld	hl, 128
+	jr	BB0_5
+	section	.text,"ax",@progbits
+
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 6c61664110f888c0285ae4c48b150c9a7a4361bb)"
+	extern	_stdout
+	extern	_stdin
+	extern	_mos_flseek
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	_stderr
+	extern	__frameset0
+	extern	_errno

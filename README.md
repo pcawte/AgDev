@@ -9,7 +9,7 @@ Install the CE Toolchain - see [getting started]([Getting Started — CE C/C++ T
 To adapt the the tool-chain for Agon, for this proof of concept, a number of files should be replaced with the files from the repository ([GitHub - pcawte/AgDev: Port to Agon Light of TI 84 plus CE Toolchain](https://github.com/pcawte/AgDev)). Clone the repository and copy over the top of the CE toolchain. For example, if the CE Toolchain is installed in AgDev and the downloaded repository in GitHub/AgDev copy the files over the top using:
 
 ```
-cp -R -f GitHub/AgDev/ AgDev`
+cp -R -f GitHub/AgDev/ AgDev
 ```
 
 Which should work for MacOS / Linux - not sure the equivalent for windows.
@@ -57,19 +57,27 @@ In the relevant: example, test or any other directory created at the same level.
 
 - `getchar` updated to echo character as per standard C
 
+18/06/2023:
+
+- stdio library updated to work on Agon
+  
+  - This is a simple, non-buffered library - it may have performance issues writing large volumes as in many cases does a system call for each character.
+  
+  - fseek only implements SEEK_SET (search from beginning of file). Other modes are not implemented, because requires ftell functionality (see below).
+  
+  - ftell is not implemented as functionality is not exposed via MOS 
+
 ### To-Do:
 
 - Testing / validation
 
-- Port / replace / expand library where necessary to the Agon Light. Especially:
+- Port / replace / expand library where necessary to the Agon Light. Including:
   
-  - Standard IO library 
+  - investigate benefits of buffering for stdio.
 
 - Add back in support for C++
 
 - Test / proof of concept for other LLVM front-ends. See, for example, [GitHub - maddymakesgames/Rust-CE: A proof-of-concept of rust on the ti-84+ce](https://github.com/maddymakesgames/Rust-CE), which is a proof of concept for running Rust on the TI-84-CE calculator. 
-
-
 
 The rest of this file documents the process of porting the CE Toolchain to the Agon Light. This includes the process of discovery with respect to how the CE Toolchain works and the Agon Light, and the steps / decisions made in the porting process. This intended as reminder for myself and a guide to others who follow in my steps.
 
@@ -112,6 +120,8 @@ make V=1
 ```
 
 The `make clean`command can be used to delete the results of previous compilations and thereby force a recompilation.
+
+There are other examples in the test directory which can be built in the same way.
 
 The build process goes through the following steps:
 
@@ -499,18 +509,69 @@ All of these with the exception of `strcasecmp` have been added to the AgDev too
 
 #### File IO
 
-In the CE Toolchain the file IO functions are wrappers around the fileioc library. This library is CE specific and needs to be replaced. There is already provision in the CE library for doing this, see the CE Toolchain documentation: [Using File I/O Functions ](https://ce-programming.github.io/toolchain/static/fileio.html). This includes adjusting the makefile for "custom" file operations.
+In the CE Toolchain the file IO functions are wrappers around the fileioc library. This library is CE specific and needs to be replaced. There is already provision in the CE library for doing this, see the CE Toolchain documentation: [Using File I/O Functions ](https://ce-programming.github.io/toolchain/static/fileio.html). Note that the `stdio.h` file has been modified so that there is no need for a `CUSTOM_FILE_FILE` as referred to in the CE documentation.
 
-```
-HAS_CUSTOM_FILE := YES
-CUSTOM_FILE_FILE := stdio_file.h
-```
+The library has been modified to use Agon MOS calls and includes:
+
+- fopen, fclose
+
+- fputc, fputs
+
+- fgetc, fgets
+
+- feof, ferror, fflush
+
+- fread, frwite
+
+- fseek - only implements SEEK_SET (seek from beginning), because of the lack of ftell (see below)
+
+- ftell - this returns an error as ftell although implemented in FatFS is not currently exposed by MOS.
+
+And includes files
+
+- files.c
+
+- stdio.h
+
+On the Agon there are two different APIs for accessing the FatFS - MOS routines and FatFS routines. Having examined the MOS source code, the MOS routines are simple wrappers around the FatFS routines, just managing / storing the FatFS file descriptors in a table (supports 8 open files). Consequently it makes sense just to use the MOS routines.
 
 ### Libcxx (standard C++ library)
 
 ### Libload (dynamic library - I think)
 
 Contains .lib library files - needs to be investigated further
+
+## C Calling Conventions
+
+### Arguments
+
+Arguments are pushed from last to first corresponding to the C prototype. In eZ80, 3 bytes are always pushed to the stack regardless of the actual size. However, the assembly function must be careful to only use the valid bytes that are pushed. For example, if a *short* type is used, the upper byte of the value pushed on the stack will contain arbitrary data. This table lists the locations relative to *sp* from within the called function. Note that `sp + [0,2]` contains the return address.
+
+| C/C++ Type | Size    | Stack Location |
+| ---------- | ------- | -------------- |
+| char       | 1 byte  | sp + [3]       |
+| short      | 2 bytes | sp + [3,4]     |
+| int        | 3 bytes | sp + [3,5]     |
+| long       | 4 bytes | sp + [3,6]     |
+| long long  | 8 bytes | sp + [3,10]    |
+| float      | 4 bytes | sp + [3,6]     |
+| double     | 4 bytes | sp + [3,6]     |
+| pointer    | 3 bytes | sp + [3,5]     |
+
+### Returns
+
+This table lists which registers are used for return values from a function. The type’s sign does not affect the registers used, but may affect the value returned. The LSB is located in the register on the far right of the expression, e.g. `E:HL` indicates register `L` stores the LSB.
+
+| C/C++ Type | Return Register |
+| ---------- | --------------- |
+| char       | A               |
+| short      | HL              |
+| int        | UHL             |
+| long       | E:UHL           |
+| long long  | BC:UDE:UHL      |
+| float      | E:UHL           |
+| double     | E:UHL           |
+| pointer    | UHL             |
 
 ## MOS Calling Conventions
 

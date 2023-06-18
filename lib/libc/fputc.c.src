@@ -1,0 +1,90 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_fputc
+_fputc:
+	call	__frameset0
+	ld	bc, (ix + 6)
+	ld	iy, (ix + 9)
+	lea	hl, iy
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB0_2
+	ld	de, _stdin
+	lea	hl, iy
+	or	a, a
+	sbc	hl, de
+	jr	nz, BB0_4
+BB0_2:
+	lea	hl, iy
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB0_9
+	ld	bc, -1
+	jr	BB0_12
+BB0_4:
+	ld	de, _stdout
+	lea	hl, iy
+	or	a, a
+	sbc	hl, de
+	jr	z, BB0_6
+	ld	de, _stderr
+	lea	hl, iy
+	or	a, a
+	sbc	hl, de
+	jr	nz, BB0_7
+BB0_6:
+	push	bc
+	call	_putchar
+	push	hl
+	pop	de
+	pop	hl
+	jr	BB0_8
+BB0_7:
+	ld	a, (iy)
+	push	bc
+	ld	l, a
+	push	hl
+	call	_mos_fputc
+	pop	hl
+	pop	hl
+	ld	de, (ix + 6)
+BB0_8:
+	ld	bc, -1
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	ld	bc, (ix + 6)
+	ld	iy, (ix + 9)
+	jr	nz, BB0_10
+BB0_9:
+	ld	(iy + 1), 1
+	ld	de, -1
+BB0_10:
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB0_12
+	ld	(iy + 2), 1
+	push	de
+	pop	bc
+BB0_12:
+	push	bc
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 6c61664110f888c0285ae4c48b150c9a7a4361bb)"
+	extern	_stdin
+	extern	_stdout
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	_mos_fputc
+	extern	_stderr
+	extern	_putchar
+	extern	__frameset0
