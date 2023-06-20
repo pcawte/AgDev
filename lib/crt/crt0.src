@@ -84,8 +84,6 @@ _exit.sp := $-3
 	POP	AF
 	LD 	HL, 0
 
-	EI 					; Hack for emulator which sometimes leaves
-						; interrupts disabled
 	RET					; exit the program 
 			
 ; Clear the memory (the heap used for dynamic variables)
