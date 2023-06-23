@@ -63,13 +63,39 @@ In the relevant: example, test or any other directory created at the same level.
   
   - This is a simple, non-buffered library - it may have performance issues writing large volumes as in many cases does a system call for each character.
   
-  - fseek only implements SEEK_SET (search from beginning of file). Other modes are not implemented, because requires ftell functionality (see below).
+  - `fseek` only implements SEEK_SET (search from beginning of file). Other modes are not implemented, because requires `ftell` functionality (see below).
   
-  - ftell is not implemented as functionality is not exposed via MOS 
+  - `ftell` is not implemented as functionality is not exposed via MOS 
+
+19/06/2023:
+
+- C-runtime modified to include a work-around for emulator hanging
+- Config parameter in `makefile.mk` corrected. `PREFER_OS_LIBC` changed to `NO`
+
+20/06/2023:
+
+- C-runtime workaround reversed as issue now resolved in the emulator.
+- Development code for `scanf.c` included prior to tidying up and moving into libc 
+
+23/06/2023:
+
+- stdio library updated to include: `ftell`, `clearerr`, `remove` and `rewind`
+
+- fseek updated to allow SEEK_SET and SEEK_CUR - note SEEK_END is not supported. If this required, close and reopen the file in append mode.
+
+- additional error codes added in `errno.h`
 
 ### To-Do:
 
 - Testing / validation
+
+- Check functionality of of stdio library, including fread. Remove stuff inherited from CE Toolchain
+
+- Add fprintf
+
+- Implement scanf and sscanf - there are versions of these in the Zilog ZDS toolchain that can be ported.
+
+- Add fscanf 
 
 - Port / replace / expand library where necessary to the Agon Light. Including:
   

@@ -17,7 +17,8 @@ Parameters
     SEEK_END    End of file.
     SEEK_SET    Beginning of file.
 
-    NOTE: Due to limitation of MOS API, currently only SEEK_SET is supported
+    NOTE: SEEK_END is not currently supported on Agon as doesn't seem to be a way to find the
+    file lenght. If this functionality is required, close and reopen the file in append mode.
 
 Return Value
   If successful, fseek and returns 0. Otherwise, it returns a nonzero value. On
@@ -40,10 +41,22 @@ int fseek(FILE *stream, long int offset, int origin)
         errno = EINVAL;
         return -1;
     }
-    if ( origin != SEEK_SET )
+
+    FIL *file_struct = mos_getfil( stream->fhandle );
+
+    switch( origin )
     {
-        errno = EMOSNOSUPPORT;
-        return -1;
+        case SEEK_SET:
+            break;
+        case SEEK_CUR:
+            offset += (long)(file_struct->fptr);
+            break;
+        case SEEK_END:
+            errno = EOPNOTSUPP;
+            return -1;
+        default:
+            errno = EINVAL;
+            return -1;
     }
 
     return mos_flseek( stream->fhandle, offset );

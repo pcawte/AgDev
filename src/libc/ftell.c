@@ -16,19 +16,15 @@ Return Value
 
   On error, ftell invoke the invalid parameter handler, as described in Parameter validation.
   If execution is allowed to continue, these functions return -1L and set errno to one of two
-  constants, defined in ERRNO.H. The EBADF constant means the stream argument isn't a valid
-  file pointer value or doesn't refer to an open file. EINVAL means an invalid stream argument
-  was passed to the function. On devices incapable of seeking (such as terminals and printers),
-  or when stream doesn't refer to an open file, the return value is undefined.
+  constants, defined in ERRNO.H. EINVAL means an invalid stream argument was passed to the
+  function, also returns this for devices incapable of seeking
+  (such as terminals and printers).
   On Agon there is currently no "invalid parameter handler"
-
-  NOTE: this functionality is not currently exposed by MOS and returns -1L with EMOSNOSUPPORT 
 */
-
-
 
 #include <stdio.h>
 #include <errno.h>
+#include <mos_api.h>
 
 long int ftell(FILE *stream)
 {
@@ -38,8 +34,7 @@ long int ftell(FILE *stream)
         return -1L;
     }
 
-    // return not supported
+    FIL *file_struct = mos_getfil( stream->fhandle );
 
-    errno = EMOSNOSUPPORT;
-    return -1L;
+    return (long)(file_struct->fptr);
 }

@@ -151,14 +151,14 @@ extern uint16_t getsysvar_keyrate();
 extern uint8_t  getsysvar_keyled();
 
 // MOS API calls
-extern uint8_t  mos_load(char *filename, uint24_t address, uint24_t maxsize);
-extern uint8_t  mos_save(char *filename, uint24_t address, uint24_t nbytes);
-extern uint8_t  mos_cd(char *path);
-extern uint8_t  mos_dir(char *path);
-extern uint8_t  mos_del(char *filename);
-extern uint8_t  mos_ren(char *filename, char *newname);
-extern uint8_t  mos_copy(char *source, char *destination);
-extern uint8_t  mos_mkdir(char *path);
+extern uint8_t  mos_load(const char *filename, uint24_t address, uint24_t maxsize);
+extern uint8_t  mos_save(const char *filename, uint24_t address, uint24_t nbytes);
+extern uint8_t  mos_cd(const char *path);
+extern uint8_t  mos_dir(const char *path);
+extern uint8_t  mos_del(const char *filename);
+extern uint8_t  mos_ren(const char *filename, const char *newname);
+extern uint8_t  mos_copy(const char *source, const char *destination);
+extern uint8_t  mos_mkdir(const char *path);
 extern uint8_t* mos_sysvars(void);
 extern uint8_t  mos_editline(char *buffer, uint24_t bufferlength, uint8_t clearbuffer);
 extern uint8_t  mos_fopen(const char * filename, uint8_t mode);   // returns filehandle, or 0 on error

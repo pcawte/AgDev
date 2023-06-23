@@ -4,66 +4,55 @@
 	public	_ftell
 _ftell:
 	call	__frameset0
-	ld	hl, (ix + 6)
-	ld	de, _stdin
+	ld	iy, (ix + 6)
+	ld	de, _stderr
+	ld	bc, -1
+	lea	hl, iy
+	or	a, a
+	sbc	hl, de
+	jr	z, BB0_4
+	ld	de, _stdout
+	lea	hl, iy
+	or	a, a
+	sbc	hl, de
+	jr	z, BB0_4
+	lea	hl, iy
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	ld	c, -1
-	ld	b, 0
-	ld	a, c
-	jr	z, BB0_2
-	ld	a, b
-BB0_2:
-	push	hl
-	pop	iy
-	or	a, a
-	sbc	hl, de
-	ld	l, c
 	jr	z, BB0_4
-	ld	l, b
+	ld	de, _stdin
+	lea	hl, iy
+	or	a, a
+	sbc	hl, de
+	jr	nz, BB0_6
 BB0_4:
-	or	a, l
-	ld	b, a
-	lea	hl, iy
-	ld	de, _stdout
-	or	a, a
-	sbc	hl, de
-	ld	a, c
-	jr	z, BB0_6
-	ld	a, 0
-BB0_6:
-	or	a, b
-	ld	b, a
-	lea	hl, iy
-	ld	de, _stderr
-	or	a, a
-	sbc	hl, de
-	jr	z, BB0_8
-	ld	c, 0
-BB0_8:
-	ld	e, -1
-	ld	a, c
-	or	a, b
-	bit	0, a
-	jr	nz, BB0_10
-	ld	hl, 128
-	jr	BB0_11
-BB0_10:
 	ld	hl, 2
-BB0_11:
+	ld	e, -1
 	ld	(_errno), hl
-	scf
-	sbc	hl, hl
+BB0_5:
+	push	bc
+	pop	hl
 	pop	ix
 	ret
+BB0_6:
+	ld	l, (iy)
+	push	hl
+	call	_mos_getfil
+	push	hl
+	pop	iy
+	pop	hl
+	ld	bc, (iy + 17)
+	ld	e, (iy + 20)
+	jr	BB0_5
 	section	.text,"ax",@progbits
 
 	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 6c61664110f888c0285ae4c48b150c9a7a4361bb)"
-	extern	_stdin
 	extern	_stdout
+	extern	_stdin
 	extern	__Unwind_SjLj_Register
 	extern	__Unwind_SjLj_Unregister
 	extern	_stderr
+	extern	_mos_getfil
 	extern	__frameset0
 	extern	_errno
