@@ -81,19 +81,27 @@ In the relevant: example, test or any other directory created at the same level.
 
 - stdio library updated to include: `ftell`, `clearerr`, `remove` and `rewind`
 
-- fseek updated to allow SEEK_SET and SEEK_CUR - note SEEK_END is not supported. If this required, close and reopen the file in append mode.
+- `fseek` updated to allow SEEK_SET and SEEK_CUR - note SEEK_END is not supported. If this required, close and reopen the file in append mode.
 
 - additional error codes added in `errno.h`
+
+24/06/2023:
+
+- `fseek` updated to support SEEK_END
+
+- bug it `gets_s` fixed - was assuming buffer was 1 shorter than it was, so input of 1 character, with buffer size 2 previously did not work.
+
+- test program updated (`tests/src/fileio.c`) to test functionality of stdio
 
 ### To-Do:
 
 - Testing / validation
 
-- Check functionality of of stdio library, including fread. Remove stuff inherited from CE Toolchain
+- For stdio remove and stuff inherited from CE Toolchain (there is nothing used, but some remnants in the various files)
 
 - Add fprintf
 
-- Implement scanf and sscanf - there are versions of these in the Zilog ZDS toolchain that can be ported.
+- Implement scanf and sscanf - there is a development version include under dev, but not moved to library yet
 
 - Add fscanf 
 

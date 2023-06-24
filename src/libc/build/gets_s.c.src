@@ -8,6 +8,9 @@ _gets_s:
 	ld	bc, (ix + 6)
 	ld	iy, (ix + 9)
 	ld	de, 0
+	or	a, a
+	sbc	hl, hl
+	ld	(ix - 3), hl
 	push	bc
 	pop	hl
 	add	hl, bc
@@ -20,8 +23,6 @@ _gets_s:
 	sbc	hl, bc
 	jr	z, BB0_9
 BB0_2:
-	ld	hl, 1
-	ld	(ix - 3), hl
 	ld	(ix - 6), bc
 BB0_3:
 	call	_getchar

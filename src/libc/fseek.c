@@ -52,8 +52,8 @@ int fseek(FILE *stream, long int offset, int origin)
             offset += (long)(file_struct->fptr);
             break;
         case SEEK_END:
-            errno = EOPNOTSUPP;
-            return -1;
+            offset += (long)(file_struct->obj.objsize);
+            break;
         default:
             errno = EINVAL;
             return -1;

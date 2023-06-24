@@ -1,10 +1,24 @@
+/* stdio - test program
+* 
+* Tests:
+*  - puts, putchar (these output directly to console and do not use stdio)
+*  - gets_s, which calls getchar (this reads directly from console, not via stdio)
+*  - fopen, fclose
+*  - fseek (SEEK_SET, SEEK_CUR, SEEK_END), ftell
+*  - fwrite, fread
+*  - remove
+* To add:
+* 
+***********************/
+
 #include <stdio.h>
 #include <string.h>
 
 FILE *open_file( const char *fname, const char *mode, const char *message );
 int close_file( FILE *fp );
 void cat_file( FILE *fp );
-int seek_file( FILE *fp, int pos, const char *message );
+void read_file( FILE *fp, int num, int pos, int origin, const char *message );
+int seek_file( FILE *fp, int pos, int origin, const char *message );
 void putint( int i );
 
 
@@ -59,14 +73,17 @@ int main( void )
 
 	// Seek file and cat it
 
-	if ( seek_file( fp, 30, "Seeking to position 30 to read file" ) ) return 0;
+	if ( seek_file( fp, 30, SEEK_SET, "Seeking to position 30 to read file" ) ) return 0;
 	cat_file( fp );
 	if ( close_file( fp ) ) return 0;
 
 	// Open for reading and appending and overwrite some of the file
 
 	if ( !(fp = open_file( fname_str, "a+", "Opening file for read/append...")) ) return 0;
-	if ( seek_file( fp, 30, "Seeking to position 30 to overwrite" ) ) return 0;
+	putint( (int)ftell( fp ) );
+	puts( " - opened for appending at this location" );
+
+	if ( seek_file( fp, 30, SEEK_SET, "Seeking to position 30 to overwrite" ) ) return 0;
 
 	int cnt = fwrite( "****", 1, 4, fp);
 	if ( cnt != 4 ) {
@@ -76,15 +93,52 @@ int main( void )
 		return 0;
 	}
 
-	if ( seek_file( fp, 0, "Seeking to beginning to read." ) ) return 0;
+	if ( seek_file( fp, 0, SEEK_SET, "Seeking to beginning to read." ) ) return 0;
 	cat_file( fp );
+
+	// Do some seeks and reads
+
+	puts( "Doing some seeks - " );
+
+	putint( 30 );
+	putchar( '@' );
+	read_file( fp, 10, 30, SEEK_SET, "Reading from @30 from start of file" );
+	putint( 10 );
+	putchar( '+' );
+	read_file( fp, 10, 10, SEEK_CUR, "Skipping forward 10" );
+	putint( -20 );
+	putchar( '-' );
+	read_file( fp, 10, -20, SEEK_END, "20 back from end of file" );
+
 	if ( close_file( fp ) ) return 0;
+
+	// Delete the file
+
+	puts( "\r\nAbout to delete the file" );
+	puts( fname_str );
+
+	puts( "Press enter to proceed, or 'n' to continue without deleting" );
+	putchar( '>' );
+
+	char str[2];
+	if ( !gets_s( str, 2 ) ) {
+		puts( "Error on input!\r\nQuiting program.\r\n" );
+		return 0;
+	}
+
+	if ( str[0] != 'n' && str[0] != 'N' ) {
+		puts( "Deleting..." );
+		if ( remove( fname_str ) ) {
+			puts( "Error deleting the file" );
+			return 0;
+		}
+	}
 
 	// Terminate the program
 
 	puts( "\r\n\r\nNormal end of program.\r\n" );
 
-	return( 0 );
+	return 0;
 }
 
 // Open file
@@ -139,17 +193,49 @@ void cat_file( FILE *fp )
 	return;
 }
 
-int seek_file( FILE *fp, int pos, const char *message )
+// Read from file and output to console using fseek and fread
+
+void read_file( FILE *fp, int num, int pos, int origin, const char *message )
+{
+	char buf[num+1];
+
+	puts( message );
+	if ( seek_file( fp, pos, origin, "Seeking..." ) ) return;
+
+	int cnt = fread( buf, 1, num, fp );
+
+	if ( cnt != num ) {
+		puts( "*** frwite() didn't write the correct number of bytes. ***" );
+		putint( cnt  );
+		puts( " characters." );
+		return;
+	}
+	putchar( '<' );
+	for ( int i = 0; i < cnt; i++ ) putchar( buf[i] );
+	putchar( '>' );
+	puts( " read." );
+	buf[cnt] = '\0';
+//	puts( "Printing with puts()" );
+//	puts( buf );
+	return;
+}
+
+// Seek to a location in the file
+
+int seek_file( FILE *fp, int pos, int origin, const char *message )
 {
 	puts( message );
-	int fr;
-	if ( (fr = fseek( fp, pos, SEEK_SET)) ) {
+	int err;
+	if ( (err = fseek( fp, pos, origin )) ) {
 		puts( "Seek failed with" );
-		putchar( '0' + fr );
+		putint( err );
         puts( " error code" );
 	}
-	return fr;
+	putint( (int)ftell( fp ) );
+	puts( " @seek location." );
+	return err;
 }
+
 
 // Outputs an int to the console - as int is 24 bits, max digits = 8
 

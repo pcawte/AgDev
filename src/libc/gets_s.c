@@ -7,15 +7,15 @@ Reads characters from console until a newline is found or end-of-file occurs.
 On Agon assumes CR is end of line and there is no end of file character
 Writes only at most n-1 characters into the array pointed to by str, 
 and always writes the terminating null character (unless str is a null pointer).
-The newline character, if found, is discarded and does not count toward the number of characters
+The CR character, if found, is discarded and does not count toward the number of characters
 written to the buffer.
 
 The following errors are detected at runtime:
  - n is zero
  - str is a null pointer
  - endline or eof not encountered after storing n-1 characters to the buffer.
-In any case, gets_s first finishes reading and discarding the characters from stdin until new-line character,
-end-of-file condition, or read error before returning.
+In any case, gets_s first finishes reading and discarding the characters from stdin until new-line
+character, end-of-file condition, or read error before returning.
 
 Parameters
  - str character string to be written
@@ -30,10 +30,9 @@ str on success, a null pointer on failure.
 
 char *gets_s( char *__restrict str, rsize_t n )
 {
-	rsize_t cnt = 1;								// counter for number of characters read
-														//   start with 1 to allow for the terminating zero
+	rsize_t cnt = 0;								// counter for number of characters read
 	int c;											// the current input character
-	char* s = str; 								// location to store next character
+	char *s = str; 								// location to store next character
 
 	if ( !(str || n) ) return( NULL );  	// check error conditions
 //	if ( n > RSIZE_MAX ) return( NULL );
