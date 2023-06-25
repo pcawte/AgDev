@@ -9,20 +9,17 @@
  * slight saving in space and time. <THH>
  *************************************************************************/
 
+// This version is a simplified version with the multi-threading stripped out
+
 #include <stdlib.h>
-#include "stdio.h"
+#include <stdio.h>
 #include <stddef.h>
 #include <ctype.h>
 #include <stdarg.h>
 #include "format.h"
 #include <float.h>
 #include <string.h>
-#include "cio.h"
 #include <stdbool.h>
-
-#define FALSE false 
-#define TRUE true
-
 
 /*  Sizes allowed for various data */
 /*  For small model, we must restrict the allowed input */
@@ -36,7 +33,6 @@
 #define INT_CHARS 127
 #endif
 
-#ifndef _MULTI_THREAD
 static const char _PTR_  bptr;     // LLVM port - added const
 static va_list argp;
 static int len;
@@ -45,22 +41,12 @@ static struct fmt_type fmt_str;
 static int prev_ch;
 static char isunget;
 
-#else
-#define bptr (*bptr)
-#define argp (*argp)
-#define len (*len)
-#define fields (*fields)
-#define fmt_str (*fmt_str)
-#define prev_ch (*prev_ch)
-#define isunget (*isunget)
-#endif
-
 /****************************************/
 /*					*/
 /*	     get a character		*/
 /*					*/
 /****************************************/
-#ifndef _MULTI_THREAD
+
 static int get(void)
 {
   ++len;
@@ -72,16 +58,13 @@ static int get(void)
   }
   return(prev_ch = getchar());
 }
-#else
-#define get() (len++,isunget)?(isunget=0,prev_ch):(prev_ch=getch())
-#endif
 
 /****************************************/
 /*					*/
 /*	     unget a character		*/
 /*					*/
 /****************************************/
-#ifndef _MULTI_THREAD
+
 static void unget(void)
 {
   --len;
@@ -89,20 +72,14 @@ static void unget(void)
   if (bptr)
     --bptr; 
 }
-#else
-#define unget() --len,isunget=1
-#endif
 
 /****************************************/
 /*					*/
 /*	Handle pointer conversions	*/
 /*					*/
 /****************************************/
-#ifndef _MULTI_THREAD
+
 static unsigned char pointer(void)
-#else
-static unsigned char pointer(va_list argp,int len,unsigned char fields,struct fmt_type fmt_str,int prev_ch,char isunget)
-#endif
 {
   unsigned char i;
   char ch;
@@ -113,17 +90,17 @@ static unsigned char pointer(va_list argp,int len,unsigned char fields,struct fm
   if (fmt_str.field_width == 0 || fmt_str.field_width > sizeof(buffer)-1)
     fmt_str.field_width = sizeof(buffer)-1;
   if ((ch = get()) == EOF)
-    return FALSE;
+    return false;
   for (i=0;isxdigit(ch);) {
     *(bp++) = ch;
     i++;
     if (i >= fmt_str.field_width)
       break;
     if ((ch = get()) == EOF)
-      return FALSE;
+      return false;
   }
   if (bp == buffer)
-    return FALSE;
+    return false;
   if (i < fmt_str.field_width)
     unget();
   *bp = '\0';
@@ -135,7 +112,7 @@ static unsigned char pointer(va_list argp,int len,unsigned char fields,struct fm
     ++fields;
   }
 
-  return TRUE;
+  return true;
 }
 
 /****************************************/
@@ -143,11 +120,8 @@ static unsigned char pointer(va_list argp,int len,unsigned char fields,struct fm
 /*	Handle string conversions	*/
 /*					*/
 /****************************************/
-#ifndef _MULTI_THREAD
+
 static unsigned char string(void)
-#else
-static unsigned char string(va_list argp,int len,unsigned char fields,struct fmt_type fmt_str,int prev_ch,char isunget)
-#endif
 {
   unsigned char i;
   char ch;
@@ -159,11 +133,11 @@ static unsigned char string(va_list argp,int len,unsigned char fields,struct fmt
     fmt_str.field_width = 127;
   do {
     if ((ch = get()) == EOF)
-      return FALSE;
+      return false;
   } while (isspace(ch));
   unget();
   if ((ch = get()) == EOF)
-    return FALSE;
+    return false;
   for (i=0; !isspace(ch) && ch;) {
     if (p)
       *(p++) = ch;
@@ -171,7 +145,7 @@ static unsigned char string(va_list argp,int len,unsigned char fields,struct fmt
     if (i >= fmt_str.field_width)
       break;
     if ((ch = get()) == EOF)
-      return FALSE;
+      return false;
   }
   if (i < fmt_str.field_width)
     unget();
@@ -180,7 +154,7 @@ static unsigned char string(va_list argp,int len,unsigned char fields,struct fmt
     *p = '\0';
     ++fields;
   }
-  return TRUE;
+  return true;
 }
 
 /****************************************/
@@ -188,11 +162,8 @@ static unsigned char string(va_list argp,int len,unsigned char fields,struct fmt
 /*	Handle character conversions	*/
 /*					*/
 /****************************************/
-#ifndef _MULTI_THREAD
+
 static unsigned char character(void)
-#else
-static unsigned char character(va_list argp,int len,unsigned char fields,struct fmt_type fmt_str,int prev_ch,char isunget)
-#endif
 {
   unsigned char i;
   char ch;
@@ -205,12 +176,12 @@ static unsigned char character(va_list argp,int len,unsigned char fields,struct 
   for (i=0;i<fmt_str.field_width;++i)
   {
     if ((ch = get()) == EOF)
-      return FALSE;
+      return false;
     if (p)
       *(p++) = ch;
     ++fields;
   }
-  return TRUE;
+  return true;
 }
 
 /****************************************/
@@ -218,51 +189,48 @@ static unsigned char character(va_list argp,int len,unsigned char fields,struct 
 /*	Floating point conversions	*/
 /*					*/
 /****************************************/
-#ifndef _MULTI_THREAD
+
 static unsigned char fpoint(void)
-#else
-static unsigned char fpoint(va_list argp,int len,unsigned char fields,struct fmt_type fmt_str,int prev_ch,char isunget)
-#endif
 {
   unsigned char i;
   char ch;
   char buffer[FLT_CHARS];
   char _PTR_ bp = buffer;
   double dval;
-  unsigned char takeEe=TRUE;
-  unsigned char takeDot=TRUE;
-  unsigned char takeSign=TRUE;
+  unsigned char takeEe=true;
+  unsigned char takeDot=true;
+  unsigned char takeSign=true;
 
   if (fmt_str.field_width == 0 || fmt_str.field_width > sizeof(buffer)-1)
     fmt_str.field_width = sizeof(buffer)-1;
   do {
     if ((ch = get()) == EOF)
-      return FALSE;
+      return false;
   } while (isspace(ch));
 
   for (i=0; i < fmt_str.field_width; ++i)
   {
     if (takeEe && (ch == 'e' || ch == 'E'))
     {
-       takeEe = FALSE;
-       takeSign=TRUE;
-       takeDot=FALSE;
+       takeEe = false;
+       takeSign=true;
+       takeDot=false;
     } else
     if (takeDot && ch=='.')
     {
-      takeDot=FALSE;
+      takeDot=false;
     } else
     if (   (takeSign && (ch == '-' || ch == '+'))
        ||  isdigit(ch) )
     {
-        takeSign = FALSE;
+        takeSign = false;
     } else
     {
         break;
     }
     *(bp++) = ch;
     if ((ch = get()) == EOF)
-      return FALSE;
+      return false;
   }
   if (bp == buffer)
     return(fields);
@@ -288,7 +256,7 @@ static unsigned char fpoint(va_list argp,int len,unsigned char fields,struct fmt
     ++fields;
   }
 
-  return TRUE;
+  return true;
 }
 
 /****************************************/
@@ -296,11 +264,8 @@ static unsigned char fpoint(va_list argp,int len,unsigned char fields,struct fmt
 /*	Handle scalar conversions	*/
 /*					*/
 /****************************************/
-#ifndef _MULTI_THREAD
+
 static unsigned char scalar(int radix)
-#else
-static unsigned char scalar(va_list argp,int len,unsigned char fields,struct fmt_type fmt_str,int prev_ch,char isunget,int radix)
-#endif
 {
   unsigned char i;
   char ch;
@@ -312,11 +277,11 @@ static unsigned char scalar(va_list argp,int len,unsigned char fields,struct fmt
     fmt_str.field_width = sizeof(buffer)-1;
   do {
     if ((ch = get()) == EOF)
-      return FALSE;
+      return false;
   } while (isspace(ch));
   unget();
   if ((ch = get()) == EOF)
-    return FALSE;
+    return false;
   for (i=0; (radix == 10 && isdigit(ch)) ||
 	   (radix == 16 && isxdigit(ch)) ||
 	   (radix == 8 && ch >= '0' && ch <= '7') ||
@@ -327,7 +292,7 @@ static unsigned char scalar(va_list argp,int len,unsigned char fields,struct fmt
     if (i >= fmt_str.field_width)
       break;
     if ((ch = get()) == EOF)
-      return FALSE;
+      return false;
   }
   if (bp == buffer)
     return(fields);
@@ -349,7 +314,7 @@ static unsigned char scalar(va_list argp,int len,unsigned char fields,struct fmt
     ++fields;
   }
 
-  return TRUE;
+  return true;
 }
 
 /****************************************/
@@ -359,11 +324,7 @@ static unsigned char scalar(va_list argp,int len,unsigned char fields,struct fmt
 /****************************************/
 
 
-#ifndef _MULTI_THREAD
 static unsigned char set(void)
-#else
-static unsigned char set(va_list argp,int len,struct fmt_type fmt_str,int prev_ch,char isunget)
-#endif
 {
   const char _PTR_ p2;        // LLVM port - const
   char neg,ch;
@@ -385,7 +346,7 @@ static unsigned char set(va_list argp,int len,struct fmt_type fmt_str,int prev_c
   while (width--)
   {
     if ((ch = get()) == EOF)
-      return FALSE;
+      return false;
 
     /* Look for a match in the set. */
     for(p2 = fmt_str.set_begin; p2 < fmt_str.set_end; ++p2)
@@ -417,7 +378,7 @@ static unsigned char set(va_list argp,int len,struct fmt_type fmt_str,int prev_c
   if (p)
     *p = '\0';
 
-  return TRUE;
+  return true;
 }
 
 /*************************************************
@@ -434,43 +395,23 @@ static unsigned char set(va_list argp,int len,struct fmt_type fmt_str,int prev_c
 *	-1 if an error occured.
 *
 *************************************************/
-#ifndef _MULTI_THREAD
+
 int _u_scan(const char _PTR_ src, const char _PTR_ fmt,va_list ap)
-#else
-int _mt_scan(const char _PTR_ fmt,va_list ap)
-#endif
 {
-#ifdef _MULTI_THREAD
-#undef argp
-#undef len
-#undef fields
-#undef fmt_str
-#undef prev_ch
-#undef isunget
-
-	va_list argp;
-	int len;
-	unsigned char fields;
-	struct fmt_type fmt_str;
-	int prev_ch;
-	char isunget;
-#endif
-
 //  int i;
   int ch;
-  unsigned char ok=TRUE;
+  unsigned char ok=true;
 
   argp = ap;
   fields = 0;
   len = 0;
   prev_ch = 0;
   isunget = 0;
-#ifndef _MULTI_THREAD
+
   bptr = (void _PTR_)NULL;
 
   if (src)
     bptr = src;
-#endif
 
   while ( ok && prev_ch!=EOF && *fmt) {
     fmt = _u_sscan(fmt,&fmt_str);
@@ -490,11 +431,7 @@ int _mt_scan(const char _PTR_ fmt,va_list ap)
       }
     }
     else if (fmt_str.flags & FMT_FLAG_SET) {
-#ifndef _MULTI_THREAD
       ok = set();
-#else
-	  ok = set(&argp,&len,&fmt_str,&prev_ch,&isunget);
-#endif
     }
     else {
       switch (fmt_str.type) {
@@ -502,21 +439,16 @@ int _mt_scan(const char _PTR_ fmt,va_list ap)
 	  case 'd':
 	  case 'i':
 	  case 'u':
-				radix=10;
-				goto _sclr;
+		radix=10;
+		goto _sclr;
 	  case 'x':
 	  case 'X':
-				radix=16;
-				goto _sclr;
+		radix=16;
+		goto _sclr;
 	  case 'o':
-	  			radix=8;
+	  	radix=8;
 	  _sclr:
-#ifndef _MULTI_THREAD
-				ok = scalar(radix);
-#else
-				ok = scalar(&argp,&len,&fields,&fmt_str,&prev_ch,&isunget,radix);
-#endif
-
+		ok = scalar(radix);
 		break;
 #if __FPLIB__ || 1
 	  case 'A':
@@ -527,34 +459,17 @@ int _mt_scan(const char _PTR_ fmt,va_list ap)
 	  case 'e':
 	  case 'f':
 	  case 'g':
-#ifndef _MULTI_THREAD
                 ok = fpoint();
-#else
-				ok = fpoint(&argp,&len,&fields,&fmt_str,&prev_ch,&isunget);
-#endif
-
 		break;
 #endif
 	  case 'c':
-#ifndef _MULTI_THREAD
 		ok = character();
-#else
-		ok = character(&argp,&len,&fields,&fmt_str,&prev_ch,&isunget);
-#endif
 		break;
 	  case 's':
-#ifndef _MULTI_THREAD
 		ok = string();
-#else
-		ok = string(&argp,&len,&fields,&fmt_str,&prev_ch,&isunget);
-#endif
 		break;
 	  case 'p':
-#ifndef _MULTI_THREAD
 		ok = pointer();
-#else
-		ok = pointer(&argp,&len,&fields,&fmt_str,&prev_ch,&isunget);
-#endif
 		break;
 	  case 'n':
 		if (!(fmt_str.flags & FMT_FLAG_IGNORE)) {

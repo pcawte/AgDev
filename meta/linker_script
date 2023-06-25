@@ -451,6 +451,10 @@ if HAS_LIBC
 	source "../lib/libc/errno.c.src"
 	source "../lib/libc/mos_api.src"
 	source "../lib/libc/gets_s.c.src"
+	source "../lib/libc/scanf.c.src"
+	source "../lib/libc/sscanf.c.src"
+	source "../lib/libc/uscan.c.src"
+	source "../lib/libc/usscan.c.src"
 
 end if
 if HAS_LIBCXX

@@ -1,0 +1,315 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	__u_sscan
+__u_sscan:
+	ld	hl, -13
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	iy, (ix + 9)
+	ld	d, 0
+	ld	e, 10
+	ld	bc, 0
+	ld	(ix - 6), bc
+	ld	(iy + 1), b
+	ld	(iy + 5), b
+	ld	(iy + 6), b
+	ld	(iy + 2), b
+	ld	(iy + 4), b
+	ld	(ix - 13), de
+	ld	(ix - 10), d
+BB0_1:
+	ld	de, (ix - 6)
+	ld	(ix - 9), de
+	ld	(ix - 3), hl
+	ld	a, (hl)
+	ld	l, a
+	rlc	l
+	sbc	hl, hl
+	push	hl
+	pop	iy
+	ld	iyl, a
+	ld	de, -37
+	add	iy, de
+	lea	hl, iy
+	ld	de, 84
+	or	a, a
+	sbc	hl, de
+	ld	de, 8
+	jr	nc, BB0_3
+	lea	hl, iy
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	de
+	ld	hl, _switch.table._u_sscan
+	add	hl, de
+	ld	de, (hl)
+BB0_3:
+	ld	iy, (ix - 3)
+	inc	iy
+	ld	hl, (ix - 9)
+	ld	bc, 9
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	hl, _sscan_fsa
+	add	hl, bc
+	add	hl, de
+	ld	e, (hl)
+	ld	l, e
+	rlc	l
+	sbc	hl, hl
+	ld	l, e
+	ld	(ix - 6), hl
+	ld	de, 2
+	add	hl, de
+	push	hl
+	pop	de
+	ld	bc, 12
+	or	a, a
+	sbc	hl, bc
+	lea	bc, iy
+	lea	hl, iy
+	jr	nc, BB0_1
+	ld	hl, JTI0_0
+	add	hl, de
+	add	hl, de
+	add	hl, de
+	ld	iy, (hl)
+	push	bc
+	pop	hl
+	jp	(iy)
+BB0_5:
+	ld	a, (ix - 10)
+	or	a, 16
+	ld	iy, (ix + 9)
+	ld	(ix - 10), a
+	ld	(iy + 1), a
+	push	bc
+	pop	hl
+	jp	BB0_1
+BB0_6:
+	ld	de, (ix - 13)
+	ld	l, e
+	ld	h, d
+	mlt	hl
+	add	a, -48
+	add	a, l
+	ld	d, a
+	ld	iy, (ix + 9)
+	ld	(ix - 13), de
+	ld	(iy + 5), d
+	push	bc
+	pop	hl
+	jp	BB0_1
+BB0_7:
+	ld	iy, (ix + 9)
+	ld	(iy + 2), a
+	push	bc
+	pop	hl
+	jp	BB0_1
+BB0_8:
+	ld	hl, (ix - 3)
+	ld	iy, (ix + 9)
+	ld	(iy + 10), hl
+	push	bc
+	pop	hl
+	jp	BB0_1
+BB0_9:
+	ld	hl, (ix - 9)
+	ld	de, 6
+	or	a, a
+	sbc	hl, de
+	push	bc
+	pop	hl
+	jp	z, BB0_1
+	ld	a, (ix - 10)
+	or	a, -128
+	ld	hl, (ix + 9)
+	push	hl
+	pop	iy
+	ld	(ix - 10), a
+	ld	(iy + 1), a
+	ld	(iy + 7), bc
+	ld	iy, (ix - 3)
+	ld	a, (iy + 1)
+	cp	a, 94
+	ld	a, -1
+	jr	z, BB0_12
+	ld	a, 0
+BB0_12:
+	bit	0, a
+	ld	de, 2
+	jr	nz, BB0_14
+	ld	de, 1
+BB0_14:
+	bit	0, a
+	jr	nz, BB0_17
+	push	bc
+	pop	hl
+	jr	BB0_18
+BB0_16:
+	ld	iy, (ix + 9)
+	ld	(iy + 4), a
+	push	bc
+	pop	hl
+	jp	BB0_1
+BB0_17:
+	lea	hl, iy + 2
+BB0_18:
+	add	iy, de
+	ld	a, (iy)
+	cp	a, 93
+	ld	de, 1
+	jr	z, BB0_20
+	ld	de, 0
+BB0_20:
+	add	hl, de
+	jp	BB0_1
+BB0_21:
+	ld	hl, (ix + 9)
+	ld	(hl), 1
+	jr	BB0_23
+BB0_22:
+	ld	hl, (ix + 9)
+	ld	(hl), 0
+BB0_23:
+	ld	hl, (ix - 3)
+	jr	BB0_25
+BB0_24:
+	ld	hl, (ix + 9)
+	push	hl
+	pop	iy
+	ld	(iy), 2
+	ld	(iy + 3), a
+	push	bc
+	pop	hl
+BB0_25:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+	section	.rodata,"a",@progbits
+	private	JTI0_0
+JTI0_0:
+	dl	BB0_21
+	dl	BB0_22
+	dl	BB0_1
+	dl	BB0_24
+	dl	BB0_1
+	dl	BB0_5
+	dl	BB0_6
+	dl	BB0_7
+	dl	BB0_9
+	dl	BB0_8
+	dl	BB0_24
+	dl	BB0_16
+
+	section	.rodata,"a",@progbits
+	private	_sscan_fsa
+_sscan_fsa:
+	db	"", 0, ""
+	db	9 dup 255
+	db	"þ	þþ"
+	db	"þþþ	þþ"
+	db	"þþþ	þþ"
+	db	"þþþþþ	þþ"
+	db	""
+	db	9 dup 255
+	db	9 dup 255
+	db	9 dup 255
+
+	section	.rodata,"a",@progbits
+	private	_switch.table._u_sscan
+_switch.table._u_sscan:
+	dl	0
+	dl	8
+	dl	8
+	dl	8
+	dl	8
+	dl	2
+	dl	8
+	dl	8
+	dl	8
+	dl	8
+	dl	8
+	dl	4
+	dl	4
+	dl	4
+	dl	4
+	dl	4
+	dl	4
+	dl	4
+	dl	4
+	dl	4
+	dl	4
+	dl	8
+	dl	8
+	dl	8
+	dl	8
+	dl	8
+	dl	8
+	dl	8
+	dl	5
+	dl	8
+	dl	8
+	dl	8
+	dl	5
+	dl	5
+	dl	5
+	dl	8
+	dl	8
+	dl	8
+	dl	8
+	dl	3
+	dl	8
+	dl	8
+	dl	8
+	dl	8
+	dl	8
+	dl	8
+	dl	8
+	dl	8
+	dl	8
+	dl	8
+	dl	8
+	dl	5
+	dl	8
+	dl	8
+	dl	6
+	dl	8
+	dl	7
+	dl	8
+	dl	8
+	dl	8
+	dl	5
+	dl	8
+	dl	5
+	dl	5
+	dl	5
+	dl	5
+	dl	5
+	dl	3
+	dl	5
+	dl	8
+	dl	8
+	dl	3
+	dl	8
+	dl	5
+	dl	5
+	dl	5
+	dl	8
+	dl	8
+	dl	5
+	dl	8
+	dl	5
+	dl	8
+	dl	8
+	dl	5
+
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 6c61664110f888c0285ae4c48b150c9a7a4361bb)"
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__frameset
+	extern	__imulu

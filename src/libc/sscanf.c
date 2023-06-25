@@ -8,13 +8,14 @@
 /************************************************************************/
 #include "format.h"
 #include <stdarg.h>
-#include "stdio.h"
+#include <stdio.h>
 
 /*************************************************
 *
-* scanf - scan from stdin
+* sscanf - scan from a string
 *
 * Inputs:
+*	string - string to print to
 *	fmt - format string
 *	args - argument list
 *
@@ -23,14 +24,16 @@
 *	-1 if an error occured.
 *
 *************************************************/
-int scanf( const char *fmt,...)
+
+// simplidied version with multi-threading option stripped out
+
+int sscanf( const char *string, const char *fmt,...)
 {
   va_list ap;
 
+  if(string == NULL)
+	  return EOF;
+
   va_start(ap,fmt);
-#ifndef _MULTI_THREAD
-  return(_u_scan((void *)NULL,fmt,ap));
-#else
-  return(_mt_scan(fmt,ap));
-#endif
+  return(_u_scan(string,fmt,ap));
 }

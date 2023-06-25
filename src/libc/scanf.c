@@ -6,16 +6,18 @@
 /*		        San Jose, California     			*/
 /*									*/
 /************************************************************************/
+
+// This version is a simplified version with the multi-threading stripped out
+
 #include "format.h"
 #include <stdarg.h>
-#include <stddef.h>
+#include <stdio.h>
 
 /*************************************************
 *
-* sscanf - scan from a string
+* scanf - scan from stdin
 *
 * Inputs:
-*	string - string to print to
 *	fmt - format string
 *	args - argument list
 *
@@ -24,17 +26,10 @@
 *	-1 if an error occured.
 *
 *************************************************/
-int sscanf( const char *string, const char *fmt,...)
+int scanf( const char *fmt,...)
 {
   va_list ap;
 
-  if(string == NULL)
-	  return EOF;
-
   va_start(ap,fmt);
-#ifndef _MULTI_THREAD
-  return(_u_scan(string,fmt,ap));
-#else
-  return(_mt_sscan(string,fmt,ap));
-#endif
+  return(_u_scan((void *)NULL,fmt,ap));
 }

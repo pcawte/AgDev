@@ -93,6 +93,10 @@ In the relevant: example, test or any other directory created at the same level.
 
 - test program updated (`tests/src/fileio.c`) to test functionality of stdio
 
+25/06/2023:
+
+- `scanf` and sscanf moved into standard library (libc)
+
 ### To-Do:
 
 - Testing / validation

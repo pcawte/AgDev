@@ -42,14 +42,4 @@
 #define weak_alias(old, new) \
 	extern __typeof(old) new __attribute__((__weak__, __alias__(#old)))
 
-// disables interrupts on entry, enables on exit
-// This attribute does not seem to be supported on clang-ez80
-// used for __print_uputch(char) and __print_sputch(char)
-// for the moment just make macro replace it with blank
-// in the future consider adding a wrapper to these functions which disables interrupts
-    
-// #define reentrant __attribute__((reentrant))           
-
-#define reentrant
-
 #endif

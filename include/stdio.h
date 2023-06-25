@@ -57,7 +57,7 @@ int ferror(FILE *stream);
 
 int feof(FILE *stream);
 
-void clearerr(FILE *stream);
+//void clearerr(FILE *stream);
 
 int fputs(const char *__restrict str, FILE *__restrict stream);
 
@@ -78,9 +78,9 @@ int fputc(int c, FILE *stream);
 
 char *fgets(char *__restrict str, int num, FILE *__restrict stream);
 
-int remove(const char *filename);
+//int remove(const char *filename);
 
-void rewind(FILE *stream);
+//void rewind(FILE *stream);
 
 /* standard impls */
 int getchar(void);
@@ -115,6 +115,8 @@ int sprintf(char *__restrict buffer,
 typedef size_t rsize_t;
 
 char *gets_s( char *__restrict str, rsize_t n );
+int scanf( const char *format, ...);
+int sscanf( const char *s, const char *format, ...);
 
 __END_DECLS
 
