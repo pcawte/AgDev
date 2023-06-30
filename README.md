@@ -1,6 +1,6 @@
 # AgDev - an Agon Light port of CE C/C++ Toolchain
 
-Based on LLVM toolchain, generating eZ80 ADL code.
+Based on LLVM toolchain, generating eZ80 ADL code and fasmg eZ80 assembler and linker.
 
 ### Installation
 
@@ -99,7 +99,23 @@ In the relevant: example, test or any other directory created at the same level.
 
 30/06/2023:
 
-- bug in strncpy.src which used a ZDS pseudo op that is not implemented in fasmg assembler. Replaced by individual assembly instructions. This problem may occur in other libraries copied from ZDS. For the moment, just fixed in this one location 
+- bug in strncpy.src which used a ZDS pseudo op that is not implemented in fasmg assembler. Replaced by individual assembly instructions. This problem may occur in other libraries copied from ZDS. For the moment, just fixed in this one location.
+
+- C-runtime `crt0.src` updated to added back functionality previously removed as part of the proof of concept
+  
+  - Supports the following C-functions:
+    
+    - `atexit()`, `on_exit()` - which register functions to be called at the end of the program
+    
+    - `exit()`, `_Exit()`, `abort()` - which exits the programme in various ways
+  
+  - Supports initialisers, constructors, destructors, finalisers (needs testing)
+  
+  - Added extensive commenting 
+
+- Included a simple example of a user defined type (complex) which overloads a number of operators.
+
+- Changed default location of BSS & heap to 0x080000 to 0x09ffff
 
 ### To-Do:
 
@@ -111,15 +127,11 @@ In the relevant: example, test or any other directory created at the same level.
 
 - Add fprintf
 
-- Implement scanf and sscanf - there is a development version include under dev, but not moved to library yet
-
 - Add fscanf 
 
 - Port / replace / expand library where necessary to the Agon Light. Including:
   
   - investigate benefits of buffering for stdio.
-
-- Add back in support for C++
 
 - Test / proof of concept for other LLVM front-ends. See, for example, [GitHub - maddymakesgames/Rust-CE: A proof-of-concept of rust on the ti-84+ce](https://github.com/maddymakesgames/Rust-CE), which is a proof of concept for running Rust on the TI-84-CE calculator. 
 
@@ -271,7 +283,7 @@ fasmg -n '/AgDev/meta/ld.alm'
   -i 'PREFER_OS_CRT := 0'
   -i 'PREFER_OS_LIBC := 1'
   -i 'include "/AgDev/meta/linker_script"'
-  -i 'range .bss $050000 : $05ffff'
+  -i 'range .bss $080000 : $09ffff'
   -i 'locate .header at $040000'
   -i map
   -i 'source "obj/icon.src",
@@ -290,7 +302,7 @@ fasmg -n '/AgDev/meta/ld.alm'
 
 Source files:
 
-- lib/crt/crt0.src: C runtime (this has been heavily customised for Agon)
+- lib/crt/crt0.src: C runtime (this has been customised for Agon)
 
 - obj/lto.src: previously generated eZ80 assembly language for all the source files
 
@@ -364,9 +376,9 @@ Updated with Agon specific addresses / memory locations:
 
 - INIT_LOC = 040000: executable location - should change to 0B0000 for MOS binary executable that can be run from the command line (not sure what else needs to be changed)
 
-- BSSHEAP_LOW = 050000: this seems to work for a small programme - but not sure what should really be used
+- BSSHEAP_LOW = 080000: this seems to work for a small programme - but not sure what should really be used
 
-- BSSHEAP_HIGH = 05FFFF: as above
+- BSSHEAP_HIGH = 09FFFF: as above
 
 - STACK_HIGH = 0AFFFF: this seems to work - but not sure what should really be used - or even if this really needs to be set. For the moment this has been removed from the fasmg flags and whatever stack that is provided by MOS is used.
 
@@ -374,7 +386,7 @@ See details below for memory layout.
 
 ### C runtime - crt0.src
 
-This has been re-written based on a combination of code from the original [Agon projects]([GitHub - breakintoprogram/agon-projects: Official AGON QUARK Firmware: Projects](https://github.com/breakintoprogram/agon-projects)) which used the Zilog toolchain, and the CE Toolkit version. Note that the Zilog assembler, fasmg assembler used by CE toolkit and ez80asm used by many in the Agon community all have different formats and different waves of organising program sections, etc. Part of the challenge of this proof of concept has been in understanding the fasmg assembler.
+This has been re-written based on a combination of code from the reverse engineered CE Toolchain version and some of the original [Agon projects]([GitHub - breakintoprogram/agon-projects: Official AGON QUARK Firmware: Projects](https://github.com/breakintoprogram/agon-projects)) which used the Zilog toolchain, some of the optimisations used in the CE Toolchain have been removed for clarity. Note that the Zilog assembler, fasmg assembler used by CE toolkit and ez80asm used by many in the Agon community all have different formats and different waves of organising program sections, etc. Part of the challenge of this proof of concept has been in understanding the fasmg assembler.
 
 ### Memory layout
 
@@ -412,18 +424,18 @@ The layout in memory can be checked by examining the `.map` file generated as pa
 The location of .bss, heap and stack are configured in the `makefile.mk` which controls the build process:
 
 ```
-BSSHEAP_LOW ?= 050000
-BSSHEAP_HIGH ?= 05FFFF
+BSSHEAP_LOW ?= 080000
+BSSHEAP_HIGH ?= 09FFFF
 STACK_HIGH ?= 0AFFFF
 ```
 
 The layout can be checked by examining the following labels in the `.map` file.
 
 ```
-___low_bss             = 050000
+___low_bss             = 080000
 ___len_bss             = 000000
 ___heaptop             = 05FFFF
-___heapbot             = 050000
+___heapbot             = 080000
 __stack                = 0AFFFF
 ```
 
@@ -504,9 +516,11 @@ In general the libc library has been derived from a number of sources:
 
 - Sort and search from Zilog ZDS, including bsearch and qsort
 
-- Standard IO: uses nanoprintf, there is no scanf
+- Standard IO: uses nanoprintf
+  
+  - scanf and sscanf have been added based on the Zilog ZDS code
 
-- File IO
+- File IO: re-written / adapted from CE-Toolchain
 
 - Time
 
@@ -557,29 +571,33 @@ In the CE Toolchain the file IO functions are wrappers around the fileioc librar
 
 The library has been modified to use Agon MOS calls and includes:
 
-- fopen, fclose
+- `fopen`, `fclose`
 
-- fputc, fputs
+- `fputc`, `fputs`
 
-- fgetc, fgets
+- `fgetc`, `fgets`
 
-- feof, ferror, fflush
+- `feof`, `ferror`, `fflush`
 
-- fread, frwite
+- `fread`, `frwite`
 
-- fseek - only implements SEEK_SET (seek from beginning), because of the lack of ftell (see below)
+- `fseek`, `rewind`, `ftell` 
 
-- ftell - this returns an error as ftell although implemented in FatFS is not currently exposed by MOS.
+- `clearerr`
+
+- `remove`
 
 And includes files
 
-- files.c
+- `files.c`
 
-- stdio.h
+- `stdio.h`
 
 On the Agon there are two different APIs for accessing the FatFS - MOS routines and FatFS routines. Having examined the MOS source code, the MOS routines are simple wrappers around the FatFS routines, just managing / storing the FatFS file descriptors in a table (supports 8 open files). Consequently it makes sense just to use the MOS routines.
 
 ### Libcxx (standard C++ library)
+
+This is very limited, mainly just C++ wrapper around C libraries
 
 ### Libload (dynamic library - I think)
 

@@ -24,9 +24,9 @@ end if
 ;precious .header, .icon, .init.libs if .libs.length, .libs, .init_array, .ctors, .dtors, .fini_array
 
 ; Stripped down version which still links - at least for Hello, world c-program
-order .header, .init.libs, .libs, .init, .text, .data, .rodata
-;split : .init_array, .ctors, .dtors, .fini_array
-precious .header, .init.libs if .libs.length, .libs
+order .header, .libs, .init, .fini, .init.args, .init.bss, .text, .data, .rodata
+split : .init_array, .ctors, .dtors, .fini_array
+precious .header, .libs, .init_array, .ctors, .dtors, .fini_array
 
 ; Minimal version that worked for assembly language program
 ;order .header, .init, .text, .data, .rodata
@@ -36,15 +36,15 @@ provide ___low_bss = .bss.base
 provide ___len_bss = .bss.length
 provide ___heaptop = .bss.high
 provide ___heapbot = .bss.top
-provide ___libs = .libs.base
-;provide ___init_array_count = .init_array.length / 3
-;provide ___ctors_count = .ctors.length / 3
-;provide ___dtors_count = .dtors.length / 3
-;provide ___fini_array_count = .fini_array.length / 3
+;provide ___libs = .libs.base
+provide ___init_array_count = .init_array.length / 3
+provide ___ctors_count = .ctors.length / 3
+provide ___dtors_count = .dtors.length / 3
+provide ___fini_array_count = .fini_array.length / 3
 
 require __start
-library "../lib/libload/libload.lib" neveroptional
-require lib.LibLoad if .libs.length
+;library "../lib/libload/libload.lib" neveroptional
+;require lib.LibLoad if .libs.length
 
 ; Adding missing compiler runtime routines
 
