@@ -97,9 +97,15 @@ In the relevant: example, test or any other directory created at the same level.
 
 - `scanf` and sscanf moved into standard library (libc)
 
+30/06/2023:
+
+- bug in strncpy.src which used a ZDS pseudo op that is not implemented in fasmg assembler. Replaced by individual assembly instructions. This problem may occur in other libraries copied from ZDS. For the moment, just fixed in this one location 
+
 ### To-Do:
 
 - Testing / validation
+
+- Check for ZDS pseudo ops in any assembly language source files copied from ZDS
 
 - For stdio remove and stuff inherited from CE Toolchain (there is nothing used, but some remnants in the various files)
 

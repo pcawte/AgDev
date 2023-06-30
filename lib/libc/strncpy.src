@@ -19,7 +19,8 @@ _strncpy:
 	sbc		hl,	de
 	jr		nc,	_L1
 	adc		hl,	de
-	ld		bc,	hl
+	push	hl				;	ld		bc,	hl
+	pop		bc
 	ex		de,	hl
 	xor		a,	a
 	sbc		hl,	de
