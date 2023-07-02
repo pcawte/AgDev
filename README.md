@@ -129,6 +129,8 @@ In the relevant: example, test or any other directory created at the same level.
   
   - Added example under `tests/mos_time`
 
+- `clock_t clock()` function implemented using the Agon timer. Other RTC related functions are in the process of being ported.
+
 ### To-Do:
 
 - Testing / validation
@@ -617,6 +619,8 @@ Contains .lib library files - needs to be investigated further
 
 ## C Calling Conventions
 
+Only IX register and stack need to be preserved by called functions.
+
 ### Arguments
 
 Arguments are pushed from last to first corresponding to the C prototype. In eZ80, 3 bytes are always pushed to the stack regardless of the actual size. However, the assembly function must be careful to only use the valid bytes that are pushed. For example, if a *short* type is used, the upper byte of the value pushed on the stack will contain arbitrary data. This table lists the locations relative to *sp* from within the called function. Note that `sp + [0,2]` contains the return address.
@@ -830,6 +834,5 @@ Additionally, the following has been assumed:
   setLibcall(RTLIB::SINTTOFP_I32_F64, "_ltod",     CallingConv::Z80_LibCall   );
   setLibcall(RTLIB::SINTTOFP_I64_F64, "_lltod",    CallingConv::Z80_LibCall   );
   setLibcall(RTLIB::UINTTOFP_I32_F64, "_ultod",    CallingConv::Z80_LibCall   );
-  setLibcall(RTLIB::UINTTOFP_I64_F64, "_ulltod",   CallingConv::Z80_LibCall   );
-}
+  setLibcall(RTLIB::UINTTOFP_I64_F64, "_ulltod",   CallingConv::Z80_LibCall   );c
 ```
