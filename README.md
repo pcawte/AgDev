@@ -117,6 +117,18 @@ In the relevant: example, test or any other directory created at the same level.
 
 - Changed default location of BSS & heap to 0x080000 to 0x09ffff
 
+02/07/2023:
+
+- mos_api updated:
+  
+  - `unit32_t getsysvar_time()` function added
+  
+  - typedef `RTC_DATA` created for the format of data returned from `getsysvar_rtc()`
+  
+  - `getsysvar_rtc()` updated to  `volatile RTC_DATA *getsysvar_rtc()` to reflect that the returned pointer refers to a value that is dynamically changed by MOS - and shouldn't there be optimised. Changed to return type `RTC_DATA *`
+  
+  - Added example under `tests/mos_time`
+
 ### To-Do:
 
 - Testing / validation
@@ -620,9 +632,11 @@ Arguments are pushed from last to first corresponding to the C prototype. In eZ8
 | double     | 4 bytes | sp + [3,6]     |
 | pointer    | 3 bytes | sp + [3,5]     |
 
+Note that eZ80 is little endian - i.e. the least significant byte is stored first.
+
 ### Returns
 
-This table lists which registers are used for return values from a function. The type’s sign does not affect the registers used, but may affect the value returned. The LSB is located in the register on the far right of the expression, e.g. `E:HL` indicates register `L` stores the LSB.
+This table lists which registers are used for return values from a function. The type’s sign does not affect the registers used, but may affect the value returned. The LSB is located in the register on the far right of the expression, e.g. `E:UHL` indicates register `L` stores the LSB.
 
 | C/C++ Type | Return Register |
 | ---------- | --------------- |

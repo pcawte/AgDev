@@ -120,6 +120,20 @@ typedef struct {
 	uint24_t*	dir_ptr;   /* Pointer to the directory entry in the win[] (not used at exFAT) */
 } FIL;
 
+typedef union {
+    uint64_t rtc_data;
+    struct {
+        uint8_t year;               // offset since 1980
+        uint8_t month;              // (0-11)
+        uint8_t day;                // (1-31)
+        uint8_t day_of_year;        // (0-365) - *** but doesn't fit in 1 byte - wraps round ***
+        uint8_t day_of_week;        // (0-6)
+        uint8_t hour;               // (0-23)
+        uint8_t minute;             // (0-59)
+        uint8_t second;             // (0-59)
+    };
+} RTC_DATA;
+
 // Generic IO
 extern int   putch(int a);
 extern char  getch(void);
@@ -127,6 +141,7 @@ extern void  waitvblank(void);
 extern void  mos_puts(char * buffer, uint24_t size, char delimiter);
 
 // Get system variables
+extern uint32_t getsysvar_time();
 extern uint8_t  getsysvar_vpd_pflags();
 extern uint8_t  getsysvar_keyascii();
 extern uint8_t  getsysvar_keymods();
@@ -145,7 +160,7 @@ extern uint8_t  getsysvar_scrpixelIndex();
 extern uint8_t  getsysvar_vkeycode();
 extern uint8_t  getsysvar_vkeydown();
 extern uint8_t  getsysvar_vkeycount();
-extern uint8_t* getsysvar_rtc();
+extern volatile RTC_DATA* getsysvar_rtc();
 extern uint16_t getsysvar_keydelay();
 extern uint16_t getsysvar_keyrate();
 extern uint8_t  getsysvar_keyled();

@@ -1,17 +1,18 @@
 ;
 ; Title:		AGON MOS - MOS assembly interface
-; Author:		Jeroen Venema
+; Author:		Jeroen Venema updated by Paul Cawte for use with AgDev Toolchain
 ; Created:		15/10/2022
-; Last Updated:	23/02/2023
-; Adjusted for fasmg assmebler (Paul Cawte, 16/06/2023)
-; 			corrected _getsysvar_rtc to use lea hl, ix+sysvar_rtc - shorter &
-;			previously used non-existent assembly language instruction
-;			corrected _mos_sysvars (same problem as above)
-;			corrected _mos_open (non-existent assembly language instruction)
-;			corrected _mos_fread and _mos_fwrite (non-existent assembly language instruction)
-
+; Last Updated:	02/07/2023
 ; 
 ; Modinfo:
+; 02/07/2023		Added getsysvar_time
+; 23/06/2023	Adjusted for fasmg assmebler (Paul Cawte, 16/06/2023)
+; 			corrected _getsysvar_rtc to use lea hl, ix+sysvar_rtc - shorter
+;			eliminated ZDS eZ80 pseudo instructions not supported by fasmg in
+;			- _mos_sysvars
+;			- _mos_open
+;			- _mos_fread and _mos_fwrite
+; 
 ; 15/10/2022:		Added _putch, _getch
 ; 21/10/2022:		Added _puts
 ; 22/10/2022:		Added _waitvblank, _mos_f* file functions
@@ -61,6 +62,7 @@
 	public  _mos_flseek
 	public  _mos_getfil
 
+	public	_getsysvar_time
 	public  _getsysvar_vpd_pflags
 	public  _getsysvar_keyascii
 	public  _getsysvar_keymods
@@ -124,6 +126,16 @@ _waitvblank:
 _waitvblankloop:	
 	cp.lil	a, (ix + sysvar_time + 0)
 	jr	z, _waitvblankloop
+	pop	ix
+	ret
+
+;unit32_t getsysvar_time()
+_getsysvar_time:
+	push	ix
+	ld	a, mos_sysvars
+	rst.lil	08h 				; returns pointer to sysvars in IX
+	ld	hl, (ix+sysvar_time)		; get the 3 least significant bytes
+	ld 	e, (ix+sysvar_time+3) 		; get the most signiciant byte
 	pop	ix
 	ret
 
