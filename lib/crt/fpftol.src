@@ -93,7 +93,8 @@ sgntest:
 	xor	a,a
 	sbc	hl,bc
 	sbc	a,e
-	ld	bc,hl
+	push	hl 			; replacing ld	bc,hl ZDS pseudo op
+	pop 	bc
 	jr	exit
 
 retmax:

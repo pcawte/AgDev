@@ -131,6 +131,10 @@ In the relevant: example, test or any other directory created at the same level.
 
 - `clock_t clock()` function implemented using the Agon timer. Other RTC related functions are in the process of being ported.
 
+03/07/2023:
+
+- Corrected` lib/crt/fpftol.src` to remove ZDS pseudo op not supported by fasmg
+
 ### To-Do:
 
 - Testing / validation
