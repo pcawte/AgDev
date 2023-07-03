@@ -135,6 +135,8 @@ In the relevant: example, test or any other directory created at the same level.
 
 - Corrected` lib/crt/fpftol.src` to remove ZDS pseudo op not supported by fasmg and removed other ZDS assembler features that are different in fasmg
 
+- Corrected lib/crt/fpultof.src to remover ZDS assembler directives that are different in fasmg
+
 ### To-Do:
 
 - Testing / validation

@@ -29,6 +29,5 @@ __ultod:
 	call	__fppack
 	pop	de
 	ret
-	end
 
 	extern	__fppack
