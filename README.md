@@ -95,11 +95,11 @@ In the relevant: example, test or any other directory created at the same level.
 
 25/06/2023:
 
-- `scanf` and sscanf moved into standard library (libc)
+- `scanf` and `sscanf` moved into standard library (libc)
 
 30/06/2023:
 
-- bug in strncpy.src which used a ZDS pseudo op that is not implemented in fasmg assembler. Replaced by individual assembly instructions. This problem may occur in other libraries copied from ZDS. For the moment, just fixed in this one location.
+- bug in `strncpy.src` which used a ZDS pseudo op that is not implemented in fasmg assembler. Replaced by individual assembly instructions. This problem may occur in other libraries copied from ZDS. For the moment, just fixed in this one location.
 
 - C-runtime `crt0.src` updated to added back functionality previously removed as part of the proof of concept
   
@@ -135,7 +135,11 @@ In the relevant: example, test or any other directory created at the same level.
 
 - Corrected` lib/crt/fpftol.src` to remove ZDS pseudo op not supported by fasmg and removed other ZDS assembler features that are different in fasmg
 
-- Corrected lib/crt/fpultof.src to remover ZDS assembler directives that are different in fasmg
+- Corrected `lib/crt/fpultof.src` to remove ZDS assembler directives that are different in fasmg
+
+- Ported time functions: `difftime()`, `mktime()`, `time()`, `localtime()`, `gmtime()`, `asctime()`, `ctime()` 
+
+- Updated comments in `mos_api.h` to note that `getsysvar_rtc()` data is only updated when `mos_getrtc()` is called. This is taken account of in `time()`.
 
 ### To-Do:
 

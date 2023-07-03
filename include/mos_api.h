@@ -160,7 +160,7 @@ extern uint8_t  getsysvar_scrpixelIndex();
 extern uint8_t  getsysvar_vkeycode();
 extern uint8_t  getsysvar_vkeydown();
 extern uint8_t  getsysvar_vkeycount();
-extern volatile RTC_DATA* getsysvar_rtc();
+extern volatile RTC_DATA* getsysvar_rtc();  // mos_getrtc() needs to be called to update the values
 extern uint16_t getsysvar_keydelay();
 extern uint16_t getsysvar_keyrate();
 extern uint8_t  getsysvar_keyled();
