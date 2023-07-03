@@ -98,11 +98,11 @@ sgntest:
 	jr	exit
 
 retmax:
-	ld	bc,FFFFFFH
-	ld	a,FFH
+	ld	bc,0FFFFFFH
+	ld	a,0FFH
 	bit	0,d
 	jr	nz,exit
-	ld	a,7FH
+	ld	a,07FH
 
 exit:		
 	pop	hl
@@ -111,7 +111,6 @@ exit:
 	ld	sp,ix
 	pop	ix
 	ret
-	end
 
 	extern	__fpupop1
 	extern	__lshrs

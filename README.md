@@ -133,7 +133,7 @@ In the relevant: example, test or any other directory created at the same level.
 
 03/07/2023:
 
-- Corrected` lib/crt/fpftol.src` to remove ZDS pseudo op not supported by fasmg
+- Corrected` lib/crt/fpftol.src` to remove ZDS pseudo op not supported by fasmg and removed other ZDS assembler features that are different in fasmg
 
 ### To-Do:
 
