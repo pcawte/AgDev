@@ -141,6 +141,10 @@ In the relevant: example, test or any other directory created at the same level.
 
 - Updated comments in `mos_api.h` to note that `getsysvar_rtc()` data is only updated when `mos_getrtc()` is called. This is taken account of in `time()`.
 
+04/07/2023:
+
+- Dhrystone benchmark added under full `ansibench/dhrystone`.
+
 ### To-Do:
 
 - Testing / validation
