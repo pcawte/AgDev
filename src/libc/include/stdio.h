@@ -15,8 +15,11 @@ typedef struct
 //   stdin, stdout and stderr after put after this in the FILE dscriptor table
 
 #define FOPEN_MAX 8
+#define FH_STDIN 128
+#define FH_STDOUT 129
+#define FH_STDERR 130
 
-/* Original CE Toolchain definitions are not real points - but are assinged to
+/* Original CE Toolchain definitions are not real pointers - but are assinged to
 #define stdin  ((FILE*)1)
 #define stdout ((FILE*)2)
 #define stderr ((FILE*)3)
@@ -46,8 +49,7 @@ char inchar(void);
 
 void outchar(char character);
 
-FILE *fopen(const char *__restrict filename,
-    const char *__restrict mode);
+FILE *fopen(const char *__restrict filename, const char *__restrict mode);
 
 int fclose(FILE *stream);
 
@@ -57,7 +59,7 @@ int ferror(FILE *stream);
 
 int feof(FILE *stream);
 
-void clearerr(FILE *stream);
+//void clearerr(FILE *stream);
 
 int fputs(const char *__restrict str, FILE *__restrict stream);
 
@@ -78,9 +80,9 @@ int fputc(int c, FILE *stream);
 
 char *fgets(char *__restrict str, int num, FILE *__restrict stream);
 
-int remove(const char *filename);
+//int remove(const char *filename);
 
-void rewind(FILE *stream);
+//void rewind(FILE *stream);
 
 /* standard impls */
 int getchar(void);
@@ -115,6 +117,10 @@ int sprintf(char *__restrict buffer,
 typedef size_t rsize_t;
 
 char *gets_s( char *__restrict str, rsize_t n );
+int scanf( const char *format, ...);
+int sscanf( const char *s, const char *format, ...);
+FILE *freopen( const char *__restrict filename, const char *__restrict mode, FILE *stream );
+
 
 __END_DECLS
 

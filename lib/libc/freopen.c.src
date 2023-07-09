@@ -1,11 +1,11 @@
 	section	.text,"ax",@progbits
 	assume	adl = 1
 	section	.text,"ax",@progbits
-	public	_fclose
-_fclose:
+	public	_freopen
+_freopen:
 	call	__frameset0
-	ld	hl, (ix + 6)
-	ld	de, -1
+	ld	hl, (ix + 12)
+	ld	de, 0
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
@@ -13,23 +13,40 @@ _fclose:
 	ld	a, (hl)
 	cp	a, -125
 	call	pe, __setflag
-	jp	m, BB0_3
-	ld	iy, __file_streams
+	push	hl
+	call	p, _fclose
+	pop	hl
+	ld	hl, (ix + 9)
+	push	hl
+	ld	hl, (ix + 6)
+	push	hl
+	call	_fopen
+	push	hl
+	pop	iy
+	pop	hl
+	pop	hl
+	lea	hl, iy
+	add	hl, bc
 	or	a, a
-	sbc	hl, hl
-	ld	l, a
-	dec	hl
-	ld	bc, 3
-	call	__imulu
+	sbc	hl, bc
+	ld	de, 0
+	jr	z, BB0_3
+	ld	a, (iy)
+	ld	hl, (ix + 12)
 	push	hl
 	pop	de
-	add	iy, de
-	ld	(iy), b
-	ld	l, a
+	ld	(hl), a
+	ld	a, (iy + 1)
+	lea	hl, iy
+	push	de
+	pop	iy
+	ld	(iy + 1), a
 	push	hl
-	call	_mos_fclose
-	pop	hl
-	ld	de, 0
+	pop	iy
+	ld	a, (iy + 2)
+	push	de
+	pop	iy
+	ld	(iy + 2), a
 BB0_3:
 	ex	de, hl
 	pop	ix
@@ -40,7 +57,6 @@ BB0_3:
 	extern	__setflag
 	extern	__Unwind_SjLj_Register
 	extern	__Unwind_SjLj_Unregister
-	extern	_mos_fclose
-	extern	__imulu
-	extern	__file_streams
+	extern	_fopen
 	extern	__frameset0
+	extern	_fclose

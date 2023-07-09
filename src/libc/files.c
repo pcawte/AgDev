@@ -8,6 +8,6 @@ FILE _file_streams[FOPEN_MAX];
 // assignments can be made to their status value
 // - this was previously a bug in the CE Toolkit
 
-FILE stdin[1]  = {{ 128, 0, 0 }};
-FILE stdout[1] = {{ 129, 0, 0 }};
-FILE stderr[1] = {{ 130, 0, 0 }};
+FILE stdin[1]  = {{ FH_STDIN, 0, 0 }};
+FILE stdout[1] = {{ FH_STDOUT, 0, 0 }};
+FILE stderr[1] = {{ FH_STDERR, 0, 0 }};

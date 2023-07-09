@@ -25,9 +25,10 @@ Return Value
 int fputc(int c, FILE *stream)
 {
     int ret = c;
+    uint8_t mos_fh = stream->fhandle;
 
     if (stream == NULL || stream == stdin) ret = EOF;
-    else if (stream == stdout || stream == stderr)ret = putchar(c);
+    else if ( mos_fh == FH_STDOUT || mos_fh == FH_STDERR ) outchar(c);
     else mos_fputc(stream->fhandle, (char)c );         // The mos routine does not return anything
 
     if ( stream ) {

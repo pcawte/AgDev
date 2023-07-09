@@ -455,6 +455,7 @@ if HAS_LIBC
 	source "../lib/libc/sscanf.c.src"
 	source "../lib/libc/uscan.c.src"
 	source "../lib/libc/usscan.c.src"
+	source "../lib/libc/freopen.c.src"
 
 end if
 if HAS_LIBCXX

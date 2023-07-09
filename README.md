@@ -145,6 +145,26 @@ In the relevant: example, test or any other directory created at the same level.
 
 - Dhrystone benchmark added under full `ansibench/dhrystone`.
 
+09/07/2023:
+
+- Support for output re-direction added for stdout. Cannot currently be done from the command line (todo), but can be done programmatically using `freopen()`.
+  
+  - `freopen()` added
+  
+  - `puts()` and `printf()` updated to call `putchar()` instead of directly calling `outchar()`
+  
+  - `putchar()` modified to either call `outchar()` of `fputc()` depending on whether output redirected
+  
+  - `fputc()` modified to call `outchar()` when outputting to `stdout` or `stderr` to avoid any danger of function call loops
+  
+  - `fclose()` modified to allow stdout to be closed if it has been redirected
+  
+  - `stdio.h` and `files.c` modified to support input / output redirection
+  
+  - `linker.script` updated to include `freopen()`
+  
+  - Test / demonstration program added under `test/stdio-redirect`
+
 ### To-Do:
 
 - Testing / validation
@@ -153,9 +173,13 @@ In the relevant: example, test or any other directory created at the same level.
 
 - For stdio remove and stuff inherited from CE Toolchain (there is nothing used, but some remnants in the various files)
 
-- Add fprintf
+- Add fprintf - there is an fprintf routine in the FatFS - investigate the use of this
 
 - Add fscanf 
+
+- Add input redirection - use freopen() to control this within the C-program
+
+- Add command line support for input / output redirection
 
 - Port / replace / expand library where necessary to the Agon Light. Including:
   
@@ -633,6 +657,8 @@ Contains .lib library files - needs to be investigated further
 
 ## C Calling Conventions
 
+See Zilog application note "an0333 - Calling C from asm.pdf"
+
 Only IX register and stack need to be preserved by called functions.
 
 ### Arguments
@@ -692,6 +718,62 @@ Additionally, the following has been assumed:
 - Save AF, BC, DE, IX and IY registers
 
 - Return with HL=0
+
+## Standard IO Library
+
+Consists of the following:
+
+File IO:
+
+- `fopen`, `fclose`
+
+- `fputc`, `fputs`
+
+- `fgetc`, `fgets`
+
+- `feof`, `ferror`, `fflush`
+
+- `fread`, `frwite`
+
+- `fseek`, `rewind`, `ftell`
+
+- `clearerr`
+
+- `remove`
+
+Output to stdout:
+
+- `putchar` - needs to be updated as just calls outchar
+
+- `puts` - needs to be modified to call putchar instead of outchar
+
+- `printf` - seems to call npt_putc_std, which calls outchar in nanoprintf.c
+
+Input from stdin:
+
+- `getchar`
+
+- `scanf`
+
+- `gets_s`
+
+Requires `FILE *`, which is a pointer to a file handle returned by `fopen` and passed to the file IO routines to indicate the file the action is to be performed upon.
+
+Other related files:
+
+`stdio.h` - normal header files, which defines the various functions and the typedef for `FILE`
+
+`files.c`- instantiates the storage for files handles including: stdout, stderr, stdin.
+
+The following standard file handles are defined:
+
+- `stdout` - default output
+
+- `stderr` - default output for error message
+
+- `stdin` - default input
+
+MOS does not implement input / output redirection, so by default these all use the console. 
 
 ## Appendix - eZ80 compile runtime
 

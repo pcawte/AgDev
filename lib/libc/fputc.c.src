@@ -4,87 +4,63 @@
 	public	_fputc
 _fputc:
 	call	__frameset0
-	ld	bc, (ix + 6)
 	ld	iy, (ix + 9)
-	lea	hl, iy
-	add	hl, bc
-	or	a, a
-	sbc	hl, bc
-	jr	z, BB0_2
 	ld	de, _stdin
-	lea	hl, iy
-	or	a, a
-	sbc	hl, de
-	jr	nz, BB0_4
-BB0_2:
-	lea	hl, iy
-	add	hl, bc
-	or	a, a
-	sbc	hl, bc
-	jr	nz, BB0_9
 	ld	bc, -1
-	jr	BB0_12
-BB0_4:
-	ld	de, _stdout
 	lea	hl, iy
 	or	a, a
 	sbc	hl, de
-	jr	z, BB0_6
-	ld	de, _stderr
-	lea	hl, iy
+	jr	nz, BB0_3
+	ld	a, 1
+	ld	(_stdin+1), a
+	ld	de, -1
+	ld	hl, (ix + 6)
 	or	a, a
 	sbc	hl, de
-	jr	nz, BB0_7
-BB0_6:
-	push	bc
-	call	_putchar
-	push	hl
-	pop	de
-	pop	hl
-	jr	BB0_8
-BB0_7:
-	ld	a, (iy)
-	push	bc
-	ld	l, a
+	jp	z, BB0_9
+	ld	hl, _stdin+2
+	jp	BB0_8
+BB0_3:
+	ld	de, (ix + 6)
+	ld	l, (iy)
+	ld	a, l
+	add	a, 127
+	cp	a, 2
+	jr	nc, BB0_5
+	push	de
+	call	_outchar
+	jp	BB0_6
+BB0_5:
+	push	de
 	push	hl
 	call	_mos_fputc
 	pop	hl
+BB0_6:
 	pop	hl
-	ld	de, (ix + 6)
-BB0_8:
 	ld	bc, -1
+	ld	de, (ix + 6)
 	push	de
 	pop	hl
 	or	a, a
 	sbc	hl, bc
-	ld	bc, (ix + 6)
-	ld	iy, (ix + 9)
+	ex	de, hl
 	jr	nz, BB0_10
+	ld	hl, (ix + 9)
+	inc	hl
+BB0_8:
+	ld	(hl), 1
 BB0_9:
-	ld	(iy + 1), 1
-	ld	de, -1
-BB0_10:
-	push	de
-	pop	hl
-	or	a, a
-	sbc	hl, bc
-	jr	z, BB0_12
-	ld	(iy + 2), 1
-	push	de
-	pop	bc
-BB0_12:
 	push	bc
 	pop	hl
+BB0_10:
 	pop	ix
 	ret
 	section	.text,"ax",@progbits
 
 	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 6c61664110f888c0285ae4c48b150c9a7a4361bb)"
 	extern	_stdin
-	extern	_stdout
 	extern	__Unwind_SjLj_Register
 	extern	__Unwind_SjLj_Unregister
 	extern	_mos_fputc
-	extern	_stderr
-	extern	_putchar
+	extern	_outchar
 	extern	__frameset0
