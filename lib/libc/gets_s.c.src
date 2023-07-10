@@ -5,13 +5,13 @@
 _gets_s:
 	ld	hl, -6
 	call	__frameset
-	ld	bc, (ix + 6)
+	ld	de, (ix + 6)
 	ld	iy, (ix + 9)
-	ld	de, 0
+	ld	bc, 0
 	or	a, a
 	sbc	hl, hl
 	ld	(ix - 3), hl
-	push	bc
+	push	de
 	pop	hl
 	add	hl, bc
 	or	a, a
@@ -21,51 +21,70 @@ _gets_s:
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jr	z, BB0_9
+	jr	z, BB0_11
 BB0_2:
-	ld	(ix - 6), bc
-BB0_3:
+	ld	a, (_stdin)
+	cp	a, -128
+	jr	nz, BB0_8
+	ld	(ix - 6), de
+BB0_4:
 	call	_getchar
 	push	hl
 	pop	de
 	ld	bc, 13
 	or	a, a
 	sbc	hl, bc
-	jr	z, BB0_7
+	jr	z, BB0_9
 	ld	iy, (ix - 3)
 	lea	hl, iy
 	ld	bc, (ix + 9)
 	or	a, a
 	sbc	hl, bc
-	jr	nc, BB0_6
+	jr	nc, BB0_7
 	ld	a, e
 	ld	hl, (ix - 6)
 	ld	(hl), a
 	inc	hl
 	ld	(ix - 6), hl
-BB0_6:
+BB0_7:
 	inc	iy
 	ld	(ix - 3), iy
-	jr	BB0_3
-BB0_7:
+	jr	BB0_4
+BB0_8:
+	ld	hl, _stdin
+	push	hl
+	ld	hl, (ix + 9)
+	push	hl
+	push	de
+	call	_fgets
+	push	hl
+	pop	bc
+	pop	hl
+	pop	hl
+	pop	hl
+	jr	BB0_11
+BB0_9:
 	ld	hl, (ix - 3)
 	ld	de, (ix + 9)
 	or	a, a
 	sbc	hl, de
-	ld	de, 0
-	jr	nc, BB0_9
+	ld	bc, 0
+	jr	nc, BB0_11
 	ld	hl, (ix - 6)
 	ld	(hl), 0
-	ld	de, (ix + 6)
-BB0_9:
-	ex	de, hl
+	ld	bc, (ix + 6)
+BB0_11:
+	push	bc
+	pop	hl
 	ld	sp, ix
 	pop	ix
 	ret
 	section	.text,"ax",@progbits
 
 	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 6c61664110f888c0285ae4c48b150c9a7a4361bb)"
+	extern	_stdin
 	extern	__Unwind_SjLj_Register
 	extern	__Unwind_SjLj_Unregister
 	extern	__frameset
+	extern	_fgets
 	extern	_getchar

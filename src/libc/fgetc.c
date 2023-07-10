@@ -22,9 +22,13 @@ Return Value
 int fgetc(FILE *stream)
 {
     int c;
+    uint8_t mos_fh = stream->fhandle;
 
     if (stream == NULL || stream == stdout || stream == stderr) c = EOF;
-    else if (stream == stdin) c = getchar();
+    else if (mos_fh == FH_STDIN) {
+        c = inchar();
+        putchar(c);
+    }
     else c = mos_fgetc(stream->fhandle);
 
     if ( c == 0 ) c = EOF;              // mos routine returns zero if error

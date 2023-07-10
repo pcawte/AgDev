@@ -21,19 +21,34 @@
 
 	assume	adl=1
 
+	include	"stdio.inc"
+
 	section	.text
 	public	_getchar
 _getchar:
+	ld 	iy,_stdin 		; FILE* pointer for stdin
+	ld 	a,(iy+FILE_FH)		; check if stdim still refers
+	cp 	a,FH_STDIN 		; to the default (console)
+	jr	nz,_call_fgetc
+
 	call	_inchar			; get character from OS - in A
+	or 	a			; clear carry flag
+	sbc	hl,hl 			; HL = 0 
+	ld	l,a 			; typecast unsigned char (A) to int (HL)
 
-	or 		a				; clear carry flag
-	sbc		hl,hl 			; HL = 0 
-	ld		l,a 			; typecast unsigned char (A) to int (HL)
-
+_echo_char:
 	push	hl
-	call	_outchar		; echo the character on the console
+	call	_outchar		; echo the character to stdout
 	pop	hl
 	ret
 
+_call_fgetc:				
+	push	iy 			; push the FILE* pointer parameter
+	call 	_fgetc 			; int fgetc(FILE *stream), return value in HL
+	pop	de 			; clear up the stack
+	ret 				; in this case we do not echo the character
+
 	extern	_inchar
 	extern	_outchar
+	extern 	_stdin
+	extern	_fgetc

@@ -163,7 +163,25 @@ In the relevant: example, test or any other directory created at the same level.
   
   - `linker.script` updated to include `freopen()`
   
-  - Test / demonstration program added under `test/stdio-redirect`
+  - Test / demonstration program added under `test/stdout-redirect`
+
+10/07/2023:
+
+- Support for input re-direction added for stdin. Cannot currently be done from the command line (todo), but can be done programmatically using `freopen()`.
+  
+  - `getchar()`- calls `inchar()`to get the character and `outchar()`to echo the character (even if the output has been redirected). If output has not been re-directed calls `fgetc()`and does not echo the character.
+  
+  - `gets_s`- calls `getchar()`if input has not been redirected (line are terminated with CR). Calls `fgets()` of input has been redirected (lines are terminated with CR/LF pair).
+  
+  - `fgetc` - calls `mos_fgetc()` unless called on `stdin` when calls `inchar()` and echos with `outchar()` - avoids calling `getchar()` so that no risk of function call loops
+  
+  - Test / demonstration program added under `test/stdin-redirect`
+
+- Bug fixed previously if a program was run again from the command line without re-loading it, stdin, stdout and stderr were not reset.
+  
+  - Added re-run handling in `crt0.src` (currently very simplistic as only initialises stdio)
+  
+  - `_stdio_init()` function added to files.c. This is only called from `crt0.src` and is not declared in any header file. 
 
 ### To-Do:
 
@@ -176,8 +194,6 @@ In the relevant: example, test or any other directory created at the same level.
 - Add fprintf - there is an fprintf routine in the FatFS - investigate the use of this
 
 - Add fscanf 
-
-- Add input redirection - use freopen() to control this within the C-program
 
 - Add command line support for input / output redirection
 
@@ -725,7 +741,7 @@ Consists of the following:
 
 File IO:
 
-- `fopen`, `fclose`
+- `fopen`, `freopen,` `fclose`
 
 - `fputc`, `fputs`
 
@@ -741,21 +757,25 @@ File IO:
 
 - `remove`
 
-Output to stdout:
+Can redirect output by using `freopen() `on `stdin`:
 
-- `putchar` - needs to be updated as just calls outchar
+- `putchar` - outputs to outchar unless the output is redirected, in which case outputs to fputc
 
-- `puts` - needs to be modified to call putchar instead of outchar
+- `puts` - calls putchar
 
-- `printf` - seems to call npt_putc_std, which calls outchar in nanoprintf.c
+- `printf` - calls npt_putc_std, which calls putchar in nanoprintf.c
 
-Input from stdin:
+- `fputc` - calls `mos_fputc()` unless called on `stdout` when calls `outchar()`- avoids calling `putchar()` so that no risk of function call loops
 
-- `getchar`
+Can redirect input by using `freopen()` on `stdin`:
 
-- `scanf`
+- `getchar` - calls `inchar()` to get the character and `outchar()` to echo the character (even if the output has been redirected). If output has not been re-directed calls `fgetc()` and does not echo the character.
 
-- `gets_s`
+- `gets_s`- calls `getchar()` if input has not been redirected (line are terminated with CR). Calls`fgets()` of input has been redirected (lines are terminated with CR/LF pair).
+
+- `scanf` - calls `getchar()` in `uscan.c` (doesn't need updating)
+
+- `fgetc` - calls `mos_fgetc()` unless called on stdin when calls `inchar()` and echos with `outchar() `- avoids calling `getchar() `so that no risk of function call loops
 
 Requires `FILE *`, which is a pointer to a file handle returned by `fopen` and passed to the file IO routines to indicate the file the action is to be performed upon.
 

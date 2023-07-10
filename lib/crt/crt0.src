@@ -143,6 +143,14 @@ ifextern ___main_argc_argv			; if int main(argc, *argv[]) get params from comman
 	PUSH	BC				; Parameter 1: argc
 end if 		; ___main_argc_argv
 
+; Reset any global items necessary for rerun
+; ------------------------------------------
+; This includes stdin, stdout and stderr because they may have been redirected e.g. by freopen()
+
+ifextern __stdio_init
+	call 	__stdio_init
+end if
+
 ; Call initialisers and constructors
 ; ----------------------------------
 
@@ -655,6 +663,8 @@ fini_array::
 	extern 	___low_bss			; coming from linker_script, defined in makefile.mk
 	extern 	__stack				; defined in makefile.mk
 ;	extern 	___libs
+
+	extern 	__stdio_init
 
 	extern	___ctors_count
 	extern	___dtors_count

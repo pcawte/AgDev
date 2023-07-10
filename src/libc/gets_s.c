@@ -10,6 +10,9 @@ and always writes the terminating null character (unless str is a null pointer).
 The CR character, if found, is discarded and does not count toward the number of characters
 written to the buffer.
 
+When reading from console keyboard, a line is ended by CR
+When reading from a file, if stdin is redirected, a line is ended by CR/LF
+
 The following errors are detected at runtime:
  - n is zero
  - str is a null pointer
@@ -30,23 +33,24 @@ str on success, a null pointer on failure.
 
 char *gets_s( char *__restrict str, rsize_t n )
 {
-	rsize_t cnt = 0;								// counter for number of characters read
-	int c;											// the current input character
+	rsize_t cnt = 0;							// counter for number of characters read
+	int c;										// the current input character
 	char *s = str; 								// location to store next character
 
-	if ( !(str || n) ) return( NULL );  	// check error conditions
+	if ( !(str || n) ) return( NULL );  		// check error conditions
 //	if ( n > RSIZE_MAX ) return( NULL );
 
+	if ( stdin->fhandle != FH_STDIN ) return fgets( str, n, stdin );
+
 	c = getchar();
-	while ( c != '\r' )							// Keep collecting input until end of line
+	while ( c != '\r' )						// Keep collecting input until end of line
 	{
-		if ( cnt < n ) *s++ = c;				// Store characters if not reached end of buffer
+		if ( cnt < n ) *s++ = c;			// Store characters if not reached end of buffer
 		cnt++;
 		c = getchar();
 	}
-
 	if ( cnt >= n ) return( NULL );			// Return error if no. of characters received > max -1
+	*s = '\0';								// terminate the string
 
-	*s = '\0';										// terminate the string
 	return( str );
 }

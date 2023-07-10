@@ -11,3 +11,12 @@ FILE _file_streams[FOPEN_MAX];
 FILE stdin[1]  = {{ FH_STDIN, 0, 0 }};
 FILE stdout[1] = {{ FH_STDOUT, 0, 0 }};
 FILE stderr[1] = {{ FH_STDERR, 0, 0 }};
+
+// The following initialistion is called from crt0.src to re-initialise stdin, stdout, stderr
+// - this is necessary in case these have been redirected and the program is re-run
+
+void _stdio_init( void ) {
+	*stdin  = (FILE){ FH_STDIN, 0, 0 };
+	*stdout = (FILE){ FH_STDOUT, 0, 0 };
+	*stderr = (FILE){ FH_STDERR, 0, 0 };
+}
