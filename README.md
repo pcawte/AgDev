@@ -183,6 +183,8 @@ In the relevant: example, test or any other directory created at the same level.
   
   - `_stdio_init()` function added to files.c. This is only called from `crt0.src` and is not declared in any header file. 
 
+- Added fasmg quick reference guide (from [Assembling eZ80 code with flat assembler g - Cemetech | Forum | Your Projects [Topic]](https://www.cemetech.net/forum/viewtopic.php?t=13913&start=0)) - but formatted to make readable / intelligible.
+
 ### To-Do:
 
 - Testing / validation
@@ -191,7 +193,7 @@ In the relevant: example, test or any other directory created at the same level.
 
 - For stdio remove and stuff inherited from CE Toolchain (there is nothing used, but some remnants in the various files)
 
-- Add fprintf - there is an fprintf routine in the FatFS - investigate the use of this
+- Add fprintf - there is an fprintf routine in the FatFS - investigate the use of this. This has not yet been implemented in MOS
 
 - Add fscanf 
 
@@ -727,9 +729,13 @@ From the MOS documentation:
 8. The RUN command checks a header embedded from byte 64 of the executable and can run either Z80 or ADL mode executables
 9. MOS will also search the `mos` folder on the SD card for any executables, and will run those like built-in MOS commands
 
-Additionally, the following has been assumed:
+Programs are called from MOS using the the `_exec24()` function built into MOS :
 
-- On entry, HL contains the address of the command line parameter string - used for argc / argv processing
+- This function will call the 24 bit address and keep the eZ80 in ADL mode. 
+
+- The called function must do a RET and take care of preserving registers
+
+- On entry, HL contains the address of the command line parameter string - used for argc / argv processing. There is 256 bytes for storage of the command line including the terminating '`\0'`.
 
 - Save AF, BC, DE, IX and IY registers
 
@@ -952,3 +958,199 @@ MOS does not implement input / output redirection, so by default these all use t
   setLibcall(RTLIB::UINTTOFP_I32_F64, "_ultod",    CallingConv::Z80_LibCall   );
   setLibcall(RTLIB::UINTTOFP_I64_F64, "_ulltod",   CallingConv::Z80_LibCall   );c
 ```
+
+## Appendix - FASMG Quick Reference Guide
+
+From: https://www.cemetech.net/forum/viewtopic.php?t=13913&start=0
+
+### Expressions
+
+Each line is a precedence level, except where specified otherwise, operators within a precedence level are evaluated ltr.
+
+| Ops                                         | Meaning                                                                                                                                                                                                                                                  |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|                                             | ***Logical expressions***                                                                                                                                                                                                                                |
+| ~                                           | unary logical not, arguments can also be                                                                                                                                                                                                                 |
+| &, \|                                       | binary logical conjunction and disjunction                                                                                                                                                                                                               |
+|                                             | ***All the operators below this line can only have basic expressions as arguments***                                                                                                                                                                     |
+| =, <, >, <=, >=, <>, eq, eqtype, relativeto | Comparison, <> is not equal, eq is like = but returns false for uncomparable operands, eqtype returns true if both operands are the same (algebraic, string, float) type, relativeto returns true if both operands are comparable (differ by a constant) |
+| defined, used                               | true if the basic expression to the right is entirely defined, true if the variable name to the right is used                                                                                                                                            |
+|                                             | ***Basic expressions***                                                                                                                                                                                                                                  |
+| lengthof, elementsof, float, trunc          | length of a string in characters, length of a poly in terms, int to float, float to int                                                                                                                                                                  |
+| sizeof, elementof, scaleof, metadataof      | rtl size associated with a label, poly op idx for element,  scale,   metadata    idx op poly                                                                                                                                                             |
+| not, bsf, bsr                               | complement, index of lowest set bit, index of highest set bit                                                                                                                                                                                            |
+| shl, shr, bswap                             | shifts, byte swap (second arg is the size of the value to swap, in bytes)                                                                                                                                                                                |
+| xor, and, or                                | bitwise                                                                                                                                                                                                                                                  |
+| mod                                         | remainder                                                                                                                                                                                                                                                |
+| *, /                                        | multiplication, division                                                                                                                                                                                                                                 |
+| +, -                                        | addition, subtraction (includes unary ops)                                                                                                                                                                                                               |
+| string                                      | converts a number to a string (strings are usually converted to numbers implicitly, or explicitly with a unary + operator)                                                                                                                               |
+
+### Builtin symbolic variable
+
+- `<name>#<name>` ; concatenates two names into a single identifier, but each side may get replaced individually if it matches a parameter name
+
+- `$` ; current pc
+
+- `$$` ; base of the current output section (address passed to last org)
+
+- `$@` ; address after last non-reserved data
+
+- `$%` ; offset within output file, does not work with tiformat.inc
+
+- `$%%` ; offset after last non-reserved data within output file, does not work with tiformat.inc
+
+- `%t` ; assembly timestamp
+
+- `__file__` ; current file
+
+- `__line__` ; current line
+
+### Commands
+
+#### Program Layout
+
+- `org <basic expr>` ; start a new output area to appear next in the file and assembled starting at address `<basic expr>`
+
+- `section <basic expr>` ; same as org but do not output reserved bytes, does not work with tiformat.inc
+
+- `virtual [<basic expr>] `; start a new output area that does not get output to the file
+  end virtual ; restore the previous output area
+
+- `<name>::` ; creates an area label that references the current output area
+
+- `load <name>[ : <size>] from [<area label> : ]<addr>` ; loads `<size>` (defaults to `sizeof <addr>`) outputted bytes from address `<addr>` in output area `<area label>` (defaults to current output area) and store in variable `<name>`
+
+- `store <name>[ : <size>] at [<area label> : ]<addr>` ; stores `<size>` (defaults to `sizeof <addr>`) bytes to address `<addr>` in output area `<area label>` (default to current output area) and store in variable `<name>`
+
+#### Data / Storage
+
+- `db <basic expr 1>[, <basic expr 2>...] `; define 1-byte values
+
+- `rb <basic expr>` ; reserve `<basic expr>` 1-byte locations
+
+- `dw <basic expr 1>[, <basic expr 2>...]` ; define 2-byte values
+
+- `rw <basic expr>` ; reserve `<basic expr>` 2-byte locations
+
+- `dl <basic expr 1>[, <basic expr 2>...] `; define 3-byte values
+
+- `rl <basic expr>` ; reserve `<basic expr>` 3-byte locations
+
+- `dd <basic expr 1>[, <basic expr 2>...] `; define 4-byte values
+
+- `rd <basic expr>` ; reserve `<basic expr>` 4-byte locations
+
+- `emit|dbx <size> : <basic expr 1>[, <basic expr 2>...] `; define `<size>`-byte values;
+
+If any reserve or definition is preceded by a name with no colon, that name gets defined as a label to the first item, with a sizeof the item size
+
+Inside any definition
+
+- `<basic expr 1> rep <basic expr 2>` ; repeats `<basic expr 2>` `<basic expr 1>` times, to include more than one value in the repetition, enclose them with <>
+
+#### Names
+
+- `<name> equ <anything>` ; define an arbitrary text substitution for a symbol
+
+- `<name> reequ <anything>` ; same as equ but don't discard previous value
+
+- `define <name> <anything>` ; same as equ, but <anything> is not checked for recursive substitutions until use
+
+- `redefine <name> <anything>` ; same as define but don't discard previous value
+
+- `<name> = <basic expr>` ; assign a value to a symbol, discarding current value
+
+- `<name> =: <basic expr>` ; assign a value to a symbol, remembering the current value
+
+- `<name> := <basic expr>` ; assign a value to a constant symbol only once, attempts to redefine will error, therefore it can always be forward referenced
+
+- `<name>:` ; like `<name> := $`
+
+- `label <name>[ : <size>][ at <addr>] `; defines a constant symbol with <size> size at address <addr> (defaults to $)
+
+- `restore <name 1>[, <name 2>...] `; restore the previously remembered value for each symbol
+
+#### Namespaces
+
+Namespaces can be created by assigning anything to any symbol
+
+- `namespace <name 1>` ; switches to, but does not create, the namespace associated with the symbol <name>
+
+- All new symbols `<name 2>` defined in here can be referenced outside the namespace block with <name 1>.<name 2>
+
+- `end namespace`
+
+#### Macros
+
+- `macro <name> [<param 1>[, <param 2>...]] `; defines a macro, remembering the current contents. Macro body, parameters get substituted with their values every time the macro is executed
+
+- `end macro`
+
+- `purge <name>` ; restores the previously remembered contents of a macro
+
+- `struc <name> [(<label name>) ][<param 1>[, <param 2>...]]` ; defines a labeled macro, remembering the current contents. Macro body, parameters get substituted with their values every time the macro is executed, Both `.` and `<label name>` refer to the label
+
+- `end struc`
+
+- `restruc <name>` ; restores the previously remembered contents of a labeled macro
+
+Macro and struc args can be suffixed with `*` to mean required, `:` to give a default value if not specified, and `&` on the last argument means it takes on the value of all the remaining arguments
+
+- `local <name 1>[, <name 2>...] `; makes the specified symbols local to the current macro or struc invocation
+
+- `esc macro ...` ; exactly like macro, but does not require an extra end macro to end the enclosing macro
+
+- `esc end macro` ; exactly like end macro, but does not close the enclosing macro even if there was no opening macro
+
+#### Conditional Assembly & Loops / Iteration
+
+- `[else ]if <cond expr>` ; run these commands if `<cond expr>` is true, with else only if the previous command was false or didn't match
+
+- `[else ]match <pattern>, <anything>` ; run these command if `<pattern>` matches `<anything>`, with else only if the previous command was false or didn't match
+
+- `[else ]rmatch <pattern>, <anything>`; run these command if `<pattern>` matches `<anything>`, discarding context, with else only if the previous if was false or match didn't match
+
+- `else`; run these commands if previous if was false or match didn't match
+
+- e`nd if|match|rmatch` ; ends if, match, or rmatch, use whichever was used last (before the optional else)
+
+- `while <cond expr>`; run these commands while `<cond expr>` is true
+
+- `end while`
+
+- `repeat <basic expr>[, <name 1> : <basic expr 1>[, <name 2> : <basic expr 2>...]]`; run these commands `<basic expr>` times, symbols start at their initial value and go up by one each iteration
+
+- `end repeat`
+
+- `iterate|irp <name>[, <first>[, <second>...]]`; run these commands
+
+- `end iterate|irp`
+
+- `irpv <name 1>, <name 2>`; run these commands with name 1 equal to each remembered value of name 2, starting from the oldest, only works with define/equ
+
+- `end irpv`
+
+Inside all looping commands:
+
+-  `%` ; current iteration starting from 1
+
+-  `%%` ; total iterations
+
+-  `indx <basic expr>` ; switches to a different iteration index
+
+-  `break` ; break out of loop
+
+#### General
+
+- `include '<file>'` ; assembles `<file>` at the current location in the source
+
+- `file '<file>'[ : <start>[, <size>]]` ; outputs `<size>` (defaults to entire file) bytes from a file starting at byte `<start>` (defaults to beginning)
+
+- `display <basic expr 1>[, <basic expr 2>...] `; outputs strings as strings and numbers as characters to stdout
+
+- `eval <basic expr 1>[, <basic expr 2>...]` ; same syntax as display, evaluates the concatenation of all the arguments as assembly code at the current location in the source
+
+- `err <basic expr 1>[, <basic expr 2>...] `; same syntax as display, displays a custom error the causes assembly to fail if this is the last pass
+
+- `assert <cond expr>` ; causes assembly to fail if <cond expr> is false on the last pass
