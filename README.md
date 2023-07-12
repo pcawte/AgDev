@@ -185,13 +185,23 @@ In the relevant: example, test or any other directory created at the same level.
 
 - Added fasmg quick reference guide (from [Assembling eZ80 code with flat assembler g - Cemetech | Forum | Your Projects [Topic]](https://www.cemetech.net/forum/viewtopic.php?t=13913&start=0)) - but formatted to make readable / intelligible.
 
+12/07/2023:
+
+- `puts()` modified to print "(NULL)" if called with a null pointer. Code shortened. Defines 2 static strings which can be used elsewhere. Note there is still an issue with `printf()`.
+  
+  - `__null_literal_str` as "(NULL)"
+  
+  - `__end_of_line_str` as CR/LF pair
+
 ### To-Do:
 
 - Testing / validation
 
 - Check for ZDS pseudo ops in any assembly language source files copied from ZDS
 
-- For stdio remove and stuff inherited from CE Toolchain (there is nothing used, but some remnants in the various files)
+- For stdio remove stuff inherited from CE Toolchain (there is nothing used, but some remnants in the various files)
+
+- Change printf with NULL pointers do something sensible
 
 - Add fprintf - there is an fprintf routine in the FatFS - investigate the use of this. This has not yet been implemented in MOS
 
