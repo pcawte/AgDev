@@ -3,10 +3,13 @@
 	section	.text,"ax",@progbits
 	public	_fopen
 _fopen:
-	call	__frameset0
-	ld	hl, (ix + 9)
+	ld	hl, -3
+	call	__frameset
+	ld	iy, (ix + 9)
 	ld	de, _.str
-	ld	a, (hl)
+	ld	hl, 0
+	ld	(ix - 3), hl
+	ld	a, (iy)
 	ld	l, a
 	rlc	l
 	sbc	hl, hl
@@ -22,8 +25,7 @@ _fopen:
 	jr	nz, BB0_2
 	ld	hl, 2
 	ld	(_errno), hl
-	ld	iy, 0
-	jr	BB0_4
+	jr	BB0_5
 BB0_2:
 	ld	hl, (ix + 9)
 	push	hl
@@ -38,8 +40,7 @@ BB0_2:
 	pop	hl
 	pop	hl
 	or	a, a
-	ld	iy, 0
-	jr	z, BB0_4
+	jr	z, BB0_5
 	ld	iy, __file_streams
 	ld	a, e
 	dec	a
@@ -54,8 +55,26 @@ BB0_2:
 	ld	(iy), e
 	ld	(iy + 1), 0
 	ld	(iy + 2), 0
-BB0_4:
-	lea	hl, iy
+	ld	hl, (ix + 9)
+	ld	a, (hl)
+	cp	a, 97
+	ld	(ix - 3), iy
+	jr	nz, BB0_5
+	ld	hl, 2
+	push	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	push	hl
+	push	iy
+	call	_fseek
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+BB0_5:
+	ld	hl, (ix - 3)
+	ld	sp, ix
 	pop	ix
 	ret
 	section	.text,"ax",@progbits
@@ -132,9 +151,9 @@ _.str:
 	extern	_mos_fopen
 	extern	__Unwind_SjLj_Register
 	extern	__Unwind_SjLj_Unregister
-	extern	_strchr
 	extern	__frameset
+	extern	_strchr
 	extern	__imulu
 	extern	__file_streams
-	extern	__frameset0
+	extern	_fseek
 	extern	_errno

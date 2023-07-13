@@ -193,6 +193,10 @@ In the relevant: example, test or any other directory created at the same level.
   
   - `__end_of_line_str` as CR/LF pair
 
+13/07/2023:
+
+- `fopen()` modified to correct apparent bug in MOS. Now seeks to end of file when file opened for append ("a"). Previously wrote from the beginning. Now writes from the end.
+
 ### To-Do:
 
 - Testing / validation

@@ -79,6 +79,10 @@ FA_OPEN_APPEND      Same as FA_OPEN_ALWAYS except the read/write pointer is set 
 "a+"                FA_OPEN_APPEND | FA_WRITE | FA_READ
 "wx"                FA_CREATE_NEW | FA_WRITE
 "w+x"               FA_CREATE_NEW | FA_WRITE | FA_READ
+
+Mods / updates:
+13/07/2023 -  correct modes "a" and "a+" despite documentation file is opened for writing at the beginning 
+              of the file. Work around added to seek to end of the file.
 */
 
 //#include <fileioc.h>
@@ -120,6 +124,10 @@ FILE* fopen(const char *__restrict filename, const char *__restrict mode)
     _file_streams[index].fhandle = mos_fh;
     _file_streams[index].eof = 0;
     _file_streams[index].err = 0;
+
+    // workaround for bug in MOS / FatFS
+
+    if ( mode[0] == 'a' ) fseek( &_file_streams[index], 0L, SEEK_END );
 
     return &_file_streams[index];
 }
