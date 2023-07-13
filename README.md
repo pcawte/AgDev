@@ -199,7 +199,9 @@ In the relevant: example, test or any other directory created at the same level.
 
 - `gets_s()` corrected to also output LF after CR pressed by the user. 
 
-- puts() corrected was outputting LF/CR not CR/LF
+- `puts()` corrected was outputting LF/CR not CR/LF
+
+- `gets_s()` corrected to strip CR/LF pair if used with input redirected
 
 ### To-Do:
 

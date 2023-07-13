@@ -12,6 +12,7 @@ written to the buffer.
 
 When reading from console keyboard, a line is ended by CR
 When reading from a file, if stdin is redirected, a line is ended by CR/LF
+ - unline fgets, the CR/LF is discarded
 
 The following errors are detected at runtime:
  - n is zero
@@ -30,6 +31,7 @@ str on success, a null pointer on failure.
 */
 
 #include <stdio.h>
+#include <string.h>
 
 char *gets_s( char *__restrict str, rsize_t n )
 {
@@ -40,7 +42,12 @@ char *gets_s( char *__restrict str, rsize_t n )
 	if ( !(str || n) ) return( NULL );  		// check error conditions
 //	if ( n > RSIZE_MAX ) return( NULL );
 
-	if ( stdin->fhandle != FH_STDIN ) return fgets( str, n, stdin );
+	if ( stdin->fhandle != FH_STDIN ) {
+		if ( !fgets( str, n, stdin ) ) return NULL;
+		int l = strlen( str );
+		if ( str[l-1] == '\n' && str[l-2] == '\r' ) str[l-2] = '\0';
+		return str;
+	}
 
 	c = getchar();
 	while ( c != '\r' )						// Keep collecting input until end of line
