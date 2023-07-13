@@ -49,6 +49,7 @@ char *gets_s( char *__restrict str, rsize_t n )
 		cnt++;
 		c = getchar();
 	}
+	outchar('\n');							// Output LF otherwise remains on same line (not sure why)
 	if ( cnt >= n ) return( NULL );			// Return error if no. of characters received > max -1
 	*s = '\0';								// terminate the string
 

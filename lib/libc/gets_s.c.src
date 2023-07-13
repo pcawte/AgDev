@@ -64,6 +64,10 @@ BB0_8:
 	pop	hl
 	jr	BB0_11
 BB0_9:
+	ld	hl, 10
+	push	hl
+	call	_outchar
+	pop	hl
 	ld	hl, (ix - 3)
 	ld	de, (ix + 9)
 	or	a, a
@@ -86,5 +90,6 @@ BB0_11:
 	extern	__Unwind_SjLj_Register
 	extern	__Unwind_SjLj_Unregister
 	extern	__frameset
+	extern	_outchar
 	extern	_fgets
 	extern	_getchar

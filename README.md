@@ -197,6 +197,8 @@ In the relevant: example, test or any other directory created at the same level.
 
 - `fopen()` modified to correct apparent bug in MOS. Now seeks to end of file when file opened for append ("a"). Previously wrote from the beginning. Now writes from the end.
 
+- `gets_s()` corrected to also output LF after CR pressed by the user. 
+
 ### To-Do:
 
 - Testing / validation
