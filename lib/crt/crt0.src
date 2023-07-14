@@ -30,6 +30,7 @@
 ; - saves stack pointer and sets up it's own stack
 ; - zero the BSS section
 ; - gets command line params if program has int main(int argc, char *argv[])
+; - resets and globals that need to be reset if program is re-run
 ; - calls any C++ initialisers and constructors
 ; - calls the main function
 ;	- parameters are passed on the stack if int main(int argc, char *argv[])
@@ -121,21 +122,33 @@ __start:					; entry point - this will normally by at $040045
 	ld 	(_exit.sp), sp 			; save SP for exiting (self-modifying)
 	ld	sp, __stack			; defined in makefile.mk
 
+	PUSH	HL				; HL is the address of the cmd line param string
+
 ; Zero the bss section
 ; --------------------
 			
-	PUSH	HL				; HL is the address of the cmd line param string
-						;   set by MOS - I haven't seen this confirmed anywhere
-						;   but implied by the _clear_bss code
 	CALL	_clear_bss 			; Clear the RAM in the BSS segment
-	POP	HL
+
+; Reset any global items necessary for rerun
+; ------------------------------------------
+; This includes stdin, stdout and stderr because they may have been redirected e.g. by freopen()
+; need to do this before processing command line options as they may redirect stdio
+
+ifextern __stdio_init
+	call 	__stdio_init
+end if
 
 ; Process command line parameters
 ; -------------------------------
 ; If calling with argc & argv get the parameters from the command line put on the stack (conditionally included)
 ; - this is done after clearing BSS as pointers stored in BSS
 
-ifextern ___main_argc_argv			; if int main(argc, *argv[]) get params from command line
+	POP	HL 				; address of command line - saved earlier on the stack
+
+; process command line if C program is of the form int main(argc, *argv[]) 
+; or the command line switch HAS_ARG_PROCESSING (as defined in the makefile) is true
+
+ifextern ___main_argc_argv | HAS_ARG_PROCESSING
 	LD 	IX, argv_ptrs			; The argv array pointer address
 	PUSH	IX				; Parameter 2: *argv[0] = IX
 	CALL	_parse_params			; Parse the parameters
@@ -143,13 +156,6 @@ ifextern ___main_argc_argv			; if int main(argc, *argv[]) get params from comman
 	PUSH	BC				; Parameter 1: argc
 end if 		; ___main_argc_argv
 
-; Reset any global items necessary for rerun
-; ------------------------------------------
-; This includes stdin, stdout and stderr because they may have been redirected e.g. by freopen()
-
-ifextern __stdio_init
-	call 	__stdio_init
-end if
 
 ; Call initialisers and constructors
 ; ----------------------------------
@@ -451,9 +457,28 @@ _clear_bss:
 ; Only include conditionally if ___main_argc_argv is present
 
 	section .init.args
-ifextern ___main_argc_argv
+ifextern ___main_argc_argv | HAS_ARG_PROCESSING
+
 	private _parse_params
 _parse_params:
+
+  if HAS_ARG_PROCESSING				; if want to do complex arg processing
+
+  	extern 	___arg_processing
+
+  	ld 	bc, _exec_name			; first value in argv is program name
+  	ld 	(ix+0), bc
+  	push	ix
+  	push	hl
+  	call 	___arg_processing 		; call a C function to do this
+  	pop     hl
+  	pop 	hl
+  	ld 	bc, 0 				; clear out top of UBC
+  	ld 	c, a
+  	ret
+
+  else 						; otherwise do simple arg processing
+
 	LD	BC, _exec_name			; start of the program image 
 	LD	(IX+0), BC			; store *ARGV[0] = the executable name
 	INC	IX
@@ -524,13 +549,14 @@ _skip_spaces:
 	INC	HL				; Advance to next character
 	JR	_skip_spaces			; Increment length
 
-end if 		; ___main_argc_argv
+  end if 	; HAS_ARG_PROCESSING
+end if 		; ___main_argc_argv | HAS_ARG_PROCESSING
 
 ; Storage for the argv array pointers
 ;
 	section .data				; need private directive to make visible in .init section
 
-ifextern ___main_argc_argv
+ifextern ___main_argc_argv | HAS_ARG_PROCESSING
 
 	private argv_ptrs
 argv_ptrs:
@@ -538,7 +564,8 @@ argv_ptrs:
 	dl	0			
   end repeat
 
-end if 		; ___main_argc_argv
+end if 		; ___main_argc_argv | HAS_ARG_PROCESSING
+
 
 ; Registering of exit functions
 ; -----------------------------

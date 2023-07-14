@@ -45,6 +45,7 @@ HAS_LIBC ?= YES
 HAS_LIBCXX ?= YES
 PREFER_OS_CRT ?= NO
 PREFER_OS_LIBC ?= NO
+HAS_ARG_PROCESSING ?= NO
 LIBLOAD_OPTIONAL ?=
 COMPRESSED_MODE ?= zx7
 COMMENT ?= $(shell cedev-config --comment)
@@ -70,6 +71,7 @@ LDPREFER_OS_LIBC := 0
 LDHAS_PRINTF := 0
 LDHAS_LIBC := 0
 LDHAS_LIBCXX := 0
+LDHAS_ARG_PROCESSING ?= 0
 
 # verbosity
 V ?= 0
@@ -221,6 +223,7 @@ FASMGFLAGS = \
 	-i $(call QUOTE_ARG,HAS_LIBCXX := $(LDHAS_LIBCXX)) \
 	-i $(call QUOTE_ARG,PREFER_OS_CRT := $(LDPREFER_OS_CRT)) \
 	-i $(call QUOTE_ARG,PREFER_OS_LIBC := $(LDPREFER_OS_LIBC)) \
+	-i $(call QUOTE_ARG,HAS_ARG_PROCESSING := $(LDHAS_ARG_PROCESSING)) \
 	-i $(call QUOTE_ARG,include $(call FASMG_FILES,$(LINKER_SCRIPT))) \
 	-i $(call QUOTE_ARG,range .bss $$$(BSSHEAP_LOW) : $$$(BSSHEAP_HIGH)) \
 	-i $(call QUOTE_ARG,provide __stack = $$$(STACK_HIGH)) \

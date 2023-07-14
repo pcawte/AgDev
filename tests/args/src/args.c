@@ -25,5 +25,7 @@ int main(int argc, char * argv[])
 	{
 		printf("- argv[%d]: %s\n\r", i, argv[i]);
 	}
+	printf("Press any key to quit\n\r");
+	getchar();
 	return 0;
-}
+} 

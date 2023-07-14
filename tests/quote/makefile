@@ -2,7 +2,7 @@
 # Makefile Options
 # ----------------------------
 
-NAME = args
+NAME = quote
 DESCRIPTION = "Ag C Toolchain Demo"
 COMPRESSED = NO
 LDHAS_ARG_PROCESSING = 1

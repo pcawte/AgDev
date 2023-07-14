@@ -70,6 +70,10 @@ source "../lib/crt/sshrs_b.src"
 source "../lib/crt/stoi.src"
 source "../lib/crt/stoiu.src"
 
+; Adding addition runtime routines
+
+source "../lib/crt/arg_processing.c.src"
+
 ; Original compiler runtime from CE Toolchain distribution
 
 source "../lib/crt/bbitrev.src"

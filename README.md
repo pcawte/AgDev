@@ -203,6 +203,13 @@ In the relevant: example, test or any other directory created at the same level.
 
 - `gets_s()` corrected to strip CR/LF pair if used with input redirected
 
+14/07/2023:
+
+- support for input / output redirection added on the MOS command line, e.g. `RUN &040000 <in.txt >out.txt`. Enabled by including `LDHAS_ARG_PROCESSING = 1` in the makefile.
+- This also supports quoting of command line arguments with double quotes.
+- `tests/args` updated to demonstrate the effect of quoting
+- `tests/quote` added to demonstrate input / output redirection from the MOS command line
+
 ### To-Do:
 
 - Testing / validation
@@ -821,6 +828,42 @@ The following standard file handles are defined:
 
 MOS does not implement input / output redirection, so by default these all use the console. 
 
+## Command Line Processing and Input / Output Redirection
+
+Two options are available for command line processing.
+
+### Simple Command Line Processing
+
+This is automatically included if the main function is defined as
+
+```
+int main( int argc, char* argv[] )
+```
+
+the splits the command line up using space as a delimiter. The command line options are available in the `argv[]` array as normal. 
+
+### Complex Command Line Processing
+
+This is optionally included if the makefile includes:
+
+```
+LDHAS_ARG_PROCESSING = 1
+```
+
+This supports
+
+- Quoting with double quotes
+
+- Input / output redirection
+  
+  - `>out_file.txt` - redirects stdout to `out_file.txt`, creating a new file
+  
+  - `>>out_file.txt` - redirects stdout to `out_file.txt`, appending to the end of the file
+  
+  - `<in_file.txt` - redirects stdin to be from `in_file.txt`
+  
+  - TODO: add redirection for stderr
+
 ## Appendix - eZ80 compile runtime
 
 ```
@@ -1133,7 +1176,7 @@ Macro and struc args can be suffixed with `*` to mean required, `:` to give a de
 
 - `else`; run these commands if previous if was false or match didn't match
 
-- e`nd if|match|rmatch` ; ends if, match, or rmatch, use whichever was used last (before the optional else)
+- `end if|match|rmatch` ; ends if, match, or rmatch, use whichever was used last (before the optional else)
 
 - `while <cond expr>`; run these commands while `<cond expr>` is true
 
@@ -1153,13 +1196,13 @@ Macro and struc args can be suffixed with `*` to mean required, `:` to give a de
 
 Inside all looping commands:
 
--  `%` ; current iteration starting from 1
+- `%` ; current iteration starting from 1
 
--  `%%` ; total iterations
+- `%%` ; total iterations
 
--  `indx <basic expr>` ; switches to a different iteration index
+- `indx <basic expr>` ; switches to a different iteration index
 
--  `break` ; break out of loop
+- `break` ; break out of loop
 
 #### General
 
