@@ -210,6 +210,10 @@ In the relevant: example, test or any other directory created at the same level.
 - `tests/args` updated to demonstrate the effect of quoting
 - `tests/quote` added to demonstrate input / output redirection from the MOS command line
 
+16/07/2023:
+
+- `linker_script` corrected to include` strncmp`, which was missing.
+
 ### To-Do:
 
 - Testing / validation

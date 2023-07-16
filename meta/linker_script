@@ -444,6 +444,7 @@ if HAS_LIBC
 	source "../lib/libc/strcspn.src"
 	source "../lib/libc/strlen.src"
 	source "../lib/libc/strncat.src"
+	source "../lib/libc/strncmp.src"
 	source "../lib/libc/strncpy.src"
 	source "../lib/libc/strpbrk.src"
 	source "../lib/libc/strspn.src"
