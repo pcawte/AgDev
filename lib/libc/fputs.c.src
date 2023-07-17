@@ -7,12 +7,12 @@ _fputs:
 	call	__frameset
 	ld	iy, (ix + 6)
 	ld	bc, (ix + 9)
-	ld	hl, 13
+	ld	hl, 10
 BB0_1:
 	ld	e, (iy)
 	ld	a, e
 	or	a, a
-	jr	z, BB0_3
+	jr	z, BB0_4
 	ld	a, e
 	rlc	a
 	sbc	hl, hl
@@ -22,36 +22,20 @@ BB0_1:
 	ld	(ix - 3), iy
 	call	_fputc
 	ld	iy, (ix - 3)
-	ld	de, -1
-	push	de
-	pop	bc
+	ld	bc, (ix + 9)
 	pop	de
 	pop	de
 	inc	iy
+	ld	de, -1
 	or	a, a
-	sbc	hl, bc
-	ld	hl, 13
-	ld	bc, (ix + 9)
+	sbc	hl, de
+	ld	hl, 10
 	jr	nz, BB0_1
-	jr	BB0_4
-BB0_3:
-	push	bc
-	push	hl
-	call	_fputc
-	ld	bc, -1
-	pop	de
-	pop	de
-	or	a, a
-	sbc	hl, bc
-	jr	nz, BB0_5
-BB0_4:
 	scf
 	sbc	hl, hl
-	jr	BB0_7
-BB0_5:
-	ld	hl, (ix + 9)
-	push	hl
-	ld	hl, 10
+	jr	BB0_6
+BB0_4:
+	push	bc
 	push	hl
 	call	_fputc
 	pop	de
@@ -60,9 +44,9 @@ BB0_5:
 	or	a, a
 	sbc	hl, de
 	ld	hl, -1
-	jr	z, BB0_7
+	jr	z, BB0_6
 	ld	hl, 1
-BB0_7:
+BB0_6:
 	ld	sp, ix
 	pop	ix
 	ret

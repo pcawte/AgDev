@@ -12,7 +12,7 @@ _clearerr:
 	ld	iy, __file_streams
 	ld	de, 0
 	ld	e, (hl)
-	ld	bc, 3
+	ld	bc, 5
 	ex	de, hl
 	call	__imulu
 	push	hl

@@ -4,14 +4,14 @@
 ; int getchar(void)
 ;
 ; is a standard library function that takes a single input character from standard input.
-; The major difference between getchar and getc is that getc can take input from any no of
-; input streams but getchar can take input from a single standard input stream.
 ;
 ; Parameters:
 ; None.
 ; Return Value:
 ; The input from the standard input is read as an unsigned char and then it is typecast
 ; and returned as an integer value(int).
+; If there is a character in the unget buffer this is returned instead
+; Translate CR to LF
 ; EOF is returned in two cases:
 ; - When the file end is reached
 ; - When there is an error during the execution
@@ -26,20 +26,38 @@
 	section	.text
 	public	_getchar
 _getchar:
-	ld 	iy,_stdin 		; FILE* pointer for stdin
-	ld 	a,(iy+FILE_FH)		; check if stdim still refers
-	cp 	a,FH_STDIN 		; to the default (console)
-	jr	nz,_call_fgetc
+	ld 	iy, _stdin 		; FILE* pointer for stdin
+	ld 	a, (iy+FILE_FH)		; check if stdin still refers
+	cp 	a, FH_STDIN 		; to the default (console)
+	jr	nz, _call_fgetc
 
-	call	_inchar			; get character from OS - in A
-	or 	a			; clear carry flag
-	sbc	hl,hl 			; HL = 0 
-	ld	l,a 			; typecast unsigned char (A) to int (HL)
+	ld 	a, (iy+FILE_UNGET_CHAR) ; get the unget character if any
+	ld 	(iy+FILE_UNGET_CHAR), 0 ; clear any unget character
+	or 	a, a
+	jr	z, _call_inchar
+	sbc	hl, hl
+	ld 	l , a
+	ret 				; return with unget char (don't translate or echo it)
+
+_call_inchar:
+	call	_inchar			; get character from OS - in A if no unget character
+	or 	a, a			; clear carry flag
+	sbc	hl, hl 			; HL = 0 
+	ld	l, a 			; typecast unsigned char (A) to int (HL)
 
 _echo_char:
 	push	hl
 	call	_outchar		; echo the character to stdout
 	pop	hl
+
+_check_cr:
+	ld 	a, l
+	cp	a, 13			; check if CR
+	ret 	nz
+	ld 	l, 10 			; translate to LF
+	push	hl
+	call 	_outchar		; also need to echo LF, otherwise remains on same line 
+	pop 	hl
 	ret
 
 _call_fgetc:				

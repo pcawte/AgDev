@@ -5,54 +5,99 @@
 _fputc:
 	call	__frameset0
 	ld	iy, (ix + 9)
-	ld	de, _stdin
 	ld	bc, -1
+	lea	hl, iy
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB0_2
+	ld	de, _stdin
 	lea	hl, iy
 	or	a, a
 	sbc	hl, de
-	jr	nz, BB0_3
-	ld	a, 1
-	ld	(_stdin+1), a
+	jr	nz, BB0_5
+BB0_2:
+	lea	hl, iy
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB0_11
+	ld	(iy + 1), 1
 	ld	de, -1
 	ld	hl, (ix + 6)
 	or	a, a
 	sbc	hl, de
-	jp	z, BB0_9
-	ld	hl, _stdin+2
-	jp	BB0_8
-BB0_3:
-	ld	de, (ix + 6)
-	ld	l, (iy)
+	jr	z, BB0_11
+	lea	iy, iy + 2
+	jr	BB0_10
+BB0_5:
+	ld	de, 10
+	ld	bc, (ix + 6)
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	jr	nz, BB0_8
+	ld	a, (iy + 3)
+	or	a, a
+	jr	z, BB0_8
+	ld	hl, 13
+	push	iy
+	push	hl
+	call	_fput_char
+	ld	bc, (ix + 6)
+	ld	iy, (ix + 9)
+	pop	hl
+	pop	hl
+BB0_8:
+	push	iy
+	push	bc
+	call	_fput_char
+	ld	bc, (ix + 6)
+	pop	hl
+	pop	hl
+	ld	de, -1
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	jr	nz, BB0_11
+	ld	hl, (ix + 9)
+	inc	hl
+	ld	bc, -1
+	push	hl
+	pop	iy
+BB0_10:
+	ld	(iy), 1
+BB0_11:
+	push	bc
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_fput_char
+_fput_char:
+	call	__frameset0
+	ld	e, (ix + 6)
+	ld	hl, (ix + 9)
+	ld	l, (hl)
 	ld	a, l
 	add	a, 127
 	cp	a, 2
-	jr	nc, BB0_5
-	push	de
+	jr	nc, BB1_2
+	ld	l, e
+	push	hl
 	call	_outchar
-	jp	BB0_6
-BB0_5:
+	jp	BB1_3
+BB1_2:
 	push	de
 	push	hl
 	call	_mos_fputc
 	pop	hl
-BB0_6:
+BB1_3:
 	pop	hl
-	ld	bc, -1
-	ld	de, (ix + 6)
-	push	de
-	pop	hl
-	or	a, a
-	sbc	hl, bc
-	ex	de, hl
-	jr	nz, BB0_10
-	ld	hl, (ix + 9)
-	inc	hl
-BB0_8:
-	ld	(hl), 1
-BB0_9:
-	push	bc
-	pop	hl
-BB0_10:
 	pop	ix
 	ret
 	section	.text,"ax",@progbits

@@ -3,7 +3,7 @@
 	section	.text,"ax",@progbits
 	public	_fgetc
 _fgetc:
-	ld	hl, -3
+	ld	hl, -4
 	call	__frameset
 	ld	iy, (ix + 6)
 	ld	de, _stdout
@@ -11,16 +11,30 @@ _fgetc:
 	lea	hl, iy
 	or	a, a
 	sbc	hl, de
-	jr	z, BB0_6
+	jr	z, BB0_2
 	ld	de, _stderr
 	lea	hl, iy
 	or	a, a
 	sbc	hl, de
-	jr	z, BB0_6
+	jr	nz, BB0_4
+BB0_2:
+	ld	(iy + 1), 1
+	push	bc
+	pop	hl
+BB0_3:
+	ld	sp, ix
+	pop	ix
+	ret
+BB0_4:
+	ld	l, (iy + 4)
+	ld	a, l
+	or	a, a
+	jr	nz, BB0_8
 	ld	a, (iy)
 	cp	a, -128
-	jr	nz, BB0_4
+	jr	nz, BB0_9
 	call	_inchar
+	ld	(ix - 4), a
 	ld	l, a
 	rlc	l
 	sbc	hl, hl
@@ -28,19 +42,62 @@ _fgetc:
 	ld	(ix - 3), hl
 	push	hl
 	call	_putchar
+	ld	iy, (ix + 6)
 	pop	hl
 	ld	hl, (ix - 3)
-	jr	BB0_5
-BB0_4:
+	ld	a, (ix - 4)
+	cp	a, 13
+	jr	nz, BB0_13
+	ld	hl, 10
+	push	hl
+	call	_putchar
+	pop	hl
+	ld	hl, 10
+	jr	BB0_3
+BB0_8:
+	ld	de, 0
+	ld	e, l
+	push	de
+	pop	hl
+	ld	(iy + 4), d
+	jr	BB0_3
+BB0_9:
 	ld	l, a
 	push	hl
 	call	_mos_fgetc
+	ld	iy, (ix + 6)
+	ld	e, a
 	pop	hl
+	rlc	a
+	sbc	hl, hl
+	ld	l, e
+	ld	a, (iy + 3)
+	or	a, a
+	jr	z, BB0_13
+	ld	a, e
+	cp	a, 13
+	jr	nz, BB0_13
+	ld	l, (iy)
+	push	hl
+	call	_mos_fgetc
+	ld	de, (ix + 6)
+	pop	hl
+	cp	a, 10
+	ld	hl, 10
+	jp	z, BB0_3
 	ld	l, a
 	rlc	l
 	sbc	hl, hl
 	ld	l, a
-BB0_5:
+	ld	(ix - 3), hl
+	push	de
+	push	hl
+	call	_ungetc
+	ld	iy, (ix + 6)
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 3)
+BB0_13:
 	push	hl
 	pop	bc
 	inc	hl
@@ -49,17 +106,9 @@ BB0_5:
 	sbc	hl, de
 	push	bc
 	pop	hl
-	ld	iy, (ix + 6)
 	ld	bc, -1
-	jr	nc, BB0_7
-BB0_6:
-	ld	(iy + 1), 1
-	push	bc
-	pop	hl
-BB0_7:
-	ld	sp, ix
-	pop	ix
-	ret
+	jp	c, BB0_2
+	jp	BB0_3
 	section	.text,"ax",@progbits
 
 	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 6c61664110f888c0285ae4c48b150c9a7a4361bb)"
@@ -69,5 +118,6 @@ BB0_7:
 	extern	_stderr
 	extern	__frameset
 	extern	_mos_fgetc
+	extern	_ungetc
 	extern	_putchar
 	extern	_inchar

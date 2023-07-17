@@ -638,6 +638,10 @@ static void npf_putc_std(int c, void *ctx) {
   putchar(c);
 }
 
+static void npf_fputc_std(int c, void *ctx) {
+  fputc(c, (FILE *)ctx);
+}
+
 typedef struct npf_cnt_putc_ctx {
   npf_putc pc;
   void *ctx;
@@ -975,7 +979,9 @@ int npf_vpprintf(npf_putc pc, void *pc_ctx, char const *format, va_list args) {
 #undef NPF_EXTRACT
 #undef NPF_WRITEBACK
 
-int _printf_c(char const *format, ...) {
+// printf()
+
+int printf(char const *format, ...) {
   va_list val;
   va_start(val, format);
   int const rv = vprintf(format, val);
@@ -983,7 +989,21 @@ int _printf_c(char const *format, ...) {
   return rv;
 }
 
-int _vsnprintf_c(char *buffer, size_t bufsz, char const *format, va_list vlist) {
+// fprintf()
+
+int fprintf(FILE *stream, char const *format, ...) {
+  va_list val;
+  va_start(val, format);
+  int const rv = vfprintf(stream, format, val);
+  va_end(val);
+  return rv;
+}
+
+// vsnprintf()
+//
+// called by sprintf() once it has dealt with the variable list of arguements
+
+int vsnprintf(char *buffer, size_t bufsz, char const *format, va_list vlist) {
   npf_bufputc_ctx_t bufputc_ctx;
   bufputc_ctx.dst = buffer;
   bufputc_ctx.len = bufsz;
@@ -1002,7 +1022,9 @@ int _vsnprintf_c(char *buffer, size_t bufsz, char const *format, va_list vlist) 
   return n;
 }
 
-int _snprintf_c(char *buffer, size_t bufsz, const char *format, ...) {
+// snprintf()
+
+int snprintf(char *buffer, size_t bufsz, const char *format, ...) {
   va_list val;
   va_start(val, format);
   int const rv = vsnprintf(buffer, bufsz, format, val);
@@ -1010,17 +1032,34 @@ int _snprintf_c(char *buffer, size_t bufsz, const char *format, ...) {
   return rv;
 }
 
-int _vsprintf_c(char *buffer, const char *format, va_list vlist)
+// vsprintf()
+
+int vsprintf(char *buffer, const char *format, va_list vlist)
 {
   return vsnprintf(buffer, (size_t)-1, format, vlist);
 }
 
-int _vprintf_c(const char *format, va_list vlist)
+// vprintf()
+//
+// called by printf which has dealt with the variable list of arguements
+
+int vprintf(const char *format, va_list vlist)
 {
   return npf_vpprintf(npf_putc_std, NULL, format, vlist);
 }
 
-int _sprintf_c(char *buffer, const char *format, ...)
+// vfprintf()
+//
+// called by fprintf which has dealt with the variable list of arguements
+
+int vfprintf(FILE *stream, const char *format, va_list vlist)
+{
+  return npf_vpprintf(npf_fputc_std, (void *)stream, format, vlist);
+}
+
+// sprintf()
+
+int sprintf(char *buffer, const char *format, ...)
 {
   va_list va;
   va_start(va, format);

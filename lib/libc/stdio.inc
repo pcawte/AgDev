@@ -5,8 +5,8 @@
 ; Last Updated:	09/06/23
 ;
 ; Modinfo:
-;09/06/23:	Created
-;
+; 09/06/23:	Created
+; 17/06/23:	Additional offsets into FILE * structure added
 
 ; Note - these constants need to be aligned with those used in <stdio.h>
 
@@ -21,3 +21,5 @@ FH_STDERR 	:=	130
 FILE_FH		:=	0
 FILE_EOF	:=	1
 FILE_ERR	:=	2
+FILE_TEXT_MODE	:=	3
+FILE_UNGET_CHAR	:=	4

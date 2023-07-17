@@ -4,39 +4,23 @@
 	public	_ftell
 _ftell:
 	call	__frameset0
-	ld	iy, (ix + 6)
-	ld	de, _stderr
+	ld	hl, (ix + 6)
 	ld	bc, -1
-	lea	hl, iy
-	or	a, a
-	sbc	hl, de
-	jr	z, BB0_4
-	ld	de, _stdout
-	lea	hl, iy
-	or	a, a
-	sbc	hl, de
-	jr	z, BB0_4
-	lea	hl, iy
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jr	z, BB0_4
-	ld	de, _stdin
-	lea	hl, iy
-	or	a, a
-	sbc	hl, de
-	jr	nz, BB0_6
-BB0_4:
+	jr	z, BB0_2
+	ld	a, (hl)
+	cp	a, 0
+	call	pe, __setflag
+	jp	p, BB0_3
+BB0_2:
 	ld	hl, 2
 	ld	e, -1
 	ld	(_errno), hl
-BB0_5:
-	push	bc
-	pop	hl
-	pop	ix
-	ret
-BB0_6:
-	ld	l, (iy)
+	jr	BB0_4
+BB0_3:
+	ld	l, a
 	push	hl
 	call	_mos_getfil
 	push	hl
@@ -44,15 +28,17 @@ BB0_6:
 	pop	hl
 	ld	bc, (iy + 17)
 	ld	e, (iy + 20)
-	jr	BB0_5
+BB0_4:
+	push	bc
+	pop	hl
+	pop	ix
+	ret
 	section	.text,"ax",@progbits
 
 	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 6c61664110f888c0285ae4c48b150c9a7a4361bb)"
-	extern	_stdout
-	extern	_stdin
+	extern	__setflag
 	extern	__Unwind_SjLj_Register
 	extern	__Unwind_SjLj_Unregister
-	extern	_stderr
 	extern	_mos_getfil
 	extern	__frameset0
 	extern	_errno

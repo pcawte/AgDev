@@ -25,11 +25,19 @@ int fgetc(FILE *stream)
     uint8_t mos_fh = stream->fhandle;
 
     if (stream == NULL || stream == stdout || stream == stderr) c = EOF;
+    else if ( (c = stream->unget_char) ) stream->unget_char = 0;
     else if (mos_fh == FH_STDIN) {
         c = inchar();
         putchar(c);
+        if ( c == '\r' ) { c = '\n'; putchar(c); }
     }
-    else c = mos_fgetc(stream->fhandle);
+    else {
+        c = mos_fgetc(stream->fhandle);
+        if ( stream->text_mode && c == '\r' ) {         // Do CR/LF translation for text files
+            c = mos_fgetc(stream->fhandle);
+            if ( c != '\n' ) ungetc( c, stream );       // Put back if just CR and not CR/LF
+        }
+    }
 
     if ( c == 0 ) c = EOF;              // mos routine returns zero if error
 

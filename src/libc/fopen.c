@@ -48,11 +48,10 @@ Opening an existing file for writing causes the old contents to be discarded, wh
 for appending preserves them. Trying to read a file that does not exist is an error.
 
 The mode string can also include the letter 'b' either as a last character or as a character
-between the characters in any of the two-character strings described above.  This is strictly
-for compatibility with C89 and has no effect; the 'b' is ignored on all POSIX conforming systems,
-including Linux.  (Other systems may treat text files and binary files differently, and adding
-the 'b' may be a good idea if you do I/O to a binary file and expect that your program may be
-ported to non-UNIX environments.)
+between the characters in any of the two-character strings described above.  This open the file
+in binary as opposed to text mode.
+ - Text mode files translate LF character to CR/LF pair and vice versa on input / ouput
+ - Binary mode files do not do this translation
 
 Return value:
        Upon successful completion fopen()
@@ -92,6 +91,7 @@ Mods / updates:
 #include <string.h>
 #include <errno.h>
 #include <mos_api.h>
+#include <stdbool.h>
 
 extern FILE _file_streams[FOPEN_MAX];
 
@@ -102,7 +102,6 @@ FILE* fopen(const char *__restrict filename, const char *__restrict mode)
     uint8_t mos_fh;             // file handled returned by MOS (0 = error)
     uint8_t index;              // index into _file_streams table
     uint8_t flags;              // flags computed from the mode string
-
 
     /* Check for valid initial mode character */
     if (!strchr("rwa", *mode)) {
@@ -124,6 +123,9 @@ FILE* fopen(const char *__restrict filename, const char *__restrict mode)
     _file_streams[index].fhandle = mos_fh;
     _file_streams[index].eof = 0;
     _file_streams[index].err = 0;
+    _file_streams[index].unget_char = 0;
+    if ( strchr(mode, 'b') ) _file_streams[index].text_mode = false;
+    else _file_streams[index].text_mode = true;
 
     // workaround for bug in MOS / FatFS
 

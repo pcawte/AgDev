@@ -28,7 +28,7 @@ Return Value
 
 long int ftell(FILE *stream)
 {
-    if (stream == NULL || stream == stdin || stream == stdout || stream == stderr)
+    if (stream == NULL || stream->fhandle >= FH_STDIN)
     {
         errno = EINVAL;
         return -1L;

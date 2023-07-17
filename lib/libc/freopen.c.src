@@ -5,7 +5,7 @@
 _freopen:
 	call	__frameset0
 	ld	hl, (ix + 12)
-	ld	de, 0
+	ld	iy, 0
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
@@ -21,34 +21,19 @@ _freopen:
 	ld	hl, (ix + 6)
 	push	hl
 	call	_fopen
-	push	hl
-	pop	iy
-	pop	hl
-	pop	hl
-	lea	hl, iy
+	pop	de
+	pop	de
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	ld	de, 0
+	ld	iy, 0
 	jr	z, BB0_3
-	ld	a, (iy)
-	ld	hl, (ix + 12)
-	push	hl
-	pop	de
-	ld	(hl), a
-	ld	a, (iy + 1)
-	lea	hl, iy
-	push	de
-	pop	iy
-	ld	(iy + 1), a
-	push	hl
-	pop	iy
-	ld	a, (iy + 2)
-	push	de
-	pop	iy
-	ld	(iy + 2), a
+	ld	bc, 5
+	ld	iy, (ix + 12)
+	lea	de, iy
+	ldir
 BB0_3:
-	ex	de, hl
+	lea	hl, iy
 	pop	ix
 	ret
 	section	.text,"ax",@progbits

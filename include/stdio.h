@@ -9,14 +9,15 @@ typedef struct
     unsigned char fhandle;              // storage for the MOS file handle
     unsigned char eof;
     unsigned char err;
+    unsigned char text_mode;            // Text or binary mode (true if text mode)
+    unsigned char unget_char;           // unget character, 0 if none
 } FILE;
 
 // Agon MOS allows for 8 open files these will have indexes 0-7
-//   stdin, stdout and stderr after put after this in the FILE dscriptor table
 
 #define FOPEN_MAX 8
-#define FH_STDIN 128
-#define FH_STDOUT 129
+#define FH_STDIN 128                    // This is the minimum can check if not real file
+#define FH_STDOUT 129                   // by >= FH_STDIN
 #define FH_STDERR 130
 
 /* Original CE Toolchain definitions are not real pointers - but are assinged to
@@ -114,12 +115,19 @@ int sprintf(char *__restrict buffer,
 
 // Functions added to the CE Toolchain stdio library
 
+int fprintf(FILE *stream, const char *__restrict format, ...)
+    __attribute__((format(__printf__, 2, 3)));
+
+int vfprintf(FILE *stream, const char *__restrict format, va_list va)
+    __attribute__((format(__printf__, 2, 0)));
+
 typedef size_t rsize_t;
 
 char *gets_s( char *__restrict str, rsize_t n );
 int scanf( const char *format, ...);
 int sscanf( const char *s, const char *format, ...);
 FILE *freopen( const char *__restrict filename, const char *__restrict mode, FILE *stream );
+int ungetc(int c, FILE *stream);
 
 
 __END_DECLS

@@ -25,7 +25,7 @@ _fopen:
 	jr	nz, BB0_2
 	ld	hl, 2
 	ld	(_errno), hl
-	jr	BB0_5
+	jp	BB0_8
 BB0_2:
 	ld	hl, (ix + 9)
 	push	hl
@@ -40,14 +40,14 @@ BB0_2:
 	pop	hl
 	pop	hl
 	or	a, a
-	jr	z, BB0_5
+	jr	z, BB0_8
 	ld	iy, __file_streams
 	ld	a, e
 	dec	a
 	or	a, a
 	sbc	hl, hl
 	ld	l, a
-	ld	bc, 3
+	ld	bc, 5
 	call	__imulu
 	push	hl
 	pop	bc
@@ -55,13 +55,33 @@ BB0_2:
 	ld	(iy), e
 	ld	(iy + 1), 0
 	ld	(iy + 2), 0
+	ld	(ix - 3), iy
+	ld	(iy + 4), 0
+	ld	hl, 98
+	push	hl
+	ld	hl, (ix + 9)
+	push	hl
+	call	_strchr
+	pop	de
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB0_5
+	ld	a, 0
+	jr	BB0_6
+BB0_5:
+	ld	a, 1
+BB0_6:
+	ld	hl, 2
+	ex	de, hl
+	ld	iy, (ix - 3)
+	ld	(iy + 3), a
 	ld	hl, (ix + 9)
 	ld	a, (hl)
 	cp	a, 97
-	ld	(ix - 3), iy
-	jr	nz, BB0_5
-	ld	hl, 2
-	push	hl
+	jr	nz, BB0_8
+	push	de
 	or	a, a
 	sbc	hl, hl
 	push	hl
@@ -72,7 +92,7 @@ BB0_2:
 	pop	hl
 	pop	hl
 	pop	hl
-BB0_5:
+BB0_8:
 	ld	hl, (ix - 3)
 	ld	sp, ix
 	pop	ix

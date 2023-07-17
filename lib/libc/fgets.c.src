@@ -3,74 +3,73 @@
 	section	.text,"ax",@progbits
 	public	_fgets
 _fgets:
-	ld	hl, -12
+	ld	hl, -9
 	call	__frameset
 	ld	bc, (ix + 6)
-	ld	hl, (ix + 9)
+	ld	iy, (ix + 9)
 	ld	de, 1
+	lea	hl, iy
 	or	a, a
 	sbc	hl, de
 	push	bc
-	pop	iy
-	jp	z, BB0_8
-	or	a, a
-	sbc	hl, hl
-	ld	(ix - 12), hl
-	ld	hl, (ix + 9)
-	ld	(ix - 6), hl
+	pop	hl
+	jr	z, BB0_8
 	ld	hl, 0
 	ld	(ix - 3), hl
-	ld	(ix - 9), bc
-BB0_2:
-	ld	hl, (ix - 6)
 	ld	de, 2
+	push	bc
+	pop	hl
+BB0_2:
+	ld	(ix - 6), hl
+	lea	hl, iy
 	or	a, a
 	sbc	hl, de
 	call	pe, __setflag
-	jp	m, BB0_7
+	jp	m, BB0_6
+	ld	(ix - 9), iy
 	ld	hl, (ix + 12)
 	push	hl
 	call	_fgetc
 	push	hl
-	pop	iy
+	pop	de
 	pop	hl
-	lea	hl, iy
-	ld	de, -1
+	push	de
+	pop	hl
+	ld	bc, -1
 	or	a, a
-	sbc	hl, de
-	jr	z, BB0_6
-	ld	a, iyl
-	ld	hl, (ix - 9)
+	sbc	hl, bc
+	jr	z, BB0_5
+	ld	a, e
+	ld	hl, (ix - 6)
 	ld	(hl), a
 	inc	hl
-	ld	(ix - 9), hl
-	ld	hl, (ix - 6)
-	dec	hl
-	ld	(ix - 6), hl
-	ld	hl, (ix - 12)
-	ld	de, 13
-	or	a, a
-	sbc	hl, de
-	ld	(ix - 12), iy
-	ld	bc, (ix + 6)
-	jr	nz, BB0_2
-	lea	hl, iy
+	push	hl
+	pop	bc
+	ld	iy, (ix - 9)
+	dec	iy
+	ex	de, hl
 	ld	de, 10
 	or	a, a
 	sbc	hl, de
-	ld	(ix - 12), iy
+	push	bc
+	pop	hl
+	ld	bc, (ix + 6)
+	ld	de, 2
 	jr	nz, BB0_2
 	jr	BB0_7
-BB0_6:
+BB0_5:
 	ld	bc, (ix + 6)
+BB0_6:
+	ld	hl, (ix - 6)
 BB0_7:
-	ld	iy, (ix - 9)
-	lea	hl, iy
+	push	hl
+	pop	iy
 	or	a, a
 	sbc	hl, bc
+	lea	hl, iy
 	jr	z, BB0_9
 BB0_8:
-	ld	(iy), 0
+	ld	(hl), 0
 	ld	(ix - 3), bc
 BB0_9:
 	ld	hl, (ix - 3)

@@ -22,14 +22,17 @@ Return Value
 #include <stdio.h>
 #include <mos_api.h>
 
+void fput_char( int c, FILE *stream );
+
 int fputc(int c, FILE *stream)
 {
     int ret = c;
-    uint8_t mos_fh = stream->fhandle;
 
     if (stream == NULL || stream == stdin) ret = EOF;
-    else if ( mos_fh == FH_STDOUT || mos_fh == FH_STDERR ) outchar(c);
-    else mos_fputc(stream->fhandle, (char)c );         // The mos routine does not return anything
+    else {
+        if ( stream->text_mode && c == '\n' ) fput_char( '\r', stream );
+        fput_char( c, stream );
+    }
 
     if ( stream ) {
         if (ret == EOF) stream->eof = 1;
@@ -37,4 +40,12 @@ int fputc(int c, FILE *stream)
     }
     
     return ret;
+}
+
+void fput_char( int c, FILE *stream )
+{
+    uint8_t mos_fh = stream->fhandle;
+
+    if ( mos_fh == FH_STDOUT || mos_fh == FH_STDERR ) outchar(c);
+    else mos_fputc(stream->fhandle, (char)c );         // The mos routine does not return anything
 }

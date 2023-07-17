@@ -29,7 +29,6 @@ int fputs(const char *__restrict str, FILE *__restrict stream)
         i++;
     }
 
-    if (fputc('\r', stream) == EOF) return EOF;
     if (fputc('\n', stream) == EOF) return EOF;
 
     return 1;

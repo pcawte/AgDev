@@ -4,8 +4,10 @@
 	public	_fflush
 _fflush:
 	call	__frameset0
+	ld	iy, (ix + 6)
 	or	a, a
 	sbc	hl, hl
+	ld	(iy + 4), h
 	pop	ix
 	ret
 	section	.text,"ax",@progbits

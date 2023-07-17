@@ -214,6 +214,46 @@ In the relevant: example, test or any other directory created at the same level.
 
 - `linker_script` corrected to include` strncmp`, which was missing.
 
+17/07/2023:
+
+- And support for text and binary file modes - text mode has LF translation for input and output. Binary does not translate. At same time at support for unget of one character.
+  
+  - Definition of `FILE` changed in `stdio.h` and `file.c` to store mode and unget character in FILE struct. Note, need to recompile the whole of stdio library because of change in definition of FILE.
+
+- Translate LF (`'\n'`) to CR/LF when writing to console and file. For files this is done by default, but not if the file is opened in binary mode.
+  
+  - `putchar.src` modified to do translation when stdio is not redirected
+  
+  - `puts.src` modified to no longer send CR/LF at end of line - now just sends LF and allows `putchar` to do the translation.
+  
+  - `fputc.c` modified to translate LF to CR/LF if FILE was opened in text mode
+  
+  - `fputs.c` modified to no longer send CR/LF at end of line - now just sends LF and allows `fputc` to do the translation.
+  
+  - `getchar.src` modified to do translation of CR to LF and support `ungetc()`. Note that console keyboard only generates CR and not CR/LF pair.
+  
+  - `gets_s.c` modified - as translation is now done by `getchar()`, only needs to look for LF.
+  
+  - `fgetc.c` modified to do translation of CR/LF pair to LF and support `ungetc()`
+  
+  - `fgets.c` modified - as translation is now done by `fgetc()`, only needs to look for LF.
+
+- `fprintf()` and `vfprintf()` functions added in `nanoprintf.c`
+  
+  - CE toolchain option to use built in system printf function removed. Aliasing of names in `printf.src` no longer used. Naming simplified in `nanoprintf.c`. Linker option `HAS_PRINTF` no longer does anything. Entry for `printf.src` removed from `linker_script`
+
+- `ungetc()` function added - can only unget one character
+  
+  - `fseek()`,  `fflush()` all modified to clear the character pushed back on the stream.
+
+- `fseek()` modified to allow seeking on redirected `stdin`, `stdout` or `stderr`.
+
+- `ftell()` modified to allow calling on redirected `stdin`, `stdout` or `stderr`.
+
+- `maptab.c` updated to include all white space characters. Is used by isspace() function. Previously it only had the actual space character listed as white space, causing problems for `scanf()`.
+  
+  - `isspace.src` comments added
+
 ### To-Do:
 
 - Testing / validation
@@ -224,9 +264,9 @@ In the relevant: example, test or any other directory created at the same level.
 
 - Change printf with NULL pointers do something sensible
 
-- Add fprintf - there is an fprintf routine in the FatFS - investigate the use of this. This has not yet been implemented in MOS
-
 - Add fscanf 
+
+- Close files that have not been closed as MOS does not close them and runs out of file handles.
 
 - Add command line support for input / output redirection
 
@@ -696,6 +736,28 @@ And includes files
 
 On the Agon there are two different APIs for accessing the FatFS - MOS routines and FatFS routines. Having examined the MOS source code, the MOS routines are simple wrappers around the FatFS routines, just managing / storing the FatFS file descriptors in a table (supports 8 open files). Consequently it makes sense just to use the MOS routines.
 
+##### Text and Binary Files
+
+The stdio library has been modified to differentiate between text and binary files.
+
+- When files are opened, they are assumed to be texted, unless binary is specified in the mode flags (see `fopen()` documentation).
+
+- stdin, stdout and stderr are assumed to be text - if reopened via `freopen()`, it is possible to change to binary.
+
+For text files, a translation is done between standard C, where '\n' (LF) is the end of a line and the operating system, which requires CR/LF pair at the end of a line. This applies to the following functions:
+
+- `putchar()`, `puts()`
+
+- `fputc()`, `fputs()`
+
+- `printf()`, `fprintf()` - but not `sprintf()`
+
+Note that the following functions do not differentiate between text and binary files:
+
+- `fread()`, `frwite()`
+
+- `fseek()`, `ftell()`
+
 ### Libcxx (standard C++ library)
 
 This is very limited, mainly just C++ wrapper around C libraries
@@ -778,41 +840,63 @@ Consists of the following:
 
 File IO:
 
-- `fopen`, `freopen,` `fclose`
+- `fopen()`, `freopen(),` `fclose()`
 
-- `fputc`, `fputs`
+- `fputc()`, `fputs()`
 
-- `fgetc`, `fgets`
+- `fgetc()`,  `ungetc()`, `fgets()`
 
-- `feof`, `ferror`, `fflush`
+- `feof()`, `ferror()`, `fflush()`
 
-- `fread`, `frwite`
+- `fread()`, `fwrite()`
 
-- `fseek`, `rewind`, `ftell`
+- `fseek()`, `rewind()`, `ftell()`
 
-- `clearerr`
+- `clearerr()`
 
-- `remove`
+- `remove()`
 
-Can redirect output by using `freopen() `on `stdin`:
+Stdin / stdout IO:
 
-- `putchar` - outputs to outchar unless the output is redirected, in which case outputs to fputc
+- `putchar()`, `puts()`
 
-- `puts` - calls putchar
+- `getchar()`, `gets_s()`
 
-- `printf` - calls npt_putc_std, which calls putchar in nanoprintf.c
+Formatted output
 
-- `fputc` - calls `mos_fputc()` unless called on `stdout` when calls `outchar()`- avoids calling `putchar()` so that no risk of function call loops
+- `printf()` (and  `vprintf()`)
+
+- `sprintf()` (and `vsprintf()`)
+
+- `snprintf()` (and `vsnprintf()`)
+
+Formatted input
+
+- `scanf()`
+
+- `sscanf()`
+
+### Stdio Redirection
+
+Can redirect output by using `freopen() `on `stdout` or `stderr`:
+
+- `putchar()` - outputs to `outchar()` unless the output is redirected, in which case outputs to `fputc()`
+
+- `puts()` - calls `putchar()`
+
+- `printf()` (and `vprintf()`) - calls `npf_putc_std()`, which calls `putchar()` in `nanoprintf.c`
+
+- `fputc()` - calls `mos_fputc()` unless called on `stdout` when calls `outchar()`- avoids calling `putchar()` so that no risk of function call loops
 
 Can redirect input by using `freopen()` on `stdin`:
 
-- `getchar` - calls `inchar()` to get the character and `outchar()` to echo the character (even if the output has been redirected). If output has not been re-directed calls `fgetc()` and does not echo the character.
+- `getchar()` - calls `inchar()` to get the character and `outchar()` to echo the character (even if the output has been redirected). If output has not been re-directed calls `fgetc()` and does not echo the character.
 
-- `gets_s`- calls `getchar()` if input has not been redirected (line are terminated with CR). Calls`fgets()` of input has been redirected (lines are terminated with CR/LF pair).
+- `gets_s()`- calls `getchar()` if input has not been redirected (line are terminated with CR). Calls`fgets()` of input has been redirected (lines are terminated with CR/LF pair).
 
-- `scanf` - calls `getchar()` in `uscan.c` (doesn't need updating)
+- `scanf()` - calls `getchar()` in `uscan.c` (doesn't need updating)
 
-- `fgetc` - calls `mos_fgetc()` unless called on stdin when calls `inchar()` and echos with `outchar() `- avoids calling `getchar() `so that no risk of function call loops
+- `fgetc()` - calls `mos_fgetc()` unless called on stdin when calls `inchar()` and echos with `outchar() `- avoids calling `getchar() `so that no risk of function call loops
 
 Requires `FILE *`, which is a pointer to a file handle returned by `fopen` and passed to the file IO routines to indicate the file the action is to be performed upon.
 
@@ -846,7 +930,7 @@ int main( int argc, char* argv[] )
 
 the splits the command line up using space as a delimiter. The command line options are available in the `argv[]` array as normal. 
 
-### Complex Command Line Processing
+### Complex Command Line Processing - for Redirection & Quoting
 
 This is optionally included if the makefile includes:
 

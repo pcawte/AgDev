@@ -2859,8 +2859,8 @@ BB1_3:
 	section	.text,"ax",@progbits
 
 	section	.text,"ax",@progbits
-	public	__printf_c
-__printf_c:
+	public	_printf
+_printf:
 	ld	hl, -3
 	call	__frameset
 	ld	hl, (ix + 6)
@@ -2876,8 +2876,63 @@ __printf_c:
 	section	.text,"ax",@progbits
 
 	section	.text,"ax",@progbits
-	public	__vsnprintf_c
-__vsnprintf_c:
+	public	_vprintf
+_vprintf:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	de, (ix + 9)
+	ld	bc, _npf_putc_std
+	ld	hl, 0
+	push	de
+	push	iy
+	push	hl
+	push	bc
+	call	_npf_vpprintf
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_fprintf
+_fprintf:
+	ld	hl, -3
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	de, (ix + 9)
+	lea	bc, ix + 12
+	ld	(ix - 3), bc
+	ld	bc, (ix - 3)
+	push	bc
+	push	de
+	push	hl
+	call	_vfprintf
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_vfprintf
+_vfprintf:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	de, (ix + 9)
+	ld	bc, (ix + 12)
+	ld	hl, _npf_fputc_std
+	push	bc
+	push	de
+	push	iy
+	push	hl
+	call	_npf_vpprintf
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_vsnprintf
+_vsnprintf:
 	ld	hl, -18
 	call	__frameset
 	ld	hl, (ix + 6)
@@ -2890,12 +2945,12 @@ __vsnprintf_c:
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jr	z, BB3_2
+	jr	z, BB6_2
 	ld	de, _npf_bufputc
-	jr	BB3_3
-BB3_2:
+	jr	BB6_3
+BB6_2:
 	ld	de, _npf_bufputc_nop
-BB3_3:
+BB6_3:
 	ld	(ix - 15), de
 	ld	hl, (ix + 15)
 	push	hl
@@ -2936,7 +2991,7 @@ _npf_bufputc:
 	pop	hl
 	or	a, a
 	sbc	hl, bc
-	jr	nc, BB4_2
+	jr	nc, BB7_2
 	ld	a, (ix + 6)
 	ld	hl, (iy)
 	push	de
@@ -2945,7 +3000,7 @@ _npf_bufputc:
 	ld	(iy + 6), bc
 	add	hl, de
 	ld	(hl), a
-BB4_2:
+BB7_2:
 	pop	ix
 	ret
 	section	.text,"ax",@progbits
@@ -2959,8 +3014,8 @@ _npf_bufputc_nop:
 	section	.text,"ax",@progbits
 
 	section	.text,"ax",@progbits
-	public	__snprintf_c
-__snprintf_c:
+	public	_snprintf
+_snprintf:
 	ld	hl, -3
 	call	__frameset
 	ld	iy, (ix + 6)
@@ -2980,8 +3035,8 @@ __snprintf_c:
 	section	.text,"ax",@progbits
 
 	section	.text,"ax",@progbits
-	public	__vsprintf_c
-__vsprintf_c:
+	public	_vsprintf
+_vsprintf:
 	call	__frameset0
 	ld	iy, (ix + 6)
 	ld	de, (ix + 9)
@@ -2999,24 +3054,6 @@ __vsprintf_c:
 	section	.text,"ax",@progbits
 
 	section	.text,"ax",@progbits
-	public	__vprintf_c
-__vprintf_c:
-	call	__frameset0
-	ld	iy, (ix + 6)
-	ld	de, (ix + 9)
-	ld	bc, _npf_putc_std
-	ld	hl, 0
-	push	de
-	push	iy
-	push	hl
-	push	bc
-	call	_npf_vpprintf
-	ld	sp, ix
-	pop	ix
-	ret
-	section	.text,"ax",@progbits
-
-	section	.text,"ax",@progbits
 	private	_npf_putc_std
 _npf_putc_std:
 	call	__frameset0
@@ -3027,8 +3064,20 @@ _npf_putc_std:
 	section	.text,"ax",@progbits
 
 	section	.text,"ax",@progbits
-	public	__sprintf_c
-__sprintf_c:
+	private	_npf_fputc_std
+_npf_fputc_std:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	de, (ix + 9)
+	ld	(ix + 6), hl
+	ld	(ix + 9), de
+	pop	ix
+	jp	_fputc
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_sprintf
+_sprintf:
 	ld	hl, -3
 	call	__frameset
 	ld	iy, (ix + 6)
@@ -3074,7 +3123,7 @@ _.str.2:
 	extern	__iand
 	extern	__ixor
 	extern	__lladd
-	extern	_vsnprintf
+	extern	_fputc
 	extern	__ineg
 	extern	__llctlz
 	extern	__llmulu
@@ -3084,7 +3133,6 @@ _.str.2:
 	extern	__indcallhl
 	extern	__ior
 	extern	__llsub
-	extern	_vprintf
 	extern	__ishru
 	extern	__llcmpu
 	extern	__Unwind_SjLj_Unregister

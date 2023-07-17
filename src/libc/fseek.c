@@ -36,14 +36,15 @@ Return Value
 
 int fseek(FILE *stream, long int offset, int origin)
 {
-    if (stream == NULL || stream == stdin || stream == stdout || stream == stderr )
+    if (stream == NULL || stream->fhandle >= FH_STDIN )
     {
         errno = EINVAL;
         return -1;
     }
 
-    FIL *file_struct = mos_getfil( stream->fhandle );
+    stream->unget_char = 0;
 
+    FIL *file_struct = mos_getfil( stream->fhandle );
     switch( origin )
     {
         case SEEK_SET:
@@ -58,6 +59,5 @@ int fseek(FILE *stream, long int offset, int origin)
             errno = EINVAL;
             return -1;
     }
-
     return mos_flseek( stream->fhandle, offset );
 }

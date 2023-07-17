@@ -21,7 +21,7 @@ _gets_s:
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jp	z, BB0_15
+	jp	z, BB0_13
 BB0_2:
 	ld	a, (_stdin)
 	cp	a, -128
@@ -31,10 +31,10 @@ BB0_4:
 	call	_getchar
 	push	hl
 	pop	de
-	ld	bc, 13
+	ld	bc, 10
 	or	a, a
 	sbc	hl, bc
-	jr	z, BB0_12
+	jr	z, BB0_11
 	ld	iy, (ix - 3)
 	lea	hl, iy
 	ld	bc, (ix + 9)
@@ -64,43 +64,37 @@ BB0_8:
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jr	z, BB0_15
+	jr	z, BB0_13
 	ld	hl, (ix + 6)
 	push	hl
 	call	_strlen
+	ld	bc, (ix + 6)
 	push	hl
 	pop	de
 	pop	hl
-	ld	bc, (ix + 6)
 	push	bc
 	pop	iy
 	add	iy, de
 	ld	a, (iy - 1)
 	cp	a, 10
-	jr	nz, BB0_15
-	ld	a, (iy - 2)
-	cp	a, 13
-	jr	nz, BB0_14
-	lea	hl, iy - 2
-	ld	(ix - 6), hl
-	jr	BB0_13
-BB0_12:
-	ld	hl, 10
-	push	hl
-	call	_outchar
-	pop	hl
+	jr	nz, BB0_13
+	dec	iy
+	ld	(ix - 6), iy
+	jr	BB0_12
+BB0_11:
 	ld	hl, (ix - 3)
 	ld	de, (ix + 9)
 	or	a, a
 	sbc	hl, de
 	ld	bc, 0
-	jr	nc, BB0_15
-BB0_13:
+	jr	nc, BB0_13
+BB0_12:
 	ld	hl, (ix - 6)
 	ld	(hl), 0
-BB0_14:
-	ld	bc, (ix + 6)
-BB0_15:
+	ld	hl, (ix + 6)
+	push	hl
+	pop	bc
+BB0_13:
 	push	bc
 	pop	hl
 	ld	sp, ix
@@ -113,7 +107,6 @@ BB0_15:
 	extern	__Unwind_SjLj_Register
 	extern	__Unwind_SjLj_Unregister
 	extern	__frameset
-	extern	_outchar
 	extern	_fgets
 	extern	_strlen
 	extern	_getchar

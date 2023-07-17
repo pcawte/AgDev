@@ -28,7 +28,7 @@ Return Value
 
 char* fgets(char *__restrict str, int num, FILE *__restrict stream)
 {
-    int c, prev_c ='\0';
+    int c;
     char *p = str;
 
     if (num == 1)
@@ -41,8 +41,7 @@ char* fgets(char *__restrict str, int num, FILE *__restrict stream)
     {
         if ((c = fgetc(stream)) == EOF) break;
         *p++ = c;
-        if (c == '\n' && prev_c == '\r') break;
-        prev_c = c;
+        if (c == '\n') break;
     }
 
     if (p == str) return NULL;

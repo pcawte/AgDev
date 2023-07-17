@@ -42,7 +42,7 @@ ___null_literal_str:
 
 	public	___end_of_line_str
 ___end_of_line_str:
-	db	13, 10, 0
+	db	10, 0
 
 	extern	_putchar
 

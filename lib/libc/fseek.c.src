@@ -5,37 +5,23 @@
 _fseek:
 	call	__frameset0
 	ld	iy, (ix + 6)
-	ld	de, _stderr
-	ld	bc, -1
-	lea	hl, iy
-	or	a, a
-	sbc	hl, de
-	jr	z, BB0_4
-	ld	de, _stdout
-	lea	hl, iy
-	or	a, a
-	sbc	hl, de
-	jr	z, BB0_4
+	ld	bc, 2
+	ld	de, -1
 	lea	hl, iy
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jr	z, BB0_4
-	ld	de, _stdin
-	lea	hl, iy
-	or	a, a
-	sbc	hl, de
-	jr	nz, BB0_6
-BB0_4:
-	ld	hl, 2
-	ld	(_errno), hl
-BB0_5:
-	push	bc
-	pop	hl
-	pop	ix
-	ret
-BB0_6:
-	ld	l, (iy)
+	jr	z, BB0_2
+	ld	a, (iy)
+	cp	a, 0
+	call	pe, __setflag
+	jp	p, BB0_3
+BB0_2:
+	ld	(_errno), bc
+	jp	BB0_11
+BB0_3:
+	ld	(iy + 4), 0
+	ld	l, a
 	push	hl
 	call	_mos_getfil
 	ld	bc, (ix + 15)
@@ -47,36 +33,36 @@ BB0_6:
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jr	nz, BB0_8
+	jr	nz, BB0_5
 	ld	e, (ix + 12)
 	ld	bc, (ix + 9)
-	jp	BB0_13
-BB0_8:
+	jp	BB0_10
+BB0_5:
 	ld	de, 1
 	push	bc
 	pop	hl
 	or	a, a
 	sbc	hl, de
 	ld	a, (ix + 12)
-	jr	nz, BB0_10
+	jr	nz, BB0_7
 	lea	iy, iy + 17
-	jr	BB0_12
-BB0_10:
+	jr	BB0_9
+BB0_7:
 	ld	de, 2
 	push	bc
 	pop	hl
 	or	a, a
 	sbc	hl, de
-	jp	nz, BB0_14
+	jp	nz, BB0_12
 	lea	iy, iy + 11
-BB0_12:
+BB0_9:
 	ld	hl, (iy)
 	ld	e, (iy + 3)
 	ld	bc, (ix + 9)
 	call	__ladd
 	push	hl
 	pop	bc
-BB0_13:
+BB0_10:
 	ld	hl, (ix + 6)
 	ld	a, (hl)
 	push	de
@@ -87,23 +73,24 @@ BB0_13:
 	pop	hl
 	pop	hl
 	pop	hl
-	ld	bc, 0
-	ld	c, a
-	jp	BB0_5
-BB0_14:
+	ld	de, 0
+	ld	e, a
+BB0_11:
+	ex	de, hl
+	pop	ix
+	ret
+BB0_12:
 	ld	hl, 2
 	ld	(_errno), hl
-	ld	bc, -1
-	jp	BB0_5
+	ld	de, -1
+	jr	BB0_11
 	section	.text,"ax",@progbits
 
 	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 6c61664110f888c0285ae4c48b150c9a7a4361bb)"
-	extern	_stdout
-	extern	_stdin
+	extern	__setflag
 	extern	_mos_flseek
 	extern	__Unwind_SjLj_Register
 	extern	__Unwind_SjLj_Unregister
-	extern	_stderr
 	extern	_mos_getfil
 	extern	__frameset0
 	extern	_errno

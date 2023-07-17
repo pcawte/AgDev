@@ -39,7 +39,6 @@ C_EXTENSION ?= c
 CUSTOM_FILE_FILE ?= 
 DEPS ?=
 HAS_UPPERCASE_NAME ?= YES
-HAS_PRINTF ?= YES
 HAS_CUSTOM_FILE ?= NO
 HAS_LIBC ?= YES
 HAS_LIBCXX ?= YES
@@ -68,7 +67,6 @@ CCDEBUG := -g0
 LDDEBUG := 0
 LDPREFER_OS_CRT := 0
 LDPREFER_OS_LIBC := 0
-LDHAS_PRINTF := 0
 LDHAS_LIBC := 0
 LDHAS_LIBCXX := 0
 LDHAS_ARG_PROCESSING ?= 0
@@ -201,9 +199,6 @@ endif
 ifeq ($(HAS_LIBCXX),YES)
 LDHAS_LIBCXX := 1
 endif
-ifeq ($(HAS_PRINTF),YES)
-LDHAS_PRINTF := 1
-endif
 
 # define the c/c++ flags used by clang
 EZLLVMFLAGS = -mllvm -profile-guided-section-prefix=false
@@ -218,7 +213,6 @@ FASMGFLAGS = \
 	$(call QUOTE_ARG,$(call NATIVEPATH,$(CEDEV_TOOLCHAIN)/meta/ld.alm)) \
 	-i $(call QUOTE_ARG,DEBUG := $(LDDEBUG)) \
 	-i $(call QUOTE_ARG,PROG_NAME := '$(NAME)') \
-	-i $(call QUOTE_ARG,HAS_PRINTF := $(LDHAS_PRINTF)) \
 	-i $(call QUOTE_ARG,HAS_LIBC := $(LDHAS_LIBC)) \
 	-i $(call QUOTE_ARG,HAS_LIBCXX := $(LDHAS_LIBCXX)) \
 	-i $(call QUOTE_ARG,PREFER_OS_CRT := $(LDPREFER_OS_CRT)) \

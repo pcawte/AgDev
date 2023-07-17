@@ -410,7 +410,6 @@ if HAS_LIBC
 	source "../lib/libc/os.src"
 	source "../lib/libc/outchar.src"
 	source "../lib/libc/pow.src"
-	source "../lib/libc/printf.src"
 	source "../lib/libc/putchar.src"
 	source "../lib/libc/puts.src"
 	source "../lib/libc/rand.src"
@@ -461,6 +460,7 @@ if HAS_LIBC
 	source "../lib/libc/uscan.c.src"
 	source "../lib/libc/usscan.c.src"
 	source "../lib/libc/freopen.c.src"
+	source "../lib/libc/ungetc.c.src"
 
 end if
 if HAS_LIBCXX

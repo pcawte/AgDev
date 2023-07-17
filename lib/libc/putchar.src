@@ -11,6 +11,10 @@
 ; Return Value:
 ; This function returns the character written on the stdout as an unsigned char.
 ; It also returns EOF when some error occurs.
+;
+; Modinfo
+; 17/07/2023: changed to translate LF to CR/LF pair
+
 
 	assume	adl=1
 
@@ -20,17 +24,25 @@
 	public	_putchar
 _putchar:
 	pop	de
-	ex	(sp),hl			; get character passed as int in HL
+	ex	(sp), hl		; get character passed as int in HL
 	push	de
-	ld 	iy,_stdout		; FILE* pointer for stdout	
-	ld	a,(iy+FILE_FH)		; check if stdout still refers
-	cp	a,FH_STDOUT		; to the default (console)
-	jr	nz,_call_fputc
+	ld 	iy, _stdout		; FILE* pointer for stdout	
+	ld	a, (iy+FILE_FH)		; check if stdout still refers
+	cp	a, FH_STDOUT		; to the default (console)
+	jr	nz, call_fputc
 	push	hl			; put the character on the stack as an integer parameter
+	ld 	a, l
+	cp 	a, 10 			; check if LF
+	jr	nz, call_outchar
+	ld 	hl, 13			; print CR
+	call 	_outchar
+	pop	hl
+	push	hl
+call_outchar:
 	call	_outchar		; output to console
 	pop	hl			; clear up the stack
 	ret
-_call_fputc:
+call_fputc:
 	push	iy			; push the FILE* pointer parameter
 	push	hl			; push the character paramater
 	call 	_fputc 			; int _fputc(int char, FILE *stream)
