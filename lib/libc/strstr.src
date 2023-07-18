@@ -12,17 +12,18 @@ _strstr:
 	ld 	hl, 6
 	add hl, sp
 	ld	iy, (hl)	; bc = s2
-	dec hl
-	dec hl
-	dec hl
-	ld  de, (hl)	; de = s1
+	dec 	hl
+	dec 	hl
+	dec 	hl
+	ld  	de, (hl)	; de = s1
 _L0:
 	xor	a,a
 	sbc	hl,hl
 	add	hl,de
 	cp	a,(hl)
 	jr	z,_L3		; *s1 == '\0'
-	ld	bc,iy
+	push	iy		; replace ZDS pseudo op ld bc,iy
+	pop	bc
 	inc	de
 _L1:
 	ld	a,(bc)
