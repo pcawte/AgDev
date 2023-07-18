@@ -9,7 +9,6 @@
 
 	assume 	adl=1
 ;	.def	_0_setjmp
-	public	_setjmp
 
 ;--------------------------------------------------------------
 ;
@@ -31,10 +30,12 @@
 
 
 	section .text
+	public	_setjmp
 _setjmp:
 	ld 	iy,0
 	add 	iy,sp
-	ld 	hl,iy
+	push	iy		; replacing ld hl,iy ZDS pseudo op
+	pop 	hl
 	ld 	iy,(iy+3)	;get jmp_buf
 	ld 	(iy+3),ix	;save ix
 	ld 	(iy+6),hl	;save sp

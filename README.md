@@ -254,6 +254,10 @@ In the relevant: example, test or any other directory created at the same level.
   
   - `isspace.src` comments added
 
+18/07/2023
+
+- `setjmp.src` and `longjmp.src` corrected to fix bugs in conversion from ZDS to fasmg assembler - moved public statements inside section and replace ZDS pseudo ops.
+
 ### To-Do:
 
 - Testing / validation

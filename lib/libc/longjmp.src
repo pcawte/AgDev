@@ -10,7 +10,6 @@
 	assume adl=1
 ;	.def	_0_longjmp
 ;	.def	_1_longjmp
-	public	_longjmp
 
 ;--------------------------------------------------------------
 ;
@@ -31,6 +30,8 @@
 ;--------------------------------------------------------------
 
 	section .text
+	public	_longjmp
+
 _longjmp:
 	ld 	iy,0
 	add 	iy,sp
