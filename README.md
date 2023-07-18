@@ -260,6 +260,8 @@ In the relevant: example, test or any other directory created at the same level.
 
 - `strstr.src` corrected to replace ZDS pseudo op
 
+- `memcmp.src` added to `linker_script` - was previously missing
+
 ### To-Do:
 
 - Testing / validation

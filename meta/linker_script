@@ -434,6 +434,7 @@ if HAS_LIBC
 	source "../lib/libc/longjmp.src"
 	source "../lib/libc/setjmp.src"
 	source "../lib/libc/memchr.src"
+	source "../lib/libc/memcmp.src"
 	source "../lib/libc/memcpy.src"
 	source "../lib/libc/memmove.src"
 	source "../lib/libc/strcat.src"
