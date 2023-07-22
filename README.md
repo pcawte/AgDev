@@ -270,6 +270,12 @@ In the relevant: example, test or any other directory created at the same level.
 
 -  `README.md` updated to included documentation on VDP and VDU commands
 
+- `mos_api.h` updated to include a structure for manipulating SYSVAR
+
+- `tests/malloc` updated to demonstrate correct functioning of `malloc()`
+
+- `tests/vdu` added to demonstrate use of VDU commands - part of developing VDP/VDU wrapper library
+
 ### To-Do:
 
 - Testing / validation

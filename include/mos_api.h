@@ -2,7 +2,7 @@
  * Title:			AGON MOS - MOS c header interface
  * Author:			Jeroen Venema
  * Created:			15/10/2022
- * Last Updated:	15/10/2022
+ * Last Updated:	22/07/2023
  * 
  * Modinfo:
  * 15/10/2022:		Added putch, getch
@@ -11,6 +11,8 @@
  * 25/03/2023:      Added MOS 1.03 functions / sysvars
  * 16/04/2023:      Added MOS 1.03RC4 mos_fread / mos_fwrite / mos_flseek functions
  * 19/04/2023:		Added mos_getfil
+ * 02/07/2023:      Added struct / union for RTC_DATA
+ * 22/07/2023:      Added structure for SYSVAR
  */
 
 #ifndef _MOS_H
@@ -53,11 +55,9 @@ typedef enum {
     FR_INVALID_PARAMETER    /* (19) Given parameter is invalid */
 } FRESULT;
 
-
-
 // Indexes into sysvar - from mos_api.inc
 #define sysvar_time			    0x00    // 4: Clock timer in centiseconds (incremented by 2 every VBLANK)
-#define sysvar_vpd_pflags	    0x04    // 1: Flags to indicate completion of VDP commands
+#define sysvar_vdp_pflags	    0x04    // 1: Flags to indicate completion of VDP commands
 #define sysvar_keyascii		    0x05    // 1: ASCII keycode, or 0 if no key is pressed
 #define sysvar_keymods		    0x06    // 1: Keycode modifiers
 #define sysvar_cursorX		    0x07    // 1: Cursor X position
@@ -87,6 +87,59 @@ typedef enum {
 #define vdp_pflag_audio         0x08
 #define vdp_pflag_mode          0x10
 #define vdp_pflag_rtc           0x20
+
+// Stucture / union for accessing RTC data
+
+typedef union {
+    uint64_t rtc_data;
+    struct {
+        uint8_t year;               // offset since 1980
+        uint8_t month;              // (0-11)
+        uint8_t day;                // (1-31)
+        uint8_t day_of_year;        // (0-365) - *** but doesn't fit in 1 byte - wraps round ***
+        uint8_t day_of_week;        // (0-6)
+        uint8_t hour;               // (0-23)
+        uint8_t minute;             // (0-59)
+        uint8_t second;             // (0-59)
+    };
+} RTC_DATA;
+
+// Structure for accesing SYSVAR
+
+typedef struct {
+    uint32_t time;
+    uint8_t vpd_pflags;
+    uint8_t keyascii;
+    uint8_t keymods;
+    uint8_t cursorX;
+    uint8_t cursorY;
+    uint8_t scrchar;
+    union {
+        uint24_t scrpixel;
+        struct {
+            uint8_t scrpixelR;
+            uint8_t scrpixelB;
+            uint8_t scrpixelG;
+        };
+    };
+    uint8_t audioChannel;
+    uint8_t audioSuccess;
+    uint16_t scrWidth;
+    uint16_t scrHeight;
+    uint8_t scrCols;
+    uint8_t scrRows;
+    uint8_t scrColours;
+    uint8_t scrpixelIndex;
+    uint8_t vkeycode;
+    uint8_t vkeydown;
+    uint8_t vkeycount;
+    RTC_DATA rtc;
+    uint16_t keydelay;
+    uint16_t keyrate;
+    uint8_t keyled;
+    uint8_t scrMode;
+} SYSVAR;
+
 
 // UART settings for open_UART1
 typedef struct {
@@ -119,20 +172,6 @@ typedef struct {
 	uint32_t	dir_sect;  /* Sector number containing the directory entry (not used at exFAT) */ 
 	uint24_t*	dir_ptr;   /* Pointer to the directory entry in the win[] (not used at exFAT) */
 } FIL;
-
-typedef union {
-    uint64_t rtc_data;
-    struct {
-        uint8_t year;               // offset since 1980
-        uint8_t month;              // (0-11)
-        uint8_t day;                // (1-31)
-        uint8_t day_of_year;        // (0-365) - *** but doesn't fit in 1 byte - wraps round ***
-        uint8_t day_of_week;        // (0-6)
-        uint8_t hour;               // (0-23)
-        uint8_t minute;             // (0-59)
-        uint8_t second;             // (0-59)
-    };
-} RTC_DATA;
 
 // Generic IO
 extern int   putch(int a);

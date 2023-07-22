@@ -2,7 +2,7 @@
 # Makefile Options
 # ----------------------------
 
-NAME = malloc
+NAME = vdu
 DESCRIPTION = "Ag C Toolchain Demo"
 COMPRESSED = NO
 LDHAS_ARG_PROCESSING = 0
