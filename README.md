@@ -262,6 +262,14 @@ In the relevant: example, test or any other directory created at the same level.
 
 - `memcmp.src` added to `linker_script` - was previously missing
 
+22/07/2023
+
+- `crt0.src` and `sbrk.src` updated to fix reset start of heap if program is rerun. Previously if a program was rerun the start of heap used by malloc was not reset - potentially leading to not enough memory for malloc.
+
+- `crt0.src` updated to optimise the initialisation of BSS
+
+-  `README.md` updated to included documentation on VDP and VDU commands
+
 ### To-Do:
 
 - Testing / validation
@@ -959,6 +967,208 @@ This supports
   - `<in_file.txt` - redirects stdin to be from `in_file.txt`
   
   - TODO: add redirection for stderr
+
+## VDP / VDU Commands
+
+The VDP (video display processor) accepts a text stream from MOS, acting like a text / graphics terminal. The text stream can contain:
+
+- Normal text
+
+- Escape sequences / commands to control the display and send graphics
+
+When results are returned by MOS as a result of sending a command, these are stored in the SYSVARs and not returned directly in response to the command. The response is asynchronous, to check that a result has been returned:
+
+- Set `vpd_pflags` in `SYSVAR` to zero
+
+- Issue the VDU command
+
+- Wait for the relevant bit into in `vpd_pflags` to be set - see `<mos_api.h>`  for the bit masks
+
+Commands can be sent by:
+
+- `putch()` - single character (this is not part of the C standard library, on MS-DOS systems it is defined in `<conio.h>`
+
+- `mos_puts()` - multi-character string
+
+Both of  which output directly to MOS/VDP - note that they are not part of STDIO library and not subject to CR/LF translation or redirection.
+
+### VDU Commands
+
+From [VDP - breakintoprogram/agon-docs GitHub Wiki](https://github-wiki-see.page/m/breakintoprogram/agon-docs/wiki/VDP), with any clarifications from testing or examining the VDP source code. 
+
+- `VDU 32-126`: normal ASCII text output
+
+- `VDU 4`: seems to be setGlyphOptions for text
+
+- `VDU 5`: seems to be setGlyphOptions for graphics
+
+- `VDU 7`: bell - plays a note
+
+- `VDU 8`: cursor left
+
+- `VDU 9`: cursor right
+
+- `VDU 10`: cursor down (line-feed)
+
+- `VDU 11`: cursor up
+
+- `VDU 12`: clear screen
+
+- `VDU 13`: carriage return
+
+- `VDU 14`: page mode on
+
+- `VDU 15`: page mode off
+
+- `VDU 16`: CLG (clear graphics - presumably)
+
+- `VDU 17, colour`: set the text foreground colour
+
+- `VDU 18, mode, colour`: GCOL (graphics colour - presumably)
+
+- `VDU 19, l, p, r, g, b`: define logical palette - colour l, p / colour l, r, g, b
+
+- `VDU 22, n`: mode n
+
+- `VDU 23, n`: UDG / system commands
+
+- `VDU 24, left; bottom; right; top;`: define a graphics viewport (VDP 1.04 or later)
+
+- `VDU 25, mode, x; y;`: PLOT mode, x, y
+
+- `VDU 26`: reset text and graphics viewports (VDP 1.04 or later)
+
+- `VDU 28, left, bottom, right, top`: define a text viewport (VDP 1.04 or later)
+
+- `VDU 29, x; y;`: set graphics origin
+
+- `VDU 30`: cursor home (move cursor to top left of viewport)
+
+- `VDU 31, x, y`: tab(X, Y)
+
+- `VDU 127`: backspace
+
+Values followed by `;` are two byte words (little endian), otherwise value are single bytes.
+
+#### VDU 23 Commands
+
+##### VDU 23,0: VPD Commands
+
+VDU 23, 0 is reserved for commands sent to the VDP
+
+- `VDU 23, 0, &81, n`: Set the keyboard locale (0=UK, 1=US, etc)
+- `VDU 23, 0, &82`: Request cursor position
+- `VDU 23, 0, &83, x; y;`: Get ASCII code of character at character position x, y
+- `VDU 23, 0, &84, x; y;`: Get colour of pixel at pixel position x, y
+- `VDU 23, 0, &85, channel, waveform, volume, freq; duration;`: Send a note to the VDP audio driver
+- `VDU 23, 0, &86`: Fetch the screen dimensions
+- `VDU 23, 0, &87`: RTC control (Requires MOS 1.03 or above)
+  - `VDU 23, 0, &87, 0`: Read the RTC
+  - `VDU 23, 0, &87, 1, y, m, d, h, m, s`: Set the RTC
+- `VDU 23, 0, &88, delay; rate; led`: Keyboard Control (Requires MOS 1.03 or above)
+- `VDU 23, 0, &C0, n`: Turn logical screen scaling on and off, where 1=on and 0=off (Requires MOS 1.03 or above)
+- `VDU 23, 0, &FF`: Switch to terminal mode for CP/M (This will disable keyboard entry in BBC BASIC/MOS)
+
+Commands between &82 and &88 will return their data back to the eZ80 via the serial protocol
+
+##### VDU 23, 1: Cursor display
+
+- `VDU 23, 1, 0`: Disable the text cursor
+- `VDU 23, 1, 1`: Enable the text cursor
+
+##### VDU 23, 7: Scrolling
+
+- `VDU 23, 7, extent, direction, speed`: Scroll a rectangle on the screen
+  - Extent (0 = text viewport, 1 = entire screen, 2 = graphics viewport)
+  - Direction (0 = right, 1 = left, 2 = down, 3 = up)
+  - Speed: number of pixels to scroll
+
+##### VDU 23, 16: Define Cursor Behaviour (Requires VDP 1.04 or greater)
+
+- `VDU 23, 16, setting, mask`: Specify by ANDing with mask then XORing with setting
+
+The following bits are implemented in VDU 23, 16
+
+- `Bit 0 = 1`: Enable scroll protection - text cursor will not scroll when it moves off the bottom/right of the viewport
+- `Bit 0 = 0`: Disable scroll protection (default)
+- `Bit 4 = 1`: Text cursor will wrap to top of screen when it moves off the bottom of the screen
+- `Bit 4 = 0`: Text cursor will scroll when it moves off the bottom of the screen (default)
+- `Bit 5 = 1`: Cursor does not move right after a character is printed
+- `Bit 5 = 0`: Cursor moves right after a character is printed (default)
+- `Bit 6 = 1`: Graphics cursor (VDU 5 mode) carries on off edge of graphics viewport
+- `Bit 6 = 0`: Graphics cursor does an implicit cr/lf when it moves off right of graphics viewport (default)
+
+##### VDU 23, 27: Sprites and Bitmaps
+
+VDU 23, 27 is reserved for the bitmap and sprite functionality
+
+**Bitmaps**
+
+- `VDU 23, 27, 0, n`: Select bitmap n
+
+- `VDU 23, 27, 1, w; h; r1, g1, b1, a1, r2, g2, b2, a2, ...`: Load colour bitmap data into current bitmap
+  
+  - Data is in RGBA format - i.e. 32 bits per pixel
+
+- `VDU 23, 27, 2, w; h; r, g, b, a`: Load solid bitmap data into current bitmap
+  
+  - Note that this is from checking the code - this is what the documentation says, but does not align with the code - `VDU 23, 27, 2, w; h; col1; col2; b1, b2 ... bn`: Load monochrome bitmap data into current bitmap
+
+- `VDU 23, 27, 3, x; y;`: Draw current bitmap on screen at pixel position x, y
+
+Up to 255 bitmaps are supported
+
+Images (.png) can be converted to the correct format using imagemagick:
+
+```
+convert source.png dest.rgba
+```
+
+
+
+ **Sprites**
+
+- `VDU 23, 27, 4, n`: Select sprite n
+- `VDU 23, 27, 5`: Clear frames in current sprite
+- `VDU 23, 27, 6, n`: Add bitmap n as a frame to current sprite
+- `VDU 23, 27, 7, n`: Activate n sprites
+- `VDU 23, 27, 8`: Select next frame of current sprite
+- `VDU 23, 27, 9`: Select previous frame of current sprite
+- `VDU 23, 27, 10, n`: Select the nth frame of current sprite
+- `VDU 23, 27, 11`: Show current sprite
+- `VDU 23, 27, 12`: Hide current sprite
+- `VDU 23, 27, 13, x; y;`: Move current sprite to pixel position x, y
+- `VDU 23, 27, 14, x; y;`: Move current sprite by x, y pixels
+- `VDU 23, 27, 15`: Update the sprites in the GPU
+- `VDU 23, 27, 16`: Reset the sprites and clear all data (Requires MOS 1.03 or above)
+
+Sprites reference underlying bit maps
+
+##### VDU 23, ASCII-code: User Defined Characters (UDG)
+
+- `VDU 23, ascii-code, n1, n2, n3, n4, n5, n6, n7, n8`: redefine character with ASCII code (>=32).
+
+#### VDU 25 Plot Commands
+
+- `VDU 25, &04, x; y;`: move to
+
+- `VDU 25, &05, x; y;`: line to
+
+- `VDU 25, &40-&47, x; y;`: point
+  
+  - &40-&47: makes no difference which value is used
+
+- `VDU 25, &50-&57, x; y;`: triangle (filled)
+  
+  - &50-&57: makes no difference which value is used
+
+- `VDU 25, &90-&97, x; y;`: circle (not filled)
+  
+  - &90-93: circle centred on current point, with radius specified by either x or y
+  
+  - &94-97: circle centred on current point passing through x, y
+
+Three successive points are maintained, updated whenever a call is made to VDU25. These are used, for example, for the vertices of the triangle.
 
 ## Appendix - eZ80 compile runtime
 

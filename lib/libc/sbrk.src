@@ -33,7 +33,7 @@ _sbrk:
 	ret
 
 	section	.data
-	private	__sbrkbase
+	public	__sbrkbase
 __sbrkbase:
 	dl	___heapbot			; storage for the address of the next block to allocate
 						;   is initialised to the bottom of the heap
