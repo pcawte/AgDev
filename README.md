@@ -268,13 +268,19 @@ In the relevant: example, test or any other directory created at the same level.
 
 - `crt0.src` updated to optimise the initialisation of BSS
 
--  `README.md` updated to included documentation on VDP and VDU commands
+- `README.md` updated to included documentation on VDP and VDU commands
 
 - `mos_api.h` updated to include a structure for manipulating SYSVAR
 
 - `tests/malloc` updated to demonstrate correct functioning of `malloc()`
 
 - `tests/vdu` added to demonstrate use of VDU commands - part of developing VDP/VDU wrapper library
+
+23/07/2023
+
+- Started process of converting  VDP/VDU demo to a library with creation of `vdp_vdu.c` and `vdp_vdu.h` - although still in `tests/vdu` directory.
+  
+  - Added `tests/big-bitmap` to demonstrate the load of large bit maps from a file - this works on the emulator, but not on actual Agon Light HW, where there does not seem to be enough available memory in VDP (not sure of the reason for this).
 
 ### To-Do:
 
@@ -1107,6 +1113,14 @@ The following bits are implemented in VDU 23, 16
 ##### VDU 23, 27: Sprites and Bitmaps
 
 VDU 23, 27 is reserved for the bitmap and sprite functionality
+
+Note that there are differences between the way the emulator and Agon Light hardware handles bitmaps.
+
+- Emulator does not have a memory limit, which means it is possible to load large bitmaps
+  
+  - On the real hardware if a large bitmap is loaded this starts to reduce the amount of memory for the display. For example in mode 3, if a 180x50 bitmap is loaded, the vertical height of mode 3 is reduced from 480 to 356 pixels.
+
+- In mode 0 which is 2 colour, emulator still shows multi-colour images, whereas on the actual HW they are black and white
 
 **Bitmaps**
 
