@@ -282,11 +282,17 @@ In the relevant: example, test or any other directory created at the same level.
   
   - Added `tests/big-bitmap` to demonstrate the load of large bit maps from a file - this works on the emulator, but not on actual Agon Light HW, where there does not seem to be enough available memory in VDP (not sure of the reason for this).
 
+24/07/2023
+
+- `crt0.src` problem fixed with return value from `exit()` or `_Exit()` not being properly returned to MOS
+
 ### To-Do:
 
 - Testing / validation
 
 - Check for ZDS pseudo ops in any assembly language source files copied from ZDS
+
+- Fix scanf so can do backspace
 
 - For stdio remove stuff inherited from CE Toolchain (there is nothing used, but some remnants in the various files)
 
@@ -294,7 +300,7 @@ In the relevant: example, test or any other directory created at the same level.
 
 - Add fscanf 
 
-- Close files that have not been closed as MOS does not close them and runs out of file handles.
+- Close files that have not been closed on `exit()` as MOS does not close them and runs out of file handles.
 
 - Add command line support for input / output redirection
 
@@ -862,6 +868,31 @@ Programs are called from MOS using the the `_exec24()` function built into MOS :
 
 - Return with HL=0
 
+On exit from a program, MOS interprets the value in HL as a "file error", with the following being defined (0=OK, 1=Error accessing SC card, etc):
+
+    "OK",
+    "Error accessing SD card",
+    "Assertion failed",
+    "SD card failure",
+    "Could not find file",
+    "Could not find path",
+    "Invalid path name",
+    "Access denied or directory full",
+    "Access denied",
+    "Invalid file/directory object",
+    "SD card is write protected",
+    "Logical drive number is invalid",
+    "Volume has no work area",
+    "No valid FAT volume",
+    "Error occurred during mkfs",
+    "Volume timeout",
+    "Volume locked",
+    "LFN working buffer could not be allocated",
+    "Too many open files",
+    "Invalid parameter",
+    "Invalid command",
+    "Invalid executable",
+
 ## Standard IO Library
 
 Consists of the following:
@@ -1143,8 +1174,6 @@ Images (.png) can be converted to the correct format using imagemagick:
 ```
 convert source.png dest.rgba
 ```
-
-
 
  **Sprites**
 

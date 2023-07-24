@@ -245,6 +245,7 @@ __start._main := $ - 3
 	public	___exithl
 ___exithl:
 	push 	hl 				; stack hl so appears like coming from _exit()
+	jr	function_enter
 
 ; entry point for void exit(int status) function
 ; ----------------------------------------------
@@ -275,14 +276,15 @@ ___exithl:
 
 	public	_exit
 _exit:		 			; if called exit(), exit code will be on the stack
+	pop 	de 			; but need to remove return address first
 
 ; Finalisation after return from main or exit()
 ; ---------------------------------------------
 ; call functions registered earlier by atexit or on_exit()
 ; and free the space used to store them in the linked list
 
-	jq	.function_enter
-.function_loop:
+	jq	function_enter
+function_loop:
 	ld	hl,(ix+1+0*long) 	; pointer to next item in linked list
 	ld	(exit_functions),hl 	; save it in the exit_functions (pointer to list top)
 	pop	hl 			; on 1st time round loop, this is a pop for the push at ___exithl:
@@ -295,11 +297,11 @@ _exit:		 			; if called exit(), exit code will be on the stack
 	pop	bc,hl
 	call	__indcallhl 		; equivalent to call (hl)
 	pop	bc,bc
-.function_enter:
+function_enter:
 	ld	ix,(exit_functions) 	; get address of next item in linked list
 	ld	bc,-1 			; subtract 1 to test if 0 (NULL pointer)
 	add	ix,bc
-	jq	c,.function_loop 	; repeat if not yet reached NULL
+	jq	c,function_loop 	; repeat if not yet reached NULL
 
 ; Calling of destructors and finalisers
 ; -------------------------------------
@@ -353,6 +355,8 @@ else
   end if
 end if
 
+	jr	skip._abort
+
 ; entry point for void _Exit(int status) function
 ; -----------------------------------------------
 ;       The exit() function causes normal process termination and the
@@ -380,6 +384,7 @@ end if
 	public	__Exit
 __Exit: 					; if called _Exit(), exit code will be on the stack
 						; will already be on stack if coming from main or exit()
+	pop 	de 				; get rid of return address
 	pop 	hl 				; get return code in hl ready for end of program
 	jr	skip._abort
 
@@ -403,7 +408,7 @@ __Exit: 					; if called _Exit(), exit code will be on the stack
 
 	public	_abort
 _abort:
-	ld	hl,1 shl 23+6	; SIGABRT
+	ld	hl,1 shl 23+6			; SIGABRT
 
 ; restore the stack location before exiting
 
