@@ -77,30 +77,30 @@
 
 	assume	adl = 1	
 
-argv_ptrs_max := 16				; Maximum number of arguments allowed in argv
+argv_ptrs_max := 16			; Maximum number of arguments allowed in argv
 
-section .header 				; The location of this is set by locate .header in makefile.mk
+section .header 			; The location of this is set by locate .header in makefile.mk
 
-	jp	__start				; Jump to start
+	jp	__start			; Jump to start
 
 ; The header stuff required by MOS
 ; --------------------------------
 
 _exec_name:
-	db	PROG_NAME, ".bin", 0		; The executable name, only used in argv
+	db	PROG_NAME, ".bin", 0	; The executable name, only used in argv
 
-	align	64				; The executable header is from byte 64 onwards
+	align	64			; The executable header is from byte 64 onwards
 	weak	__mos_header
 __mos_header:
-	db	"MOS"				; Flag for MOS - to confirm this is a valid MOS binary
-	db	00h				; MOS header version 0
-	db	01h				; Flag for run mode (0: Z80, 1: ADL)
+	db	"MOS"			; Flag for MOS - to confirm this is a valid MOS binary
+	db	00h			; MOS header version 0
+	db	01h			; Flag for run mode (0: Z80, 1: ADL)
 
 ; In CE Toolchain there are a few things before __start
 ; -----------------------------------------------------
 
-;	section .init.libs 			; May want to add this later to Agon port
-;	section .init.clock 			; TI-84-CE specific
+;	section .init.libs 		; May want to add this later to Agon port
+;	section .init.clock 		; TI-84-CE specific
 ; 	section .text
 
 ;
@@ -108,26 +108,26 @@ __mos_header:
 ; ------------------------------------------------
 	section .init
 	weak 	__start
-__start:					; entry point - this will normally by at $040045
-	PUSH	AF				; Preserve registers
+__start:				; entry point - this will normally by at $040045
+	PUSH	AF			; Preserve registers
 	PUSH	BC
 	PUSH	DE
 	PUSH	IX
-	PUSH	IY				; Need to preserve IY for MOS
+	PUSH	IY			; Need to preserve IY for MOS
 
 ; Save stack pointer and set up program specific
 
-	ld 	(_exit.sp), sp 			; save SP for exiting (self-modifying)
-	ld	sp, __stack			; defined in makefile.mk
+	ld 	(_exit.sp), sp 		; save SP for exiting (self-modifying)
+	ld	sp, __stack		; defined in makefile.mk
 
-	PUSH	HL				; HL is the address of the cmd line param string
+	PUSH	HL			; HL is the address of the cmd line param string
 
 ; Zero the bss section
 ; --------------------
 ; The HEADER __alloc_base for malloc() is in BSS, so it should be reset as part of this
 
 if ___len_bss > 0			
-	CALL	_clear_bss 			; Clear the RAM in the BSS segment
+	CALL	_clear_bss 		; Clear the RAM in the BSS segment
 end if
 
 ; Reset any global items necessary for rerun
@@ -243,9 +243,11 @@ __start._main := $ - 3
 
 	section	.fini
 	public	___exithl
+
+; make it look like we are arriving here from a call to exit()
 ___exithl:
-	push 	hl 				; stack hl so appears like coming from _exit()
-	jr	function_enter
+	push 	hl  				; dummy value for return address
+	push 	hl 				; return code from main
 
 ; entry point for void exit(int status) function
 ; ----------------------------------------------
@@ -275,16 +277,16 @@ ___exithl:
 ; RETURN VALUE - The exit() function does not return.
 
 	public	_exit
-_exit:		 			; if called exit(), exit code will be on the stack
-	pop 	de 			; but need to remove return address first
+_exit:		 			; if called exit() unwanted return address (to be discarded)
+					; and exit code will be on the stack
 
 ; Finalisation after return from main or exit()
 ; ---------------------------------------------
 ; call functions registered earlier by atexit or on_exit()
 ; and free the space used to store them in the linked list
 
-	jq	function_enter
-function_loop:
+	jq	.function_enter
+.function_loop:
 	ld	hl,(ix+1+0*long) 	; pointer to next item in linked list
 	ld	(exit_functions),hl 	; save it in the exit_functions (pointer to list top)
 	pop	hl 			; on 1st time round loop, this is a pop for the push at ___exithl:
@@ -297,11 +299,11 @@ function_loop:
 	pop	bc,hl
 	call	__indcallhl 		; equivalent to call (hl)
 	pop	bc,bc
-function_enter:
+.function_enter:
 	ld	ix,(exit_functions) 	; get address of next item in linked list
 	ld	bc,-1 			; subtract 1 to test if 0 (NULL pointer)
 	add	ix,bc
-	jq	c,function_loop 	; repeat if not yet reached NULL
+	jq	c,.function_loop 	; repeat if not yet reached NULL
 
 ; Calling of destructors and finalisers
 ; -------------------------------------
@@ -355,8 +357,6 @@ else
   end if
 end if
 
-	jr	skip._abort
-
 ; entry point for void _Exit(int status) function
 ; -----------------------------------------------
 ;       The exit() function causes normal process termination and the
@@ -382,10 +382,10 @@ end if
 ; RETURN VALUE - The _Exit() function does not return.
 
 	public	__Exit
-__Exit: 					; if called _Exit(), exit code will be on the stack
-						; will already be on stack if coming from main or exit()
-	pop 	de 				; get rid of return address
-	pop 	hl 				; get return code in hl ready for end of program
+__Exit: 				; if called _Exit() unwanted return address (to be discarded)
+					; and exit code will be on the stack
+	pop 	de 			; get rid of return address
+	pop 	hl 			; get return code in hl ready for end of program
 	jr	skip._abort
 
 ; entry point for void abort(void) function
@@ -408,7 +408,7 @@ __Exit: 					; if called _Exit(), exit code will be on the stack
 
 	public	_abort
 _abort:
-	ld	hl,1 shl 23+6			; SIGABRT
+	ld	hl, EXIT_ABORT			; EXIT_ABORT
 
 ; restore the stack location before exiting
 
@@ -418,6 +418,10 @@ skip._abort:
 	public	_exit.sp 
 _exit.sp := $-3
 
+if HAS_EXIT_HANDLER
+	call 	_exit_handler
+end if
+
 	POP	IY				; Restore registers before exiting the program
 	POP	IX
 	POP	DE
@@ -425,6 +429,57 @@ _exit.sp := $-3
 	POP	AF
 
 	RET					; exit the program 
+
+; exit handler
+; ------------
+; printers error text based on exit code before returning to MOS
+; this is because MOS interprets anything not zero a file error
+; this is only included if HAS_EXIT_HANDLER (defined in makefile) is true
+
+
+EXIT_SUCCESS	:=	0
+EXIT_FAILURE	:=	1
+EXIT_ABORT	:= 	2
+EXIT_CODE_MAX	:=	2
+
+if HAS_EXIT_HANDLER
+_exit_handler:
+	ld 	a, l
+	cp 	a, EXIT_CODE_MAX+1
+	jr	c, .have_exit_code
+	ld 	a, EXIT_ABORT
+.have_exit_code:
+	sla 	a 				; multiply by nine
+	sla 	a
+	sla 	a
+	add 	a, l
+	ld 	de, exit_strings
+	or 	a, a 				; ld hl, 0
+	sbc 	hl, hl
+	ld 	l, a 				; hl = offset into exit strings table
+	add 	hl, de 				; hl = ptr to exit string
+
+	ld 	b, 9
+.print_err_str_loop:
+	ld 	a, (hl)
+	inc 	hl
+	rst.lil	10h 				; Output character to MOS
+	djnz 	.print_err_str_loop
+
+; Set HL to zero so can exit normally without MOS printing a file error
+
+	or 	a, a 				; ld hl, 0
+	sbc 	hl, hl
+	ret
+
+; Each exit string is 9 bytes long
+
+exit_strings:
+	db 	13, 10, "Okay ", 13, 10
+	db 	13, 10, "Quit ", 13, 10
+	db 	13, 10, "Abort", 13, 10
+
+end if 	; HAS_EXIT_HANDLER
 			
 ; Clear the memory (the heap used for dynamic variables)
 ; ------------------------------------------------------

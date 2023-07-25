@@ -286,6 +286,26 @@ In the relevant: example, test or any other directory created at the same level.
 
 - `crt0.src` problem fixed with return value from `exit()` or `_Exit()` not being properly returned to MOS
 
+25/07/2023
+
+- Exit handler added to print error / exit message at end of program. This is required if program returns non-zero, as MOS interprets this as one of various file errors. 
+  
+  - Added in `crt0.src`
+  
+  - If not required (to slightly shorted the code) can be disabled setting `LDHAS_EXIT_HANDLER:=0` in `makefile`
+    
+    - `makefile.mk` has been updated to include the exit handler by default
+  
+  - `stdlib.h `updated to include 3 exit codes
+    
+    - EXIT_SUCCESS
+    
+    - EXIT_FAILURE
+    
+    - EXIT_ABORT
+  
+  - Added test/exit to test/demonstrate the functionality
+
 ### To-Do:
 
 - Testing / validation
@@ -293,6 +313,10 @@ In the relevant: example, test or any other directory created at the same level.
 - Check for ZDS pseudo ops in any assembly language source files copied from ZDS
 
 - Fix scanf so can do backspace
+
+- Add handling for exit codes from programs as MOS treats them as file errors - which doesn't make sense in the context of most programs.
+
+- Review and improved efficiency / size of crt0.src and resulting binary - including the use of compile time options
 
 - For stdio remove stuff inherited from CE Toolchain (there is nothing used, but some remnants in the various files)
 

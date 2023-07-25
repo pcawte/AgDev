@@ -70,6 +70,7 @@ LDPREFER_OS_LIBC := 0
 LDHAS_LIBC := 0
 LDHAS_LIBCXX := 0
 LDHAS_ARG_PROCESSING ?= 0
+LDHAS_EXIT_HANDLER ?= 1
 
 # verbosity
 V ?= 0
@@ -126,7 +127,7 @@ TARGETMAP ?= $(NAME).map
 ICONIMG := $(wildcard $(call NATIVEPATH,$(ICON)))
 
 # startup routines
-LDCRT0 = $(call NATIVEPATH,$(CEDEV_TOOLCHAIN)/lib/crt/crt0.src)
+LDCRT0 ?= $(call NATIVEPATH,$(CEDEV_TOOLCHAIN)/lib/crt/crt0.src)
 LDBCLTO = $(OBJDIR)/lto.bc
 LDLTO = $(OBJDIR)/lto.src
 
@@ -217,6 +218,7 @@ FASMGFLAGS = \
 	-i $(call QUOTE_ARG,HAS_LIBCXX := $(LDHAS_LIBCXX)) \
 	-i $(call QUOTE_ARG,PREFER_OS_CRT := $(LDPREFER_OS_CRT)) \
 	-i $(call QUOTE_ARG,PREFER_OS_LIBC := $(LDPREFER_OS_LIBC)) \
+	-i $(call QUOTE_ARG,HAS_EXIT_HANDLER := $(LDHAS_EXIT_HANDLER)) \
 	-i $(call QUOTE_ARG,HAS_ARG_PROCESSING := $(LDHAS_ARG_PROCESSING)) \
 	-i $(call QUOTE_ARG,include $(call FASMG_FILES,$(LINKER_SCRIPT))) \
 	-i $(call QUOTE_ARG,range .bss $$$(BSSHEAP_LOW) : $$$(BSSHEAP_HIGH)) \
