@@ -316,6 +316,8 @@ In the relevant: example, test or any other directory created at the same level.
   
   - Updated `tests/scanf` to include test of `fscanf()`
 
+- `gets_s()` updated to handle backspace, cursor left and control-C during input
+
 ### To-Do / Known Issues:
 
 - Testing / validation

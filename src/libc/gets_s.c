@@ -28,18 +28,26 @@ Parameters
 Return value
 
 str on success, a null pointer on failure.
+
+Updates:
+26/07/2023 - added handling for backspace, cursor left and control-C
+
 */
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+
+#define BS_KEY '\x7f'
+
 
 char *gets_s( char *__restrict str, rsize_t n )
 {
-	rsize_t cnt = 0;							// counter for number of characters read
-	int c;										// the current input character
-	char *s = str; 								// location to store next character
+	rsize_t cnt = 0;								// counter for number of characters read
+	int c;											// the current input character
+	char *s = str; 									// location to store next character
 
-	if ( !(str || n) ) return( NULL );  		// check error conditions
+	if ( !(str || n) ) return( NULL );  			// check error conditions
 //	if ( n > RSIZE_MAX ) return( NULL );
 
 	if ( stdin->fhandle != FH_STDIN ) {
@@ -50,14 +58,20 @@ char *gets_s( char *__restrict str, rsize_t n )
 	}
 
 	c = getchar();
-	while ( c != '\n' )						// Keep collecting input until end of line
+	while ( c != '\n' )								// Keep collecting input until end of line
 	{
-		if ( cnt < n ) *s++ = c;			// Store characters if not reached end of buffer
-		cnt++;
+	    if ( c == '\x03' ) exit( EXIT_FAILURE );    // Exit if control C is pressed
+	    if ( c == BS_KEY || c == '\b' ) {
+	    	if ( cnt > 0 ) { cnt--; s--; }
+	    	if ( c == '\b' ) { putchar(' '); putchar(BS_KEY); }
+	    } else {
+			if ( cnt < n ) *s++ = c;				// Store characters if not reached end of buffer
+			cnt++;
+		}
 		c = getchar();
 	}
-	if ( cnt >= n ) return( NULL );			// Return error if no. of characters received > max -1
-	*s = '\0';								// terminate the string
+	if ( cnt >= n ) return( NULL );					// Return error if no. of characters received > max -1
+	*s = '\0';										// terminate the string
 
 	return( str );
 }

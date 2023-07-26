@@ -3,98 +3,162 @@
 	section	.text,"ax",@progbits
 	public	_gets_s
 _gets_s:
-	ld	hl, -6
+	ld	hl, -9
 	call	__frameset
-	ld	de, (ix + 6)
-	ld	iy, (ix + 9)
+	ld	iy, (ix + 6)
+	ld	de, (ix + 9)
 	ld	bc, 0
-	or	a, a
-	sbc	hl, hl
-	ld	(ix - 3), hl
-	push	de
-	pop	hl
+	lea	hl, iy
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
 	jr	nz, BB0_2
-	lea	hl, iy
+	ex	de, hl
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jp	z, BB0_13
+	jp	z, BB0_24
 BB0_2:
 	ld	a, (_stdin)
 	cp	a, -128
-	jr	nz, BB0_8
-	ld	(ix - 6), de
+	jp	nz, BB0_17
+	or	a, a
+	sbc	hl, hl
+	ex	de, hl
+	ld	(ix - 6), iy
 BB0_4:
+	ld	(ix - 3), de
 	call	_getchar
 	push	hl
 	pop	de
+	ld	bc, 3
+	or	a, a
+	sbc	hl, bc
+	jp	z, BB0_20
+	push	de
+	pop	hl
+	ld	bc, 8
+	or	a, a
+	sbc	hl, bc
+	ld	iy, (ix - 6)
+	jr	z, BB0_8
+	push	de
+	pop	hl
 	ld	bc, 10
 	or	a, a
 	sbc	hl, bc
-	jr	z, BB0_11
-	ld	iy, (ix - 3)
-	lea	hl, iy
+	jp	z, BB0_21
+	push	de
+	pop	hl
+	ld	bc, 127
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB0_14
+BB0_8:
+	ld	bc, (ix - 3)
+	push	bc
+	pop	hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	ld	hl, 0
+	jr	z, BB0_10
+	push	bc
+	pop	hl
+	dec	hl
+BB0_10:
+	ld	(ix - 9), hl
+	push	bc
+	pop	hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	ld	bc, -1
+	jr	nz, BB0_12
+	ld	bc, 0
+BB0_12:
+	add	iy, bc
+	ld	(ix - 6), iy
+	ex	de, hl
+	ld	de, 8
+	or	a, a
+	sbc	hl, de
+	ld	hl, (ix - 9)
+	ex	de, hl
+	jr	nz, BB0_4
+	ld	hl, 32
+	push	hl
+	call	_putchar
+	pop	hl
+	ld	hl, 127
+	push	hl
+	call	_putchar
+	pop	hl
+	ld	de, (ix - 9)
+	jp	BB0_4
+BB0_14:
+	ld	hl, (ix - 3)
 	ld	bc, (ix + 9)
 	or	a, a
 	sbc	hl, bc
-	jr	nc, BB0_7
+	jr	nc, BB0_16
 	ld	a, e
-	ld	hl, (ix - 6)
-	ld	(hl), a
-	inc	hl
-	ld	(ix - 6), hl
-BB0_7:
+	ld	(iy), a
 	inc	iy
-	ld	(ix - 3), iy
-	jr	BB0_4
-BB0_8:
+	ld	(ix - 6), iy
+BB0_16:
+	ld	de, (ix - 3)
+	inc	de
+	jp	BB0_4
+BB0_17:
 	ld	hl, _stdin
 	push	hl
 	ld	hl, (ix + 9)
 	push	hl
-	push	de
+	push	iy
 	call	_fgets
-	ld	bc, 0
 	pop	de
 	pop	de
 	pop	de
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jr	z, BB0_13
+	ld	bc, 0
+	jr	z, BB0_24
 	ld	hl, (ix + 6)
 	push	hl
 	call	_strlen
-	ld	bc, (ix + 6)
 	push	hl
 	pop	de
 	pop	hl
-	push	bc
+	ld	hl, (ix + 6)
+	push	hl
 	pop	iy
 	add	iy, de
 	ld	a, (iy - 1)
 	cp	a, 10
-	jr	nz, BB0_13
+	jr	nz, BB0_23
 	dec	iy
-	ld	(ix - 6), iy
-	jr	BB0_12
-BB0_11:
+	jr	BB0_22
+BB0_20:
+	ld	hl, 1
+	push	hl
+	call	_exit
+	pop	hl
+BB0_21:
 	ld	hl, (ix - 3)
 	ld	de, (ix + 9)
 	or	a, a
 	sbc	hl, de
-	ld	bc, 0
-	jr	nc, BB0_13
-BB0_12:
-	ld	hl, (ix - 6)
-	ld	(hl), 0
 	ld	hl, (ix + 6)
+	ld	bc, 0
+	jr	nc, BB0_24
+BB0_22:
+	ld	(iy), 0
+BB0_23:
 	push	hl
 	pop	bc
-BB0_13:
+BB0_24:
 	push	bc
 	pop	hl
 	ld	sp, ix
@@ -107,6 +171,8 @@ BB0_13:
 	extern	__Unwind_SjLj_Register
 	extern	__Unwind_SjLj_Unregister
 	extern	__frameset
+	extern	_exit
 	extern	_fgets
+	extern	_putchar
 	extern	_strlen
 	extern	_getchar
