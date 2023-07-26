@@ -11,6 +11,10 @@
 
 // This version is a simplified version with the multi-threading stripped out
 
+// Updates by Paul Cawte
+// 25/06/2023 - minor changes to port to LLVM toolchain
+// 24/07/2023 - updated to handle backspace key during input and Ctrl-C
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stddef.h>
@@ -33,7 +37,10 @@
 #define INT_CHARS 127
 #endif
 
-static const char _PTR_  bptr;     // LLVM port - added const
+#define BS_KEY '\x7f'
+
+static const char _PTR_ bptr;                          // LLVM port - added const
+FILE _PTR_ fp_fscanf;
 static va_list argp;
 static int len;
 static unsigned char fields;
@@ -42,27 +49,36 @@ static int prev_ch;
 static char isunget;
 
 /****************************************/
-/*					*/
-/*	     get a character		*/
-/*					*/
+/*					                    */
+/*	     get a character		        */
+/*					                    */
 /****************************************/
 
 static int get(void)
 {
-  ++len;
-  if (bptr)
-    return(*(bptr++));
-  else if (isunget==1) {
+    ++len;
+    if (bptr)                                           // If reading from a string (i.e. sscanf)
+        return(*(bptr++));      
+    else if (isunget==1) {
     	isunget = 0;
 		return prev_ch;	
-  }
-  return(prev_ch = getchar());
+    }
+    if ( fp_fscanf ) 
+        return ( prev_ch = fgetc( fp_fscanf ) );
+    prev_ch = getchar();
+    if ( prev_ch == '\x03' ) exit( EXIT_FAILURE );      // Exit if control C is pressed
+    else if ( prev_ch == '\b') {                        // Change cursor left to BS
+        prev_ch = BS_KEY;
+        putchar( ' ' );                                 // Erase the character printed on the screen
+        putchar( BS_KEY );
+    }
+    return prev_ch;
 }
 
 /****************************************/
-/*					*/
-/*	     unget a character		*/
-/*					*/
+/*					                    */
+/*	     unget a character		        */
+/*					                    */
 /****************************************/
 
 static void unget(void)
@@ -74,9 +90,9 @@ static void unget(void)
 }
 
 /****************************************/
-/*					*/
-/*	Handle pointer conversions	*/
-/*					*/
+/*                                      */
+/*	Handle pointer conversions          */
+/*					                    */
 /****************************************/
 
 static unsigned char pointer(void)
@@ -116,9 +132,9 @@ static unsigned char pointer(void)
 }
 
 /****************************************/
-/*					*/
-/*	Handle string conversions	*/
-/*					*/
+/*					                    */
+/*	Handle string conversions	        */
+/*					                    */
 /****************************************/
 
 static unsigned char string(void)
@@ -131,19 +147,26 @@ static unsigned char string(void)
      p = va_arg(argp,char _PTR_);
   if (fmt_str.field_width == 0)
     fmt_str.field_width = 127;
-  do {
+  do {                                          // Skip over any leading white space
     if ((ch = get()) == EOF)
       return false;
   } while (isspace(ch));
-  unget();
+  unget();                                      // Put the character back & check for EOF
   if ((ch = get()) == EOF)
     return false;
-  for (i=0; !isspace(ch) && ch;) {
-    if (p)
-      *(p++) = ch;
-    i++;
-    if (i >= fmt_str.field_width)
-      break;
+  for (i=0; !isspace(ch) && ch;) {              // Consumer characters until white space
+    if ( ch == BS_KEY ) {                       // Deal with backspace
+        if ( i>0 ) {
+            i--;
+            if (p) p--;
+        }
+    } else {
+        if (p)                                  // Store characters if not NULL pointer
+          *(p++) = ch;
+        i++;
+        if (i >= fmt_str.field_width)
+          break;
+    }
     if ((ch = get()) == EOF)
       return false;
   }
@@ -158,9 +181,9 @@ static unsigned char string(void)
 }
 
 /****************************************/
-/*					*/
-/*	Handle character conversions	*/
-/*					*/
+/*					                    */
+/*	Handle character conversions	    */
+/*					                    */
 /****************************************/
 
 static unsigned char character(void)
@@ -173,21 +196,30 @@ static unsigned char character(void)
     p = va_arg(argp,char _PTR_);
   if (fmt_str.field_width == 0)
     fmt_str.field_width = 1;
-  for (i=0;i<fmt_str.field_width;++i)
+  for (i=0;i<fmt_str.field_width;)
   {
     if ((ch = get()) == EOF)
       return false;
-    if (p)
-      *(p++) = ch;
-    ++fields;
+    if ( ch == BS_KEY ) {                       // Deal with backspace
+        if ( i>0 ) {
+            i--;
+            fields--;
+            if (p) p--;
+        }
+    } else {
+        if (p)
+          *(p++) = ch;
+        ++fields;
+        ++i;
+    }
   }
   return true;
 }
 
 /****************************************/
-/*					*/
-/*	Floating point conversions	*/
-/*					*/
+/*					                    */
+/*	Floating point conversions	        */
+/*					                    */
 /****************************************/
 
 static unsigned char fpoint(void)
@@ -197,9 +229,9 @@ static unsigned char fpoint(void)
   char buffer[FLT_CHARS];
   char _PTR_ bp = buffer;
   double dval;
-  unsigned char takeEe=true;
-  unsigned char takeDot=true;
-  unsigned char takeSign=true;
+  unsigned char takeEe = true;
+  unsigned char takeDot = true;
+  unsigned char takeSign = true;
 
   if (fmt_str.field_width == 0 || fmt_str.field_width > sizeof(buffer)-1)
     fmt_str.field_width = sizeof(buffer)-1;
@@ -208,27 +240,30 @@ static unsigned char fpoint(void)
       return false;
   } while (isspace(ch));
 
-  for (i=0; i < fmt_str.field_width; ++i)
+  for (i=0; i < fmt_str.field_width; )
   {
-    if (takeEe && (ch == 'e' || ch == 'E'))
-    {
-       takeEe = false;
-       takeSign=true;
-       takeDot=false;
-    } else
-    if (takeDot && ch=='.')
-    {
-      takeDot=false;
-    } else
-    if (   (takeSign && (ch == '-' || ch == '+'))
-       ||  isdigit(ch) )
-    {
-        takeSign = false;
-    } else
-    {
-        break;
+    if ( ch == BS_KEY ) {                           // Deal with backspace
+        if ( i > 0 ) {
+            ch = *(--bp);
+            if ( ch == '-' || ch == '+' ) takeSign = true;
+            else if ( ch == '.' ) takeDot = true;
+            else if ( ch == 'e' || ch == 'E' ) takeEe = true;
+        }
+    } else { 
+        if (takeEe && (ch == 'e' || ch == 'E')) {
+            takeEe = false;
+            takeSign = true;
+            takeDot = false;
+        } else if (takeDot && ch=='.') {
+            takeDot = false;
+        } else if ( (takeSign && (ch == '-' || ch == '+')) ||  isdigit(ch) ) {
+            takeSign = false;
+        } else {
+            break;
+        }
+        *(bp++) = ch;
+        i++;
     }
-    *(bp++) = ch;
     if ((ch = get()) == EOF)
       return false;
   }
@@ -260,9 +295,9 @@ static unsigned char fpoint(void)
 }
 
 /****************************************/
-/*					*/
-/*	Handle scalar conversions	*/
-/*					*/
+/*					                    */
+/*	Handle scalar conversions	        */
+/*					                    */
 /****************************************/
 
 static unsigned char scalar(int radix)
@@ -280,20 +315,21 @@ static unsigned char scalar(int radix)
       return false;
   } while (isspace(ch));
   unget();
-  if ((ch = get()) == EOF)
-    return false;
-  for (i=0; (radix == 10 && isdigit(ch)) ||
-	   (radix == 16 && isxdigit(ch)) ||
-	   (radix == 8 && ch >= '0' && ch <= '7') ||
-	   ch == '-' ||
-	   ch == '+';) {
-    *(bp++) = ch;
-    i++;
-    if (i >= fmt_str.field_width)
-      break;
-    if ((ch = get()) == EOF)
-      return false;
-  }
+
+    for ( i = 0; (ch = get()) != EOF; ) {
+        if ( ch == BS_KEY ) {                               // Deal with backspace or cursor left
+            if ( i>0 ) { i--; bp--; }
+        }
+        else if ( (radix == 10 && isdigit(ch)) || (radix == 16 && isxdigit(ch)) ||
+                    (radix == 8 && ch >= '0' && ch <= '7') || ch == '-' || ch == '+' ) {
+            *(bp++) = ch;
+            i++;
+            if ( i >= fmt_str.field_width ) break;
+        }
+        else break;
+    }
+    if ( ch == EOF ) return false;
+
   if (bp == buffer)
     return(fields);
   if (i < fmt_str.field_width)
@@ -318,9 +354,9 @@ static unsigned char scalar(int radix)
 }
 
 /****************************************/
-/*					*/
-/*	  Handle set conversions	*/
-/*					*/
+/*					                    */
+/*	  Handle set conversions	        */
+/*					                    */
 /****************************************/
 
 
@@ -386,9 +422,10 @@ static unsigned char set(void)
 * _u_scan - scan formated string from a file or string
 *
 * Inputs:
-*	src - NULL = input from keyboard, else input from string
-*       fmt - format string
-*	argp - argument list pointer
+*   fp -    NULL = from stdin or string, else from file
+*	src -   NULL = input from keyboard, else input from string (this takes precedence)
+*   fmt -   format string
+*	argp -  argument list pointer
 *
 * Returns:
 *	Number of characters transmitted, or
@@ -396,7 +433,7 @@ static unsigned char set(void)
 *
 *************************************************/
 
-int _u_scan(const char _PTR_ src, const char _PTR_ fmt,va_list ap)
+int _u_scan(FILE _PTR_ fp, const char _PTR_ src, const char _PTR_ fmt,va_list ap)
 {
 //  int i;
   int ch;
@@ -408,11 +445,14 @@ int _u_scan(const char _PTR_ src, const char _PTR_ fmt,va_list ap)
   prev_ch = 0;
   isunget = 0;
 
+  fp_fscanf = fp;
+  bptr = src; 
+/*
   bptr = (void _PTR_)NULL;
 
   if (src)
     bptr = src;
-
+*/
   while ( ok && prev_ch!=EOF && *fmt) {
     fmt = _u_sscan(fmt,&fmt_str);
     if (fmt_str.status == FMT_ERR)

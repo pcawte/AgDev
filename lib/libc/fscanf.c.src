@@ -1,19 +1,20 @@
 	section	.text,"ax",@progbits
 	assume	adl = 1
 	section	.text,"ax",@progbits
-	public	_scanf
-_scanf:
+	public	_fscanf
+_fscanf:
 	ld	hl, -3
 	call	__frameset
-	ld	hl, (ix + 6)
-	ld	de, 0
-	lea	bc, ix + 9
-	ld	(ix - 3), bc
-	ld	bc, (ix - 3)
-	push	bc
+	ld	iy, (ix + 6)
+	ld	de, (ix + 9)
+	ld	bc, 0
+	lea	hl, ix + 12
+	ld	(ix - 3), hl
+	ld	hl, (ix - 3)
 	push	hl
 	push	de
-	push	de
+	push	bc
+	push	iy
 	call	__u_scan
 	ld	sp, ix
 	pop	ix

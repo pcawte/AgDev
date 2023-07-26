@@ -1,13 +1,17 @@
 /************************************************************************/
-/*									*/
-/*			Copyright (C)1987-2008 by				*/
-/*		            Zilog, Inc.           			*/
-/*									*/
-/*		        San Jose, California     			*/
-/*									*/
+/*									                                    */
+/*			Copyright (C)1987-2008 by				                    */
+/*		            Zilog, Inc.           			                    */
+/*									                                    */
+/*		        San Jose, California     			                    */
+/*									                                    */
 /************************************************************************/
 
 // This version is a simplified version with the multi-threading stripped out
+
+// Updates by Paul Cawte
+// 25/06/2023 - minor changes to port to LLVM toolchain
+// 24/07/2023 - updated to enable support for fscanf
 
 #include "format.h"
 #include <stdarg.h>
@@ -31,5 +35,5 @@ int scanf( const char *fmt,...)
   va_list ap;
 
   va_start(ap,fmt);
-  return(_u_scan((void *)NULL,fmt,ap));
+  return _u_scan( (FILE *)NULL, (void *)NULL, fmt, ap );
 }

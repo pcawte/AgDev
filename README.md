@@ -306,13 +306,21 @@ In the relevant: example, test or any other directory created at the same level.
   
   - Added test/exit to test/demonstrate the functionality
 
-### To-Do:
+26/07/2023
+
+- `scanf` library updated
+  
+  - Handling of backspace, cursor left and control-C during input
+  
+  - Added `fscanf()`
+  
+  - Updated `tests/scanf` to include test of `fscanf()`
+
+### To-Do / Known Issues:
 
 - Testing / validation
 
 - Check for ZDS pseudo ops in any assembly language source files copied from ZDS
-
-- Fix scanf so can do backspace
 
 - Add handling for exit codes from programs as MOS treats them as file errors - which doesn't make sense in the context of most programs.
 
@@ -322,15 +330,22 @@ In the relevant: example, test or any other directory created at the same level.
 
 - Change printf with NULL pointers do something sensible
 
-- Add fscanf 
+- Close files that have not been closed on `exit()` as MOS does not close them and runs out of file handles - plus this is part of the C standard
 
-- Close files that have not been closed on `exit()` as MOS does not close them and runs out of file handles.
+### To-Do - New Features
 
-- Add command line support for input / output redirection
+- Add command line support for redirection of stderr
+
+- Add simulation of pipes
 
 - Port / replace / expand library where necessary to the Agon Light. Including:
   
   - investigate benefits of buffering for stdio.
+  - VDP/VDU library
+
+- Create own repository that is not dependent on CE Toolchain
+  
+  - Clean out the CE specific stuff
 
 - Test / proof of concept for other LLVM front-ends. See, for example, [GitHub - maddymakesgames/Rust-CE: A proof-of-concept of rust on the ti-84+ce](https://github.com/maddymakesgames/Rust-CE), which is a proof of concept for running Rust on the TI-84-CE calculator. 
 

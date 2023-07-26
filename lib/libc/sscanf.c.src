@@ -12,15 +12,18 @@ _sscanf:
 	sbc	hl, bc
 	jr	z, BB0_2
 	ld	de, (ix + 9)
+	ld	iy, 0
 	lea	bc, ix + 12
 	ld	(ix - 3), bc
 	ld	bc, (ix - 3)
 	push	bc
 	push	de
 	push	hl
+	push	iy
 	call	__u_scan
 	push	hl
 	pop	de
+	pop	hl
 	pop	hl
 	pop	hl
 	pop	hl

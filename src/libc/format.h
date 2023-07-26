@@ -99,7 +99,7 @@ extern void _u_uitoa(unsigned int);
 extern void _u_ltoa(long);
 extern void _u_ultoa(unsigned long);
 extern int  _u_print(char _PTR_ src,char _PTR_ fmt,va_list);
-extern int  _u_scan(const char _PTR_ src, const char _PTR_ fmt,va_list ap); // LLVM port added const
+extern int  _u_scan(FILE _PTR_ fp, const char _PTR_ src, const char _PTR_ fmt,va_list ap); // LLVM port added const
 extern void _u_dtof(double);
 extern void _u_dtog(double);
 
