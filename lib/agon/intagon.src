@@ -1,0 +1,165 @@
+; Various interrupt related routines
+;
+; Paul Cawte 01/08/2023
+;
+; Index values relative to _vdp_protocol_data for keyboard events
+
+prot_state	:= 	-6
+prot_cmd	:=	-5
+prot_len	:=	-4
+prot_ptr	:=	-3
+prot_data 	:= 	0
+key_ascii 	:= 	0
+key_mods 	:= 	1
+key_code 	:=	2
+key_down	:= 	3
+
+	assume	adl=1
+
+	section	.text
+
+; Default interrupt handler - does nothing
+
+	public	__agdev_default_mi_handler
+__agdev_default_mi_handler:
+	ei
+	reti.l
+
+; Modified UART0 interrupt handler
+
+	public 	__agdev_uart0_handler
+	public 	__agdev_UART0_serial_RX
+	public 	__agdev_vdp_protocol_data
+	public	__agdev_vdp_protocol
+__agdev_uart0_handler:
+	di
+	push	af 			; save the registers
+	push	bc
+	push	de
+	push	hl
+	push 	ix
+
+	call	0 			; Address to be replaced by UART0_serial_RX
+__agdev_UART0_serial_RX := $-3
+	ld	c, a
+	ld 	hl, 0 			; Address to be replaced by _vdp_protocol_data
+__agdev_vdp_protocol_data := $-3
+	push	hl 			; Save address for later
+	call 	0 			; Address to be replaced by vdp_protocol
+__agdev_vdp_protocol := $-3
+
+	pop	ix			; Get address of _vdp_protocol_data
+
+	ld 	hl, (ix+prot_state)
+	ld 	de, 000100h 		; state = 0, cmd = 1, len = 0
+	or 	a, a 			; clear carry
+	sbc 	hl, de
+	jr	nz, end_of_interrupt    ; quick if not just finished processing KEY event
+
+	ld 	a, (ix+key_code)
+	cp	a, 030h
+	jr 	c, got_key_code		; if less than 30h (A)
+	cp 	a, 04Ah
+	jr 	nc, check_punctuation    ; if less than or equal to 49h (Z)
+	sub 	a, 030h - 016h 		; key code for 'a' is 16h
+	jr 	got_key_code
+
+check_punctuation:
+
+	cp 	a, 04Dh 		; translation for shifted punctuation keys
+	jr 	c, got_key_code
+	cp 	a, 074h
+	jr 	nc, got_key_code
+
+	ld 	de, key_code_trans - 04Dh 
+	or 	a, a
+	sbc 	hl, hl
+	ld 	l, a
+	add 	hl, de 			; hl is the address in the translation table
+	ld 	a, (hl)
+
+got_key_code:
+;	jr 	save_key
+
+	ld 	c, a 			; save the key for later
+	and 	a, 07h 			; isolate the bottom 3 bits as the mask index
+	ld 	de, bit_mask
+	or 	a, a
+	sbc 	hl, hl
+	ld 	l, a
+	add 	hl, de
+	ld 	b, (hl) 		; have the bit mask in b (key code is in c)
+
+	ld  	de, _vdp_key_bits
+	or 	a, a
+	sbc 	hl, hl
+	ld 	l, c
+	srl     l 			; divide by eight
+	srl 	l
+	srl 	l
+	add 	hl, de 			; hl is the address in the vdp_key_bits table
+
+ 	ld 	a, (ix+key_down)
+ 	or 	a, a
+ 	ld 	a, b 			; get mask ready for both branch paths
+ 	jr 	z, key_not_down
+
+ 	or 	a, (hl)			; key down - set bit
+ 	ld 	(hl), a
+ 	jr 	end_of_interrupt
+
+key_not_down:
+	cpl 	 			; key up - clear bit
+	and 	a, (hl)
+	ld 	(hl), a
+
+save_key:
+;	ld 	(_vdp_key_bits), a
+
+end_of_interrupt:
+	pop 	ix 			; restore the registers
+	pop 	hl
+	pop	de
+	pop	bc
+	pop	af
+	ei
+	reti.l
+
+	; key code translations codes 4D to 73
+	; - where there is no translation required, translates to itself
+key_code_trans:
+	db 	4Ch			; 4D
+	db 	4Eh, 4Fh, 50h
+	db 	4Eh			; 51
+	db      52h, 53h
+	db 	0ah			; 54
+	db 	55h, 56h, 57h, 58h, 59h
+	db 	5ch			; 5a
+	db 	5bh, 5ch
+	db 	09h			; 5d
+	db 	55h			; 5e
+	db 	05h			; 5f
+	db 	04h 			; 60
+	db 	08h 			; 61
+	db 	06h 			; 62
+	db 	63h, 64h
+	db 	07h 			; 65
+	db 	03h 			; 66
+	db 	57h 			; 67
+	db 	6ah 			; 68
+	db 	6bh 			; 69
+	db 	6ah, 6bh	
+	db 	0bh 			; 6c
+	db 	02h 			; 6d
+	db 	5bh 			; 6e
+	db 	59h 			; 6f
+	db 	4fh 			; 70
+	db 	71h, 72h
+	db 	4ah 			; 73	
+
+	; bit masks - used for bit packing
+bit_mask:
+	db 	001h, 002h, 004h, 008h
+	db 	010h, 020h, 040h, 080h 
+
+extern	_vdp_key_bits

@@ -318,23 +318,125 @@ In the relevant: example, test or any other directory created at the same level.
 
 - `gets_s()` updated to handle backspace, cursor left and control-C during input
 
+01/08/2023
+
+- `Agon-HW.md` file started to collect documentation on Agon hardware
+  
+  - Section on UART0 / VDP interrupt with a focus on understanding keyboard input
+
+- `lib/agon/intagon.src` created - intercepts Agon UART0 interrupt to maintain an array of bits for key presses (one bit per key). This allows multiple key presses to be detected at the same time
+
+- `vdp_vdu` library created for using VDP graphics via the VDU commands
+  
+  - `vdp_bell()`
+  
+  - `vdp_cursor_left()`
+  
+  - `vdp_cursor_right()`
+  
+  - `vdp_cursor_down()`
+  
+  - `vdp_cursor_up()`
+  
+  - `vdp_clear_screen()`
+  
+  - `vdp_clear_graphics()`
+  
+  - `vdp_cursor_home()`
+  
+  - `vdp_cursor_tab()`
+  
+  - vdp_set_`text_colour()`
+  
+  - `vdp_mode()`
+  
+  - `vdp_graphics_origin()`
+  
+  - `vdp_get_scr_dims()`
+  
+  - `vdp_logical_scr_dims()`
+  
+  - `vdp_cursor_enable()`
+  
+  - `vdp_move_to()`
+  
+  - `vdp_line_to()`
+  
+  - `vdp_point()`
+  
+  - `vdp_triangle()`
+  
+  - `vdp_circle_radius()`
+  
+  - `vdp_circle()`
+  
+  - `vdp_select_bitmap()`
+  
+  - `vdp_draw_bitmap()`
+  
+  - `vdp_load_bitmap()`
+  
+  - `vdp_load_bitmap_file()`
+  
+  - `vdp_load_sprite_bitmaps()`
+  
+  - `vdp_create_sprite()`
+  
+  - `vdp_select_sprite()`
+  
+  - `vdp_move_sprite_to()`
+  
+  - `vdp_move_sprite_by()`
+  
+  - `vdp_show_sprite()`
+  
+  - `vdp_hide_sprite()`
+  
+  - `vdp_next_sprite_frame()`
+  
+  - `vdp_prev_sprite_frame()`
+  
+  - `vdp_nth_sprite_frame()`
+  
+  - `vdp_activate_sprites()`
+  
+  - `vdp_refresh_sprites()`
+  
+  - `vdp_reset_sprites()`
+
+- `vdp_key` library created for accessing VDP keyboard data to maintain a bit map of key presses (can be simultaneous)
+  
+  - `vdp_key_init():` initialise the VDP keyboard routines, which hook into the UART0 interrupt handler and maintains an array `vdp_key_bits[32]` of up/down status per key.
+  
+  - `vdp_key_reset_interrupt()`: resets the original interrupt vector. This does not normally need to be explicitly as it is registered to be call at the end of the program via `atexit()`. It can however be safely called. 
+  
+  - `vdp_set_key_event_handler()`: sets a handler function to be called when a key is pressed. It is passed a KEY_EVENT
+  
+  - `vdp_update_key_state()`:  this should be called frequently in the main game loop, otherwise events might be missed - there is in any case a small chance of this (could consider integrating into the interrupt routine). It is the routine that tiggers the event handler.
+  
+  - `vdp_check_key_press()`: checks for a key press by examining `vdp_key_bits[]`.
+
+- `linker_script`: updated to include the above 3 items and remove some CE items left over from the original version.
+
+- `tests/sprite` added to demonstrate sprites and keyboard handling
+
 ### To-Do / Known Issues:
 
 - Testing / validation
 
 - Check for ZDS pseudo ops in any assembly language source files copied from ZDS
 
-- Add handling for exit codes from programs as MOS treats them as file errors - which doesn't make sense in the context of most programs.
-
 - Review and improved efficiency / size of crt0.src and resulting binary - including the use of compile time options
 
 - For stdio remove stuff inherited from CE Toolchain (there is nothing used, but some remnants in the various files)
 
-- Change printf with NULL pointers do something sensible
+- Change printf %s with NULL pointers to do something sensible
 
 - Close files that have not been closed on `exit()` as MOS does not close them and runs out of file handles - plus this is part of the C standard
 
 ### To-Do - New Features
+
+- Complete vdp_vdu library - for example, need to add routines for colours and palette
 
 - Add command line support for redirection of stderr
 
@@ -1229,10 +1331,26 @@ convert source.png dest.rgba
 - `VDU 23, 27, 12`: Hide current sprite
 - `VDU 23, 27, 13, x; y;`: Move current sprite to pixel position x, y
 - `VDU 23, 27, 14, x; y;`: Move current sprite by x, y pixels
-- `VDU 23, 27, 15`: Update the sprites in the GPU
+- `VDU 23, 27, 15`: Update / refresh the sprites in the GPU
 - `VDU 23, 27, 16`: Reset the sprites and clear all data (Requires MOS 1.03 or above)
 
 Sprites reference underlying bit maps
+
+Sprite creation order:
+
+1) Create bitmap(s) for sprite, or re-use bitmaps already created
+
+2) Select the correct sprite ID (0-255). The GDU only accepts sequential sprite sets, starting from ID 0. All sprites must be adjacent to 0
+
+3) Clear out any frames from previous program definitions
+
+4) Add one or more frames to each sprite
+
+5) Activate sprite to the GDU
+
+6) Show sprites on screen / move them around as needed
+
+7) Refresh
 
 ##### VDU 23, ASCII-code: User Defined Characters (UDG)
 
@@ -1259,6 +1377,8 @@ Sprites reference underlying bit maps
   - &94-97: circle centred on current point passing through x, y
 
 Three successive points are maintained, updated whenever a call is made to VDU25. These are used, for example, for the vertices of the triangle.
+
+## VDP / Keyboard Interrupts
 
 ## Appendix - eZ80 compile runtime
 

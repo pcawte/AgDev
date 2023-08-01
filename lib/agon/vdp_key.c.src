@@ -1,0 +1,340 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_vdp_key_init
+_vdp_key_init:
+	ld	hl, __agdev_default_mi_handler
+	push	hl
+	ld	hl, 24
+	push	hl
+	call	_mos_setintvector
+	pop	de
+	pop	de
+	ld	(_uart0_orig_handler), hl
+	push	hl
+	ld	hl, 24
+	push	hl
+	call	_mos_setintvector
+	pop	hl
+	pop	hl
+	ld	hl, (_uart0_orig_handler)
+	ld	de, __agdev_UART0_serial_RX
+	push	de
+	ld	de, _fp1
+	push	de
+	push	hl
+	call	_check_bytes_get_int
+	pop	de
+	pop	de
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB0_3
+	ld	de, _fp2
+	ld	bc, __agdev_vdp_protocol_data
+	push	bc
+	push	de
+	push	hl
+	call	_check_bytes_get_int
+	pop	de
+	pop	de
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB0_3
+	ld	de, _fp3
+	ld	bc, __agdev_vdp_protocol
+	push	bc
+	push	de
+	push	hl
+	call	_check_bytes_get_int
+	pop	de
+	pop	de
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB0_4
+BB0_3:
+	scf
+	sbc	hl, hl
+	ret
+BB0_4:
+	ld	de, _fp4
+	push	de
+	push	hl
+	call	_check_bytes
+	pop	de
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	ld	hl, -1
+	jr	z, BB0_6
+	ld	de, -6
+	ld	iy, _vdp_key_reset_interrupt
+	ld	bc, (__agdev_vdp_protocol_data)
+	push	bc
+	pop	hl
+	add	hl, de
+	ld	(_vdp_ctrl_ptr), hl
+	ld	(_vdp_key_event_ptr), bc
+	push	iy
+	call	_atexit
+	pop	hl
+	ld	hl, __agdev_uart0_handler
+	push	hl
+	ld	hl, 24
+	push	hl
+	call	_mos_setintvector
+	pop	hl
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+BB0_6:
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_check_bytes_get_int
+_check_bytes_get_int:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	de, (ix + 9)
+	push	de
+	push	hl
+	call	_check_bytes
+	push	hl
+	pop	iy
+	pop	hl
+	pop	hl
+	lea	hl, iy
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB1_2
+	ld	hl, 0
+	jr	BB1_3
+BB1_2:
+	ld	hl, (ix + 12)
+	ld	de, (iy)
+	ld	(hl), de
+	lea	hl, iy + 3
+BB1_3:
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_check_bytes
+_check_bytes:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	iy, (ix + 9)
+	ld	bc, 0
+BB2_1:
+	ld	e, (iy)
+	ld	a, e
+	or	a, a
+	jr	z, BB2_3
+	inc	iy
+	ld	a, (hl)
+	inc	hl
+	cp	a, e
+	jr	z, BB2_1
+	jr	BB2_4
+BB2_3:
+	push	hl
+	pop	bc
+BB2_4:
+	push	bc
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_vdp_key_reset_interrupt
+_vdp_key_reset_interrupt:
+	ld	hl, (_uart0_orig_handler)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB3_2
+	push	hl
+	ld	hl, 24
+	push	hl
+	call	_mos_setintvector
+	pop	hl
+	pop	hl
+	ld	hl, 0
+	ld	(_uart0_orig_handler), hl
+BB3_2:
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_vdp_set_key_event_handler
+_vdp_set_key_event_handler:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	(_event_handler), hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_vdp_update_key_state
+_vdp_update_key_state:
+	ld	hl, -4
+	call	__frameset
+	ld	iy, (_vdp_key_event_ptr)
+	lea	hl, iy
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB5_5
+	ld	hl, (_vdp_ctrl_ptr)
+	ld	hl, (hl)
+	ld	bc, (iy)
+	ld	e, (iy + 3)
+	push	bc
+	pop	iy
+	ld	(ix - 4), bc
+	ld	(ix - 1), e
+	ld	bc, 256
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB5_5
+	ld	bc, (_event_handler)
+	lea	hl, iy
+	call	__lcmpzero
+	jr	z, BB5_5
+	push	bc
+	pop	hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB5_5
+	lea	hl, ix - 4
+	push	de
+	push	de
+	ld	iy, 0
+	add	iy, sp
+	ld	a, (hl)
+	ld	(iy), a
+	ld	a, (ix - 3)
+	ld	(iy + 1), a
+	ld	a, (ix - 2)
+	ld	(iy + 2), a
+	ld	a, (ix - 1)
+	ld	(iy + 3), a
+	push	bc
+	pop	hl
+	call	__indcallhl
+	pop	hl
+	pop	hl
+BB5_5:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_vdp_check_key_press
+_vdp_check_key_press:
+	call	__frameset0
+	ld	c, (ix + 6)
+	ld	b, 3
+	ld	iy, _vdp_key_bits
+	ld	hl, _bit_masks
+	ld	a, c
+	and	a, 7
+	ld	e, a
+	ld	a, c
+	call	__bshru
+	ld	bc, 0
+	ld	c, a
+	add	iy, bc
+	ld	c, e
+	add	hl, bc
+	ld	a, (hl)
+	and	a, (iy)
+	or	a, a
+	jr	nz, BB6_2
+	ld	a, 0
+	jr	BB6_3
+BB6_2:
+	ld	a, -1
+BB6_3:
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.bss,"aw",@nobits
+	public	_vdp_key_bits
+_vdp_key_bits:
+	rb	32
+
+	section	.bss,"aw",@nobits
+	private	_uart0_orig_handler
+_uart0_orig_handler:
+	rb	3
+
+	section	.data,"aw",@progbits
+	private	_fp1
+_fp1:
+	db	"Ûı≈’ÂÕ", 0
+
+	section	.data,"aw",@progbits
+	private	_fp2
+_fp2:
+	db	"O!", 0
+
+	section	.data,"aw",@progbits
+	private	_fp3
+_fp3:
+	db	"Õ", 0
+
+	section	.data,"aw",@progbits
+	private	_fp4
+_fp4:
+	db	"·—¡Ò˚[ÌM", 0
+
+	section	.bss,"aw",@nobits
+	private	_vdp_ctrl_ptr
+_vdp_ctrl_ptr:
+	rb	3
+
+	section	.bss,"aw",@nobits
+	private	_vdp_key_event_ptr
+_vdp_key_event_ptr:
+	rb	3
+
+	section	.bss,"aw",@nobits
+	private	_event_handler
+_event_handler:
+	rb	3
+
+	section	.rodata,"a",@progbits
+	private	_bit_masks
+_bit_masks:
+	db	" @Ä"
+
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 6c61664110f888c0285ae4c48b150c9a7a4361bb)"
+	extern	__Unwind_SjLj_Register
+	extern	__frameset
+	extern	__lcmpzero
+	extern	__indcallhl
+	extern	__agdev_UART0_serial_RX
+	extern	__Unwind_SjLj_Unregister
+	extern	__agdev_uart0_handler
+	extern	_mos_setintvector
+	extern	__agdev_vdp_protocol
+	extern	__agdev_vdp_protocol_data
+	extern	_atexit
+	extern	__agdev_default_mi_handler
+	extern	__bshru
+	extern	__frameset0

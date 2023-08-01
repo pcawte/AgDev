@@ -1,0 +1,197 @@
+Section     Base   Top    High   Length
+----------- ------ ------ ------ -------
+.libs       040045 040045             0h
+.init       040045 04006B            26h
+.fini       04006B 0400F3            88h
+.init.args  0400F3 0400F3             0h
+.init.bss   0400F3 0400FF             Ch
+.text       0400FF 04337A          327Bh
+.data       04337A 0433E2            68h
+.rodata     0433E2 043502           120h
+.init_array 000000 000000             0h
+.ctors      000000 000000             0h
+.dtors      000000 000000             0h
+.fini_array 000000 000000             0h
+.bss        060000 060080 09FFFF     80h
+.header     040000 040045            45h
+
+Label                        Value
+--------------------------   ------
+___low_bss                 = 060000
+___len_bss                 = 000080
+___heaptop                 = 09FFFF
+___heapbot                 = 060080
+___init_array_count        = 000000
+___ctors_count             = 000000
+___dtors_count             = 000000
+___fini_array_count        = 000000
+__stack                    = 0AFFFF
+__fcmp                     = 0400FF
+_inchar                    = 04011C
+__setflag                  = 040123
+__bshru                    = 040132
+__frameset                 = 04013C
+__frameset0                = 04014A
+__iand                     = 040155
+__idivu                    = 04016E
+__idvrmu                   = 040176
+__imulu                    = 04018E
+__indcallhl                = 0401BE
+__ineg                     = 0401BF
+__ior                      = 0401C8
+__ishl                     = 0401E1
+__ishru                    = 040207
+__ixor                     = 040248
+__ladd                     = 040261
+__land                     = 040267
+__lcmps                    = 040282
+__lcmpu                    = 04028F
+__lcmpzero                 = 040297
+__lladd                    = 04029F
+__lland                    = 0402C3
+__llcmpu                   = 040300
+__llcmpzero                = 04032A
+__llctlz                   = 04033F
+__lldivs                   = 040357
+__lldivu                   = 0403A7
+__lldvrmu                  = 0403BB
+__lldvrmu.hijack           = 0403C2
+__llmulu                   = 040419
+__llneg                    = 04046E
+__llshl                    = 040487
+__llshrs.hijack_llshru     = 0404B5
+__llshrs.finish            = 0404D4
+__llshru                   = 0404D8
+__llsub                    = 0404F2
+__lshrs.hijack_lshru       = 040520
+__lshru                    = 04052F
+__lsub                     = 04053F
+__agdev_default_mi_handler = 040549
+__agdev_uart0_handler      = 04054D
+__agdev_UART0_serial_RX    = 040555
+__agdev_vdp_protocol_data  = 04055A
+__agdev_vdp_protocol       = 04055F
+_vdp_vdu_init              = 0405F4
+_vdp_clear_screen          = 0405FD
+_vdp_cursor_tab            = 040614
+_vdp_mode                  = 04063E
+_vdp_logical_scr_dims      = 040678
+_vdp_cursor_enable         = 04069D
+_vdp_select_bitmap         = 0406C2
+_vdp_load_bitmap           = 0406E5
+_vdp_load_sprite_bitmaps   = 04078D
+_vdp_create_sprite         = 04088F
+_vdp_select_sprite         = 040928
+_vdp_move_sprite_to        = 04094B
+_vdp_move_sprite_by        = 04097E
+_vdp_show_sprite           = 0409B1
+_vdp_next_sprite_frame     = 0409C8
+_vdp_prev_sprite_frame     = 0409DF
+_vdp_activate_sprites      = 0409F6
+_sys_vars                  = 060000
+_vdu_clear_screen          = 04337A
+_vdu_cursor_tab            = 04337B
+_vdu_mode                  = 04337E
+_vdu_set_logical_scr_dims  = 043380
+_vdu_cursor_enable         = 043384
+_vdu_select_bitmap         = 043387
+_vdu_load_bitmap           = 04338B
+_.str                      = 0433E2
+_sprite_fname              = 060003
+_vdu_sprite_select         = 043392
+_vdu_sprite_clear          = 043396
+_vdu_sprite_add_bitmap     = 043399
+_vdu_sprite_activate       = 04339D
+_vdu_sprite_moveto         = 0433A1
+_vdu_sprite_moveby         = 0433A8
+_vdu_sprite_show           = 0433AF
+_vdu_sprite_next_frame     = 0433B2
+_vdu_sprite_prev_frame     = 0433B5
+_vdp_key_init              = 040A19
+_check_bytes_get_int       = 040AD4
+_check_bytes               = 040B06
+_vdp_key_reset_interrupt   = 040B2B
+_vdp_set_key_event_handler = 040B4A
+_vdp_update_key_state      = 040B58
+_vdp_check_key_press       = 040BD1
+_vdp_key_bits              = 060023
+_uart0_orig_handler        = 060043
+_fp1                       = 0433B8
+_fp2                       = 0433BF
+_fp3                       = 0433C2
+_fp4                       = 0433C4
+_vdp_ctrl_ptr              = 060046
+_vdp_key_event_ptr         = 060049
+_event_handler             = 06004C
+_bit_masks                 = 0433E5
+_fclose                    = 040C05
+_fgetc                     = 040C49
+__stdio_init               = 040D28
+_stdin                     = 0433CD
+_stdout                    = 0433D2
+_stderr                    = 0433D7
+__file_streams             = 06004F
+_fopen                     = 040D7A
+___fmodeflags              = 040E3B
+_.str                      = 0433ED
+_fputc                     = 040EA2
+_fput_char                 = 040F32
+_fread                     = 040F59
+_free                      = 041025
+_fseek                     = 0410E2
+_malloc                    = 04118B
+__alloc_base               = 060077
+_npf_vpprintf              = 04122A
+JTI0_0                     = 0433F1
+JTI0_1                     = 04340F
+JTI0_2                     = 043454
+JTI0_3                     = 043475
+JTI0_4                     = 04348D
+JTI0_5                     = 0434A5
+_npf_utoa_rev              = 042994
+_printf                    = 042A5C
+_vprintf                   = 042A7B
+_vsnprintf                 = 042A9B
+_npf_bufputc               = 042AFE
+_npf_bufputc_nop           = 042B23
+_npf_putc_std              = 042B2A
+_sprintf                   = 042B3A
+_.str                      = 0434BD
+_.str.1                    = 0434C1
+_.str.2                    = 0434C5
+_clock                     = 042B63
+_outchar                   = 042B67
+_putchar                   = 042B6E
+_sbrk                      = 042B9D
+__sbrkbase                 = 0433DC
+_strchr                    = 042BBB
+_strlen                    = 042BD8
+_errno                     = 06007D
+_mos_puts                  = 042C05
+_mos_sysvars               = 042E27
+_mos_fopen                 = 042E4E
+_mos_fclose                = 042E66
+_mos_fgetc                 = 042E7B
+_mos_fputc                 = 042E90
+_mos_setintvector          = 042F1D
+_mos_fread                 = 042F78
+_mos_flseek                = 042FB0
+_mos_getfil                = 042FCF
+_getsysvar_time            = 042C3A
+_ungetc                    = 042FE4
+__start                    = 040045
+_exit                      = 04006D
+skip._abort                = 0400A5
+_exit.sp                   = 0400A6
+_clear_bss                 = 0400F3
+_atexit                    = 043021
+exit_functions             = 0433DF
+_main                      = 04304D
+_key_event_handler         = 0431C1
+_game_loop                 = 04322B
+_wait_clock                = 043345
+_.str                      = 0434C9
+_.str.1                    = 0434D9
+_.str.2                    = 0434E4
+_.str.3                    = 0434F1
+_.str.5                    = 0434FD
