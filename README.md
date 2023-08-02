@@ -428,6 +428,12 @@ In the relevant: example, test or any other directory created at the same level.
   
   - `vdp_add_sprite_bitmap()`
 
+- Header files updated to include `extern "C"` for correct linking from C++
+  
+  - `vdp_key.h`
+  
+  - `vdp_vdu.h`
+
 ### To-Do / Known Issues:
 
 - Testing / validation

@@ -5,6 +5,10 @@
 #include <stdint.h>
 #include <mos_api.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define VDP_PUTS(S) mos_puts( (char *)&(S), sizeof(S), 0)
 
 volatile SYSVAR *vdp_vdu_init( void );
@@ -55,5 +59,9 @@ void vdp_nth_sprite_frame( int n );
 void vdp_activate_sprites( int n );
 void vdp_refresh_sprites( void );
 void vdp_reset_sprites( void );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

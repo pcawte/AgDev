@@ -4,6 +4,10 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef union {
 	uint32_t key_data;
 	struct {
@@ -25,5 +29,9 @@ void vdp_key_reset_interrupt( void );
 void vdp_update_key_state();
 bool vdp_check_key_press( uint8_t key_code );
 void vdp_set_key_event_handler( KEY_EVENT_HANDLER event_handler );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
