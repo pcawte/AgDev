@@ -295,6 +295,17 @@ void vdp_select_sprite( int n )
 	VDP_PUTS( vdu_sprite_select );
 }
 
+void vdp_clear_sprite( void )
+{
+	VDP_PUTS( vdu_sprite_clear );
+}
+
+void vdp_add_sprite_bitmap( int n )
+{
+	vdu_sprite_add_bitmap.n = n;
+	VDP_PUTS( vdu_sprite_add_bitmap );
+}
+
 void vdp_move_sprite_to( int x, int y )
 {
 	vdu_sprite_moveto.x = x;

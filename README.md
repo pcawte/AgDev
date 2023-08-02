@@ -420,6 +420,14 @@ In the relevant: example, test or any other directory created at the same level.
 
 - `tests/sprite` added to demonstrate sprites and keyboard handling
 
+02/08/2023
+
+- Added sprite related functions
+  
+  - `vdp_clear_sprite()`
+  
+  - `vdp_add_sprite_bitmap()`
+
 ### To-Do / Known Issues:
 
 - Testing / validation

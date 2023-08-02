@@ -984,6 +984,40 @@ _vdp_select_sprite:
 	section	.text,"ax",@progbits
 
 	section	.text,"ax",@progbits
+	public	_vdp_clear_sprite
+_vdp_clear_sprite:
+	ld	hl, _vdu_sprite_clear
+	ld	de, 3
+	ld	bc, 0
+	push	bc
+	push	de
+	push	hl
+	call	_mos_puts
+	pop	hl
+	pop	hl
+	pop	hl
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_vdp_add_sprite_bitmap
+_vdp_add_sprite_bitmap:
+	call	__frameset0
+	ld	a, (ix + 6)
+	ld	hl, _vdu_sprite_add_bitmap
+	ld	de, 4
+	ld	(_vdu_sprite_add_bitmap+3), a
+	ld	bc, 0
+	push	bc
+	push	de
+	push	hl
+	call	_mos_puts
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
 	public	_vdp_move_sprite_to
 _vdp_move_sprite_to:
 	call	__frameset0

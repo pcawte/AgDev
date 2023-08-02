@@ -43,6 +43,8 @@ int vdp_load_sprite_bitmaps( const char *fname_prefix, const char *fname_format,
 void vdp_create_sprite( int sprite, int bitmap_num, int frames );
 
 void vdp_select_sprite( int n );
+void vdp_clear_sprite( void );
+void vdp_add_sprite_bitmap( int n );
 void vdp_move_sprite_to( int x, int y );
 void vdp_move_sprite_by( int x, int y );
 void vdp_show_sprite( void );
