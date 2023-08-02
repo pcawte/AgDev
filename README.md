@@ -434,6 +434,8 @@ In the relevant: example, test or any other directory created at the same level.
   
   - `vdp_vdu.h`
 
+- Corrected typo in `crt0.src`in conditional compilation of clearing BSS
+
 ### To-Do / Known Issues:
 
 - Testing / validation

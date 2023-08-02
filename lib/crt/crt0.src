@@ -535,7 +535,7 @@ if ___len_bss > 0 				; no need if BSS is 0 bytes
     end if
   	ret
 
-  else 						: case >257 bytes
+  else 						; case >257 bytes
 	ld	bc, ___len_bss-1		; first byte hence is done manually
  	ld 	hl, ___low_bss
  	ld 	de, ___low_bss+1
