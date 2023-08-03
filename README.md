@@ -436,6 +436,10 @@ In the relevant: example, test or any other directory created at the same level.
 
 - Corrected typo in `crt0.src`in conditional compilation of clearing BSS
 
+03/08/2023
+
+- Added `vdp_solid_bitmap()` function
+
 ### To-Do / Known Issues:
 
 - Testing / validation
@@ -1322,7 +1326,10 @@ Note that there are differences between the way the emulator and Agon Light hard
 
 - `VDU 23, 27, 2, w; h; r, g, b, a`: Load solid bitmap data into current bitmap
   
-  - Note that this is from checking the code - this is what the documentation says, but does not align with the code - `VDU 23, 27, 2, w; h; col1; col2; b1, b2 ... bn`: Load monochrome bitmap data into current bitmap
+  - Note that this is from checking the code, the documentation incorrectly says:
+  - ```
+    `VDU 23, 27, 2, w; h; col1; col2; b1, b2 ... bn: Load monochrome bitmap data into current bitmap`
+    ```
 
 - `VDU 23, 27, 3, x; y;`: Draw current bitmap on screen at pixel position x, y
 

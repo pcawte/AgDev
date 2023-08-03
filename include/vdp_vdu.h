@@ -40,6 +40,7 @@ void vdp_circle( int x, int y );
 void vdp_select_bitmap( int n );
 void vdp_load_bitmap( int width, int height, uint32_t *data );
 int vdp_load_bitmap_file( const char *fname, int width, int height );
+void vdp_solid_bitmap( int width, int height, int r, int g, int b, int a );
 void vdp_draw_bitmap( int x, int y );
 
 int vdp_load_sprite_bitmaps( const char *fname_prefix, const char *fname_format,

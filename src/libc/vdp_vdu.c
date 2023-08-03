@@ -10,17 +10,18 @@
 // - when defining VDU commands the values A, B and CMD should be set in the structure initialiser
 // - values N (8-bit), R (8-bit), C (8-bit), X (16-bit) and Y (16-bit) should be set in the code 
 
-typedef struct { uint8_t a; } VDU_A;
-typedef struct { uint8_t a; uint8_t n; } VDU_A_N;
-typedef struct { uint8_t a; uint8_t cmd; } VDU_A_CMD;
-typedef struct { uint8_t a; uint8_t cmd; uint8_t n; } VDU_A_CMD_N;
-typedef struct { uint8_t a; uint8_t c; uint8_t r; } VDU_A_C_R;
-typedef struct { uint8_t a; uint16_t x; uint16_t y; } VDU_A_X_Y;
-typedef struct { uint8_t a; uint8_t cmd; uint16_t x; uint16_t y; } VDU_A_CMD_X_Y;
-typedef struct { uint8_t a; uint8_t b; uint8_t cmd; } VDU_A_B_CMD;
-typedef struct { uint8_t a; uint8_t b; uint8_t cmd; uint8_t n; } VDU_A_B_CMD_N;
-typedef struct { uint8_t a; uint8_t b; uint8_t cmd; uint16_t x; uint16_t y; } VDU_A_B_CMD_X_Y;
-
+typedef struct { uint8_t A; } VDU_A;
+typedef struct { uint8_t A; uint8_t n; } VDU_A_n;
+typedef struct { uint8_t A; uint8_t CMD; } VDU_A_CMD;
+typedef struct { uint8_t A; uint8_t CMD; uint8_t n; } VDU_A_CMD_n;
+typedef struct { uint8_t A; uint8_t c; uint8_t r; } VDU_A_c_r;
+typedef struct { uint8_t A; uint16_t x; uint16_t y; } VDU_A_x_y;
+typedef struct { uint8_t A; uint8_t CMD; uint16_t x; uint16_t y; } VDU_A_CMD_x_y;
+typedef struct { uint8_t A; uint8_t B; uint8_t CMD; } VDU_A_B_CMD;
+typedef struct { uint8_t A; uint8_t B; uint8_t CMD; uint8_t n; } VDU_A_B_CMD_n;
+typedef struct { uint8_t A; uint8_t B; uint8_t CMD; uint16_t x; uint16_t y; } VDU_A_B_CMD_x_y;
+typedef struct { uint8_t A; uint8_t B; uint8_t CMD; uint16_t x; uint16_t y;
+						uint8_t r; uint8_t g; uint8_t b; uint8_t a; } VDU_A_B_CMD_x_y_rgba;
 
 static volatile SYSVAR *sys_vars = NULL;
 
@@ -39,11 +40,11 @@ static VDU_A vdu_cursor_down = { 10 };
 static VDU_A vdu_cursor_up = { 11 };
 static VDU_A vdu_clear_screen = { 12 };
 static VDU_A vdu_clear_graphics = { 16 };
-static VDU_A_N vdu_set_text_colour = { 17, 0 };
-static VDU_A_N vdu_mode = { 22, 0 };
-static VDU_A_X_Y vdu_graphics_origin = { 29, 0, 0 };
+static VDU_A_n vdu_set_text_colour = { 17, 0 };
+static VDU_A_n vdu_mode = { 22, 0 };
+static VDU_A_x_y vdu_graphics_origin = { 29, 0, 0 };
 static VDU_A vdu_cursor_home = { 30 };
-static VDU_A_C_R vdu_cursor_tab = { 31, 0, 0 };
+static VDU_A_c_r vdu_cursor_tab = { 31, 0, 0 };
 
 void vdp_bell( void ) { VDP_PUTS( vdu_bell ); }
 void vdp_cursor_left( void ) { VDP_PUTS( vdu_cursor_left ); }
@@ -85,8 +86,8 @@ void vdp_graphics_origin( int x, int y )
 // VDU 23 commands
 
 static VDU_A_B_CMD vdu_get_scr_dims = { 23, 0, 0x86 };
-static VDU_A_B_CMD_N vdu_set_logical_scr_dims = { 23, 0, 0xC0, 0 }; 
-static VDU_A_CMD_N vdu_cursor_enable = { 23, 1, 0 };
+static VDU_A_B_CMD_n vdu_set_logical_scr_dims = { 23, 0, 0xC0, 0 }; 
+static VDU_A_CMD_n vdu_cursor_enable = { 23, 1, 0 };
 
 void vdp_get_scr_dims( bool wait )
 {
@@ -116,12 +117,12 @@ void vdp_cursor_enable( bool flag )
 
 // VDU 25 - plot command
 
-static VDU_A_CMD_X_Y vdu_move_to = { 25, 0x04, 0, 0 };
-static VDU_A_CMD_X_Y vdu_line_to = { 25, 0x05, 0, 0 };
-static VDU_A_CMD_X_Y vdu_point = { 25, 0x40, 0, 0 };
-static VDU_A_CMD_X_Y vdu_triangle = { 25, 0x50, 0, 0 };
-static VDU_A_CMD_X_Y vdu_circle_radius = { 25, 0x90, 0, 0 };
-static VDU_A_CMD_X_Y vdu_circle = { 25, 0x94, 0, 0 };
+static VDU_A_CMD_x_y vdu_move_to = { 25, 0x04, 0, 0 };
+static VDU_A_CMD_x_y vdu_line_to = { 25, 0x05, 0, 0 };
+static VDU_A_CMD_x_y vdu_point = { 25, 0x40, 0, 0 };
+static VDU_A_CMD_x_y vdu_triangle = { 25, 0x50, 0, 0 };
+static VDU_A_CMD_x_y vdu_circle_radius = { 25, 0x90, 0, 0 };
+static VDU_A_CMD_x_y vdu_circle = { 25, 0x94, 0, 0 };
 
 void vdp_move_to( int x, int y )
 {
@@ -167,9 +168,10 @@ void vdp_circle( int x, int y )
 
 // Bitmaps
 
-static VDU_A_B_CMD_N vdu_select_bitmap = { 23, 27, 0, 0 };
-static VDU_A_B_CMD_X_Y vdu_load_bitmap = { 23, 27, 1, 0, 0 };
-static VDU_A_B_CMD_X_Y vdu_draw_bitmap = { 23, 27, 3, 0, 0 };
+static VDU_A_B_CMD_n vdu_select_bitmap = { 23, 27, 0, 0 };
+static VDU_A_B_CMD_x_y vdu_load_bitmap = { 23, 27, 1, 0, 0 };
+static VDU_A_B_CMD_x_y_rgba vdu_solid_bitmap = { 23, 27, 2, 0, 0, 0, 0, 0, 0 };
+static VDU_A_B_CMD_x_y vdu_draw_bitmap = { 23, 27, 3, 0, 0 };
 
 void vdp_select_bitmap( int n )
 {
@@ -231,20 +233,30 @@ int vdp_load_bitmap_file( const char *fname, int width, int height )
 	return exit_code;
 }
 
+void vdp_solid_bitmap( int width, int height, int r, int g, int b, int a )
+{
+	vdu_solid_bitmap.x = width;
+	vdu_solid_bitmap.y = height;
+	vdu_solid_bitmap.r = r;
+	vdu_solid_bitmap.g = g;
+	vdu_solid_bitmap.b = b;
+	vdu_solid_bitmap.a = a;
+	VDP_PUTS( vdu_solid_bitmap );
+}
 
 // VDU 23, 27 - sprite commands
 
-static VDU_A_B_CMD_N vdu_sprite_select = { 23, 27, 4, 0 };
+static VDU_A_B_CMD_n vdu_sprite_select = { 23, 27, 4, 0 };
 static VDU_A_B_CMD vdu_sprite_clear = { 23, 27, 5 };
-static VDU_A_B_CMD_N vdu_sprite_add_bitmap = { 23, 27, 6, 0 };
-static VDU_A_B_CMD_N vdu_sprite_activate = { 23, 27, 7, 0 };
+static VDU_A_B_CMD_n vdu_sprite_add_bitmap = { 23, 27, 6, 0 };
+static VDU_A_B_CMD_n vdu_sprite_activate = { 23, 27, 7, 0 };
 static VDU_A_B_CMD vdu_sprite_next_frame = { 23, 27, 8 };
 static VDU_A_B_CMD vdu_sprite_prev_frame = { 23, 27, 9 };
-static VDU_A_B_CMD_N vdu_sprite_nth_frame = { 23, 27, 10, 0 };
+static VDU_A_B_CMD_n vdu_sprite_nth_frame = { 23, 27, 10, 0 };
 static VDU_A_B_CMD vdu_sprite_show = { 23, 27, 11 };
 static VDU_A_B_CMD vdu_sprite_hide = { 23, 27, 12 };
-static VDU_A_B_CMD_X_Y vdu_sprite_moveto = { 23, 27, 13, 0, 0 };
-static VDU_A_B_CMD_X_Y vdu_sprite_moveby = { 23, 27, 14, 0, 0 };
+static VDU_A_B_CMD_x_y vdu_sprite_moveto = { 23, 27, 13, 0, 0 };
+static VDU_A_B_CMD_x_y vdu_sprite_moveby = { 23, 27, 14, 0, 0 };
 static VDU_A_B_CMD vdu_sprite_update = { 23, 27, 15 };
 static VDU_A_B_CMD vdu_sprite_reset = { 23, 27, 16 };
 

@@ -760,6 +760,44 @@ BB25_14:
 	section	.text,"ax",@progbits
 
 	section	.text,"ax",@progbits
+	public	_vdp_solid_bitmap
+_vdp_solid_bitmap:
+	ld	hl, -3
+	call	__frameset
+	ld	de, (ix + 6)
+	ld	bc, (ix + 9)
+	ld	a, (ix + 12)
+	ld	l, (ix + 15)
+	ld	(ix - 3), l
+	ld	h, (ix + 18)
+	ld	(ix - 1), h
+	ld	l, (ix + 21)
+	ld	(ix - 2), l
+	ld	iy, _vdu_solid_bitmap+3
+	ld	(iy), e
+	ld	(iy + 1), d
+	ld	hl, _vdu_solid_bitmap+5
+	ld	(hl), c
+	inc	hl
+	ld	(hl), b
+	ld	(_vdu_solid_bitmap+7), a
+	ld	a, (ix - 3)
+	ld	(_vdu_solid_bitmap+8), a
+	ld	a, (ix - 1)
+	ld	(_vdu_solid_bitmap+9), a
+	ld	a, (ix - 2)
+	ld	(_vdu_solid_bitmap+10), a
+	ld	hl, _vdu_solid_bitmap
+	ld	(ix + 6), hl
+	ld	hl, 11
+	ld	(ix + 9), hl
+	ld	(ix + 12), h
+	pop	hl
+	pop	ix
+	jp	_mos_puts
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
 	public	_vdp_load_sprite_bitmaps
 _vdp_load_sprite_bitmaps:
 	ld	hl, -21
@@ -776,11 +814,11 @@ _vdp_load_sprite_bitmaps:
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jr	nz, BB26_2
+	jr	nz, BB27_2
 	or	a, a
 	sbc	hl, hl
-	jp	BB26_11
-BB26_2:
+	jp	BB27_11
+BB27_2:
 	ld	(ix - 6), hl
 	ld	bc, (ix + 18)
 	ld	de, 1
@@ -790,21 +828,21 @@ BB26_2:
 	sbc	hl, de
 	call	pe, __setflag
 	dec	de
-	jp	p, BB26_4
+	jp	p, BB27_4
 	push	de
 	pop	bc
-BB26_4:
+BB27_4:
 	ld	iy, (ix + 6)
 	ld	hl, (ix + 21)
 	ld	(ix - 9), bc
-BB26_5:
+BB27_5:
 	add	hl, de
 	ld	(ix - 12), hl
 	push	bc
 	pop	hl
 	or	a, a
 	sbc	hl, de
-	jp	z, BB26_9
+	jp	z, BB27_9
 	push	de
 	push	iy
 	ld	hl, (ix + 9)
@@ -831,7 +869,7 @@ BB26_5:
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jr	z, BB26_10
+	jr	z, BB27_10
 	push	de
 	ld	hl, (ix - 3)
 	push	hl
@@ -854,7 +892,7 @@ BB26_5:
 	ld	de, (ix - 3)
 	or	a, a
 	sbc	hl, de
-	jr	nz, BB26_10
+	jr	nz, BB27_10
 	ld	hl, (ix - 12)
 	push	hl
 	call	_vdp_select_bitmap
@@ -874,17 +912,17 @@ BB26_5:
 	ld	bc, (ix - 9)
 	ld	iy, (ix + 6)
 	ld	hl, (ix + 21)
-	jp	BB26_5
-BB26_9:
+	jp	BB27_5
+BB27_9:
 	ld	hl, (ix - 6)
 	push	hl
 	call	_free
 	pop	hl
 	ld	hl, (ix - 9)
-	jr	BB26_11
-BB26_10:
+	jr	BB27_11
+BB27_10:
 	ld	hl, (ix - 15)
-BB26_11:
+BB27_11:
 	ld	sp, ix
 	pop	ix
 	ret
@@ -925,18 +963,18 @@ _vdp_create_sprite:
 	or	a, a
 	sbc	hl, de
 	call	pe, __setflag
-	jp	p, BB27_2
+	jp	p, BB28_2
 	ld	bc, 0
-BB27_2:
+BB28_2:
 	ld	a, (ix + 9)
 	ld	de, _vdu_sprite_add_bitmap
-BB27_3:
+BB28_3:
 	push	bc
 	pop	hl
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
-	jr	z, BB27_5
+	jr	z, BB28_5
 	ld	(ix - 1), a
 	ld	a, (ix - 1)
 	ld	(_vdu_sprite_add_bitmap+3), a
@@ -956,8 +994,8 @@ BB27_3:
 	pop	hl
 	inc	a
 	dec	bc
-	jr	BB27_3
-BB27_5:
+	jr	BB28_3
+BB28_5:
 	ld	a, (ix + 6)
 	ld	(_vdu_sprite_activate+3), a
 	ld	sp, ix
@@ -1373,6 +1411,19 @@ _vdu_load_bitmap:
 _.str:
 	db	"rb", 0
 
+	section	.data,"aw",@progbits
+	private	_vdu_solid_bitmap
+_vdu_solid_bitmap:
+	db	23
+	db	27
+	db	2
+	dw	0
+	dw	0
+	db	0
+	db	0
+	db	0
+	db	0
+
 	section	.bss,"aw",@nobits
 	private	_sprite_fname
 _sprite_fname:
@@ -1481,13 +1532,13 @@ _vdu_sprite_reset:
 	extern	__frameset
 	extern	_malloc
 	extern	_fopen
-	extern	_sprintf
 	extern	_mos_sysvars
+	extern	_sprintf
 	extern	__Unwind_SjLj_Register
 	extern	__ishl
 	extern	__setflag
-	extern	_mos_puts
 	extern	__Unwind_SjLj_Unregister
+	extern	_mos_puts
 	extern	__imulu
 	extern	_fread
 	extern	_free
