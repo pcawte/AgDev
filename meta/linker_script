@@ -253,6 +253,29 @@ source "../lib/crt/sxor.src"
 source "../lib/crt/sxor_fast.src"
 source "../lib/crt/ulltof.src"
 
+; Items from CE that are explicitly tied to HW removed - others shifted to Agon
+
+source "../lib/agon/atomic_load_32.src"
+source "../lib/agon/atomic_load_decreasing_32.src"
+source "../lib/agon/atomic_load_increasing_32.src"
+source "../lib/agon/delay.src"
+;source "../lib/ce/eval.src"
+;source "../lib/ce/getstringinput.src"
+;source "../lib/ce/gettokeninput.src"
+;source "../lib/ce/intce.src"
+;source "../lib/ce/os_textbuffer.src"
+source "../lib/agon/random.src"
+;source "../lib/ce/runprgm.src"
+source "../lib/agon/sleep.src"
+source "../lib/agon/sleep_common.src"
+;source "../lib/ce/tice.src"
+source "../lib/agon/ticksleep.src"
+source "../lib/agon/usleep.src"
+source "../lib/agon/zx0.src"
+source "../lib/agon/zx7.src"
+
+; Agon specific items
+
 source "../lib/agon/intagon.src"
 source "../lib/agon/vdp_vdu.c.src"
 source "../lib/agon/vdp_key.c.src"

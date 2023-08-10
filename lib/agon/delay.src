@@ -1,0 +1,71 @@
+; void delay(uint16_t millis);
+
+	assume	adl=1
+
+if 0
+; Minimal caller code (for timing calculation).
+	call	_delay
+; ^ 22 cc
+end if
+
+	section	.text
+	public	_delay
+_delay:
+; Timing assumes fetching from RAM (4cc) and the first timer read being valid.
+
+; Get millis.
+	pop	de
+	ex	(sp), hl		; hl = millis
+	push	de
+; ^ 48 cc
+; Abort ASAP if millis == 0.
+	ld	a, l
+	or	a, h
+	ret	z
+; ^ 13 cc
+; Get the start time ASAP.
+	push	hl
+	call	_clock			; euhl = start
+; ^ 32 + cc(_clock) cc
+; 22 + 48 + 13 + 32 + 48 + 75 = 238 cc until start time captured
+	ex	(sp), hl		; hl = millis
+	push	de
+; Convert millis to clock ticks.
+	dec.s	hl
+	xor	a, a			; a = 0
+	ld	e, a			; euhl = millis - 1
+.multiplier_fp := (256 * 32768 + 1000 - 1) / 1000
+assert .multiplier_fp shr 24 = 0
+	ld	bc, .multiplier_fp	; aubc = ceil(256 * 32768 / 1e3)
+assert ($FFFF * .multiplier_fp) shr 32 = 0
+	call	__lmulu			; euhl = (millis - 1) *
+					;            ceil(256 * 32768 / 1e3)
+; https://docs.google.com/spreadsheets/d/1mZwDn6rEw3-uSQPuy48Ez0UWIvnggLiJxWft4u4OtcU/edit?usp=sharing
+.correction_fp := 413
+	ld	bc, .multiplier_fp + .correction_fp
+	add	hl, bc
+	adc	a, e			; auhl = millis *
+					;            ceil(256 * 32768 / 1e3) +
+					;            correction_fp
+	push	af
+	inc	sp
+	push	hl
+	inc	sp
+	pop	hl			; uhl = (millis *
+					;            ceil(256 * 32768 / 1e3) +
+					;            correction_fp) /
+					;           256
+					;     = ticks + correction
+	inc	sp
+	xor	a, a			; auhl = ticks + correction
+; Join common code for the rest.
+	jp	___sleep_common.3
+
+
+	public	_msleep
+_msleep := _delay
+
+
+	extern	___sleep_common.3
+	extern	__lmulu
+	extern	_clock

@@ -440,6 +440,18 @@ In the relevant: example, test or any other directory created at the same level.
 
 - Added `vdp_solid_bitmap()` function
 
+10/08/2023
+
+- TI-84 CE specific library items (under `lib/ce`) disabled in `linker_script`. Other items shifted to `lib/agon`. Note some items might rely on HW timing so not give accurate results.
+  
+  - atomic functions: should work, but not checked
+  
+  - delay, sleep functions: rely on CPU clock cycle timing. Will run, but results will be off due to different clock speed
+  
+  - random functions: okay
+  
+  - zx0 & zx7 compression: okay
+
 ### To-Do / Known Issues:
 
 - Testing / validation
