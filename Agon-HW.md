@@ -107,7 +107,7 @@ not visible externally.
 The response time of the CPU to an interrupt request is a function of the current instruction being executed as well as the number of wait states being asserted. The interrupt vector, {I[7:0], IVECT[7:0]}, is visible on the address bus, ADDR[15:0], when the interrupt
 service routine begins. The response of the CPU to a vectored interrupt on the eZ80F92
 device is explained in Table 12. Interrupt sources are required to be active until the interrupt service routine starts. It is recommended that the Interrupt Page Address Register (I)
-value be changed by the user from its default value of 00h as this address can create conflicts between the nonmaskable interrupt vector, the RST instruction addresses, and the
+value be changed by the user from its default value of 00h as this address can create conflicts between the non-maskable interrupt vector, the RST instruction addresses, and the
 maskable interrupt vectors.
 
 ![](assets/2023-07-27-10-47-02-image.png)
@@ -281,9 +281,6 @@ vdp_protocol_state2:
             DEC   A
             LD    (_vdp_protocol_len), A
             RET   NZ                        ; Stay in this state if there are still bytes to read
-
-
-
 ```
 
 Receives data bytes from UART0 then:
@@ -313,7 +310,6 @@ vdp_protocol_exec:
             ADD   HL, HL                   ; And add the address of the vector table
             ADD   HL, DE
             JP    (HL)                     ; And jump to the entry in the jump table
-
 ```
 
 Execute the command with the complete received packet of data
@@ -321,8 +317,6 @@ Execute the command with the complete received packet of data
 - Reset the state machine to zero for next incoming data
 
 - Jump to the command using the command vector, indexed by the saved command
-
-
 
 Incoming protocol / data information is maintained in:
 
@@ -333,8 +327,6 @@ Incoming protocol / data information is maintained in:
 - `_vdp_protocol_len`:  length of data associated with this command (sent by VDP)
 
 - `_vdp_protocol_ptr`: position to store next incoming byte
-
-
 
 Format of VDP protocol data:
 
@@ -423,8 +415,6 @@ Based on the received KEY VDP protocol packet:
 - Check for Ctrl-Alt-Del pressed
 
 - If Ctrl-Alt-Del pressed, wait for keys to be released
-
-
 
 The VDP protocol data comes from FabGL `kb->getNextVirtualKey(&item, 0)`
 

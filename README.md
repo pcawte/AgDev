@@ -784,7 +784,7 @@ The layout can be checked by examining the following labels in the `.map` file.
 ```
 ___low_bss             = 080000
 ___len_bss             = 000000
-___heaptop             = 05FFFF
+___heaptop             = 09FFFF
 ___heapbot             = 080000
 __stack                = 0AFFFF
 ```
