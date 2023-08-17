@@ -452,6 +452,18 @@ In the relevant: example, test or any other directory created at the same level.
   
   - zx0 & zx7 compression: okay
 
+16/08/2023
+
+- Corrected typo in this file
+
+17/08/2023
+
+- `vdp_key.h` and `vdp_vdu.h` moved to `agon` subdirectory in `include` folder
+
+- Sprite C++ library header files stored in `Sprite` subdirectory in `include` folder
+
+- `sprite-demos` folder added with `invaders` demo
+
 ### To-Do / Known Issues:
 
 - Testing / validation
