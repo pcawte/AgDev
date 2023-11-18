@@ -2,7 +2,7 @@
  * Title:			AGON MOS - MOS c header interface
  * Author:			Jeroen Venema
  * Created:			15/10/2022
- * Last Updated:	22/07/2023
+ * Last Updated:	18/11/2023
  * 
  * Modinfo:
  * 15/10/2022:		Added putch, getch
@@ -13,6 +13,7 @@
  * 19/04/2023:		Added mos_getfil
  * 02/07/2023:      Added struct / union for RTC_DATA
  * 22/07/2023:      Added structure for SYSVAR
+ * 18/11/2023:		Added mos_setkbvector, mos_getkbmap, mos_i2c_open, mos_i2c_close, mos_i2c_write, mos_i2c_read
  */
 
 #ifndef _MOS_H
@@ -233,4 +234,11 @@ extern uint24_t mos_fread(uint8_t fh, char *buffer, uint24_t numbytes);
 extern uint24_t mos_fwrite(uint8_t fh, char *buffer, uint24_t numbytes);
 extern uint8_t  mos_flseek(uint8_t fh, uint32_t offset);
 extern FIL*     mos_getfil(uint8_t fh);
+extern void     mos_setkbvector(void(*handler)(void), uint8_t addresslength);   // length 0:24bit, 1:16bit
+extern uint8_t* mos_getkbmap(void); // returns address of the keyboard map
+extern void     mos_i2c_open(uint8_t frequency);
+extern void     mos_i2c_close(void);
+extern uint8_t  mos_i2c_write(uint8_t i2c_address, uint8_t size, unsigned char * buffer);
+extern uint8_t  mos_i2c_read(uint8_t i2c_address, uint8_t size, unsigned char * buffer);
+
 #endif
