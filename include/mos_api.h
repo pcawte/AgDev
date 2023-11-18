@@ -31,6 +31,17 @@ typedef uint8_t BYTE;
 #define FA_OPEN_ALWAYS		    0x10
 #define FA_OPEN_APPEND		    0x30
 
+// I2C frequency
+#define I2C_SPEED_57600			0x01
+#define I2C_SPEED_115200		0x02
+#define I2C_SPEED_230400		0x03
+// I2C return codes to caller
+#define RET_OK			        0x00
+#define RET_NORESPONSE	        0x01
+#define RET_DATA_NACK	        0x02
+#define RET_ARB_LOST	        0x04
+#define RET_BUS_ERROR	        0x08
+
 /* FatFS File function return code (FRESULT) */
 
 typedef enum {
