@@ -2,7 +2,7 @@
 ; Title:		AGON MOS - MOS assembly interface
 ; Author:		Jeroen Venema updated by Paul Cawte for use with AgDev Toolchain
 ; Created:		15/10/2022
-; Last Updated:	02/07/2023
+; Last Updated:	18/11/2023
 ; 
 ; Modinfo:
 ; 02/07/2023		Added getsysvar_time
@@ -22,6 +22,7 @@
 ; 16/04/2023:		Added _mos_fread, _mos_fwrite and _mos_flseek
 ; 18/04/2023:		_mos_flseek fix
 ; 19/04/2023:		_mos_getfil added
+; 18/11/2023:		_mos_setkbvector, _mos_getkbmap, _mos_i2c_open, _mos_i2c_close, _mos_i2c_write, _mos_i2c_read added
 
 	assume	adl =1
 
@@ -61,6 +62,12 @@
 	public  _mos_fwrite
 	public  _mos_flseek
 	public  _mos_getfil
+	public  _mos_setkbvector
+	public  _mos_getkbmap
+	public  _mos_i2c_write
+	public  _mos_i2c_read
+	public  _mos_i2c_close
+	public  _mos_i2c_open
 
 	public	_getsysvar_time
 	public  _getsysvar_vpd_pflags
@@ -650,4 +657,71 @@ _mos_getfil:
 	rst.lil	08h				; Get a pointer to the relevant FIL struct
 	ld	sp, ix
 	pop	ix
+	ret
+
+_mos_setkbvector:
+	push	ix
+	ld 		ix,0
+	add 	ix, sp
+	ld	hl, (ix+6)
+	ld	c,	(ix+9)
+	ld a,	mos_setkbvector
+	rst.lil	08h
+	ld		sp,ix
+	pop		ix
+	ret
+
+_mos_getkbmap:
+	push	ix
+	ld a,	mos_getkbmap
+	rst.lil	08h
+	push	ix
+	pop		hl
+	pop		ix
+	ret
+
+_mos_i2c_open:
+	push	ix
+	ld 		ix,0
+	add 	ix, sp
+	ld	c, (ix+6)
+	ld a,	mos_i2c_open
+	rst.lil	08h
+	ld		sp,ix
+	pop		ix
+	ret
+
+_mos_i2c_close:
+	push	ix
+	ld 		ix,0
+	add 	ix, sp
+	ld a,	mos_i2c_close
+	rst.lil	08h
+	ld		sp,ix
+	pop		ix
+	ret
+_mos_i2c_write:
+	push	ix
+	ld 		ix,0
+	add 	ix, sp
+	ld		c, (ix+6)
+	ld		b, (ix+9)
+	ld		hl, (ix+12)
+	ld a,	mos_i2c_write
+	rst.lil	08h
+	ld		sp,ix
+	pop		ix
+	ret
+
+_mos_i2c_read:
+	push	ix
+	ld 		ix,0
+	add 	ix, sp
+	ld		c, (ix+6)
+	ld		b, (ix+9)
+	ld		hl, (ix+12)
+	ld a,	mos_i2c_read
+	rst.lil	08h
+	ld		sp,ix
+	pop		ix
 	ret
