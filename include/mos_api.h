@@ -185,6 +185,10 @@ typedef struct {
 	uint24_t*	dir_ptr;   /* Pointer to the directory entry in the win[] (not used at exFAT) */
 } FIL;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Generic IO
 extern int   putch(int a);
 extern char  getch(void);
@@ -252,4 +256,8 @@ extern void     mos_i2c_close(void);
 extern uint8_t  mos_i2c_write(uint8_t i2c_address, uint8_t size, unsigned char * buffer);
 extern uint8_t  mos_i2c_read(uint8_t i2c_address, uint8_t size, unsigned char * buffer);
 
+#ifdef __cplusplus
+}
 #endif
+
+#endif // _MOS_H
