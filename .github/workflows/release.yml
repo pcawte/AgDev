@@ -1,0 +1,31 @@
+name: release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  release_linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Add CEdev-Linux
+        run: |
+          wget https://github.com/CE-Programming/toolchain/releases/download/v11.2/CEdev-Linux.tar.gz
+          mkdir /usr/share/CEdev
+          tar -xvf CEdev-Linux.tar.gz -C /usr/share/
+          rm CEdev-Linux.tar.gz
+          cp -r . /usr/share/CEdev/
+
+      - name: Zip
+        run: |
+          cd /usr/share
+          zip -r AgDev_release_${{  github.ref_name }}.zip CEdev -x '*.git*' -x '*.github*'
+
+      - name: Upload to GitHub Release
+        uses: xresloader/upload-to-github-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file: /usr/share/AgDev_release_${{  github.ref_name }}.zip
+          tags: true
