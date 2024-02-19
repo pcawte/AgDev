@@ -17,17 +17,17 @@ jobs:
           rm CEdev-Linux.tar.gz
           cp -r . /usr/share/CEdev/
 
-      - name: Zip
+      - name: Zip (Linux)
         run: |
           cd /usr/share
-          zip -r AgDev_release_${{  github.ref_name }}.zip CEdev -x '*.git*' -x '*.github*'
+          zip -r AgDev_release_${{  github.ref_name }}_linux.zip CEdev -x '*.git*' -x '*.github*'
 
-      - name: Upload to GitHub Release
+      - name: Upload Linux ZIP to GitHub Release
         uses: xresloader/upload-to-github-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          file: /usr/share/AgDev_release_${{  github.ref_name }}.zip
+          file: /usr/share/AgDev_release_${{  github.ref_name }}_linux.zip
           tags: true
 
   release_windows:
@@ -41,15 +41,15 @@ jobs:
           rm CEdev-Windows.zip
           cp -r . /usr/share/CEdev/
 
-      - name: Zip
+      - name: Zip (Windows)
         run: |
           cd /usr/share
-          zip -r AgDev_release_${{  github.ref_name }}.zip CEdev -x '*.git*' -x '*.github*'
+          zip -r AgDev_release_${{  github.ref_name }}_windows.zip CEdev -x '*.git*' -x '*.github*'
 
-      - name: Upload to GitHub Release
+      - name: Upload Windows ZIP to GitHub Release
         uses: xresloader/upload-to-github-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          file: /usr/share/AgDev_release_${{  github.ref_name }}_Windows.zip
+          file: /usr/share/AgDev_release_${{  github.ref_name }}_windows.zip
           tags: true
