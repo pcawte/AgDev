@@ -15,7 +15,9 @@ fi
 
 # tar file of the CE Toolchain
 # Available from here https://github.com/CE-Programming/toolchain/releases/latest/download/CEdev-Linux.tar.gz
-CEDEV_TAR=~/agon/CEdev-Linux.tar.gz
+cd $BASEDIR
+wget https://github.com/CE-Programming/toolchain/releases/latest/download/CEdev-Linux.tar.gz
+CEDEV_TAR=$BASEDIR/CEdev-Linux.tar.gz
 
 # this is where you checkout the Source Code of CEdev
 # and you will compile it with the AgDev mods and your own
