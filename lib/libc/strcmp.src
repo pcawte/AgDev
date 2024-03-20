@@ -1,5 +1,7 @@
 ; (c) Copyright 2007-2008 Zilog, Inc.
 ;   int strcmp(register char *s1, register char *s2)
+; Changed to remove bug of typecasting difference value to signed char - should be difference of unsigned chars
+; Brendan Fletcher 19/03/2024
 
 	assume 	ADL=1
 
@@ -14,22 +16,19 @@ _strcmp:
 	inc	hl
 	ld	hl, (hl)
 
-_loop:
+.loop:
 	ld	a, (de)
 	or	a, a
-	jr	z, _done
+	jr	z, .done
 	cpi
 	inc	de
-	jr	z, _loop
+	jr	z, .loop
 
 	dec	hl
-_done:
+.done:
 	sub	a, (hl)
-
-	ld	b, a
-	rla
 	sbc	hl, hl
-	ld	l, b
+	ld	l, a
 	ret
 
 
