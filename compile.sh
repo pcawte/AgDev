@@ -1,7 +1,7 @@
 #!/bin/bash -x
 
 # Working directory
-BASEDIR=~/agon/compile
+BASEDIR=`pwd`/build
 
 GITHUB=$BASEDIR/github
 if [ ! -d "$BASEDIR" ]
