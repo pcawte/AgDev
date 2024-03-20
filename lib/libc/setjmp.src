@@ -34,8 +34,7 @@
 _setjmp:
 	ld 	iy,0
 	add 	iy,sp
-	push	iy		; replacing ld hl,iy ZDS pseudo op
-	pop 	hl
+	lea	hl,iy		; replacing ld hl,iy ZDS pseudo op
 	ld 	iy,(iy+3)	;get jmp_buf
 	ld 	(iy+3),ix	;save ix
 	ld 	(iy+6),hl	;save sp
