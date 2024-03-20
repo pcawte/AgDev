@@ -1226,7 +1226,7 @@ Both of  which output directly to MOS/VDP - note that they are not part of STDIO
 
 For current documentation on VDU commands, see the [Agon Console8 Documentation](https://agonconsole8.github.io/agon-docs/VDP.html)
 
-These can be called by sending the appropriate control characters from the ez80 to the esp32 processor by outputting characters using `putch()` or `puts()`.
+These can be called by sending the appropriate control characters using `putch()` or `mos_puts()` as mentioned.
 
 Convenience functions for many of these are supplied in AgDev.
 
