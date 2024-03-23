@@ -87,6 +87,11 @@ void vdp_adv_adjust(int bufferID, int operation, int offset);
 void vdp_adv_consolidate(int bufferID);
 void vdp_adv_select_bitmap(int bufferId);
 void vdp_adv_bitmap_from_buffer(int width, int height, int format);
+
+int vdp_adv_load_sprite_bitmaps( const char *fname_prefix, const char *fname_format, int width, int height, int num, int bitmap_num );
+void vdp_adv_add_sprite_bitmap( int b );
+void vdp_adv_create_sprite( int sprite, int bitmap_num, int frames );
+
 #ifdef __cplusplus
 }
 #endif

@@ -494,6 +494,7 @@ static VDU_ADV_CMD      vdu_adv_consolidate  = { 23, 0, 0xA0, 0xFA00, 14};
 // VDU 23,27 - extended commands for bufferIds 
 static VDU_A_B_CMD_b	vdu_adv_select_bitmap = { 23, 27, 0x20, 0xFA00};
 static VDU_A_B_CMD_w_h_f vdu_adv_bitmap_from_buffer = { 23, 27, 0x21, 0, 0, 0};
+static VDU_A_B_CMD_b	vdu_adv_add_sprite_bitmap = { 23, 27, 0x26, 0xFA00};
 
 void vdp_adv_write_block(int bufferID, int length)
 {
@@ -549,5 +550,52 @@ void vdp_adv_bitmap_from_buffer(int width, int height, int format)
 	vdu_adv_bitmap_from_buffer.h = height;
 	vdu_adv_bitmap_from_buffer.f = format;
 	VDP_PUTS(vdu_adv_bitmap_from_buffer);
+}
+
+// helper function
+// load images using absolute numbered bitmaps (24-bit)
+int vdp_adv_load_sprite_bitmaps( const char *fname_prefix, const char *fname_format,
+						int width, int height, int num, int bitmap_num )
+{
+	uint32_t *img_buf;
+	FILE *fp;
+	int cnt = 0;
+
+	if ( !(img_buf = (uint32_t *)malloc( width*height*sizeof(uint32_t) ) ) ) return cnt;
+
+	for ( int i = 0; i < num; i++ ) {
+		sprintf( sprite_fname, fname_format, fname_prefix, i );
+		if ( !(fp = fopen( sprite_fname, "rb" ) ) ) return cnt;
+
+		size_t pixel_cnt = fread( (void *)img_buf, sizeof(uint32_t), width*height, fp );
+		fclose( fp );
+		if ( pixel_cnt != (size_t)(width*height) ) return cnt;
+		
+		vdp_adv_select_bitmap( bitmap_num++ );
+		vdp_load_bitmap( width, height, img_buf );
+		cnt++;
+	}
+	free( img_buf);
+	return cnt;
+}
+
+// select bitmap for sprite using absolute numbered bitmaps (24-bit)
+void vdp_adv_add_sprite_bitmap( int b )
+{
+	vdu_adv_add_sprite_bitmap.b = b;
+	VDP_PUTS( vdu_adv_add_sprite_bitmap );
+}
+
+
+// create a sprite using absolute numbered bitmaps (24-bit)
+void vdp_adv_create_sprite( int sprite, int bitmap_num, int frames )
+{
+	vdu_sprite_select.n = sprite;
+	VDP_PUTS( vdu_sprite_select );
+	VDP_PUTS( vdu_sprite_clear );
+	for ( int i = 0; i < frames; i++ ) {
+		vdp_adv_add_sprite_bitmap( bitmap_num++ );
+	}
+	vdu_sprite_activate.n = sprite;
 }
 
