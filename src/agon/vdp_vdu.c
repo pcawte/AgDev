@@ -938,3 +938,4 @@ void vdp_audio_reset_channel( int channel )
 	vdu_audio.CMD = 10;
        	VDP_PUTS( vdu_audio ); 
 }
+
