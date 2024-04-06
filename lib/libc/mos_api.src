@@ -49,6 +49,9 @@
 	public  _mos_fgetc
 	public  _mos_fputc
 	public  _mos_feof
+	public  _mos_dopen
+	public  _mos_dread
+	public  _mos_dclose
 	public  _mos_getError
 	public  _mos_oscli
 	public  _mos_getrtc
@@ -501,6 +504,41 @@ _mos_feof:
 	ld	sp, ix
 	pop	ix
 	ret	
+
+_ffs_dopen:
+	push	ix
+	ld	ix, 0
+	add	ix, sp
+	ld	hl, (ix+6)			; pointer to DIR handle
+	ld	de,  (ix+9)			; pointer to 0-terminated directory path in memory
+	ld	a, ffs_dopen
+	rst.lil	08h				; returns FRESULT in A
+	ld	sp, ix
+	pop	ix
+	ret
+
+_ffs_dclose:
+	push	ix
+	ld	ix, 0
+	add	ix, sp
+	ld	hl, (ix+6)			; pointer to DIR handle
+	ld	a, ffs_dclose
+	rst.lil	08h				; returns FRESULT in A
+	ld	sp, ix
+	pop	ix
+	ret		
+
+_ffs_dread:
+	push	ix
+	ld	ix, 0
+	add	ix, sp
+	ld	hl, (ix+6)			; pointer to DIR handle
+	ld	de, (ix+9)			; pointer to FILINFO handle
+	ld	a, ffs_dread
+	rst.lil	08h				; returns DIR handle in A
+	ld	sp, ix
+	pop	ix
+	ret		
 
 _mos_getError:
 	push	ix
