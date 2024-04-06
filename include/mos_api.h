@@ -203,6 +203,28 @@ typedef struct {
 	uint24_t*	dir_ptr;   /* Pointer to the directory entry in the win[] (not used at exFAT) */
 } FIL;
 
+/* File information structure (FILINFO) */
+typedef struct {
+	uint32_t	fsize;			/* File size */
+	uint16_t	fdate;			/* Modified date */
+	uint16_t	ftime;			/* Modified time */
+	BYTE	    fattrib;		/* File attribute */
+	char	    altname[13];	/* Alternative file name */
+	char	    fname[256]; 	/* Primary file name */
+} FILINFO;
+
+/* Directory information structure (DIR) */
+
+typedef struct {
+	FFOBJID	obj;			/* Object identifier */
+	uint32_t	dptr;			/* Current read/write offset */
+	uint32_t	clust;			/* Current cluster */
+	uint32_t	sect;			/* Current sector (0:Read operation has terminated) */
+	BYTE*	dir;			/* Pointer to the directory item in the win[] */
+	BYTE	fn[12];			/* SFN (in/out) {body[8],ext[3],status[1]} */
+	const char* pat;		/* Pointer to the name matching pattern */
+} DIR;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -273,6 +295,9 @@ extern void     mos_i2c_open(uint8_t frequency);
 extern void     mos_i2c_close(void);
 extern uint8_t  mos_i2c_write(uint8_t i2c_address, uint8_t size, unsigned char * buffer);
 extern uint8_t  mos_i2c_read(uint8_t i2c_address, uint8_t size, unsigned char * buffer);
+extern uint8_t  ffs_dopen(DIR *dir_handle, const char * dir_path);   // returns fresult
+extern uint8_t  ffs_dread(DIR *dir_handle, FILINFO *fil_handle);   // returns fresult
+extern uint8_t  ffs_dclose(DIR *dir_handle);   // returns fresult
 
 #ifdef __cplusplus
 }
