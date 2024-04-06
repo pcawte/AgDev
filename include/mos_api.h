@@ -2,7 +2,7 @@
  * Title:			AGON MOS - MOS c header interface
  * Author:			Jeroen Venema
  * Created:			15/10/2022
- * Last Updated:	18/11/2023
+ * Last Updated:	05/04/2024
  * 
  * Modinfo:
  * 15/10/2022:		Added putch, getch
@@ -14,6 +14,7 @@
  * 02/07/2023:      Added struct / union for RTC_DATA
  * 22/07/2023:      Added structure for SYSVAR
  * 18/11/2023:		Added mos_setkbvector, mos_getkbmap, mos_i2c_open, mos_i2c_close, mos_i2c_write, mos_i2c_read
+ * 05/04/2024:		Added more mos sysvars, and expanded SYSVAR struct
  */
 
 #ifndef _MOS_H
@@ -91,6 +92,15 @@ typedef enum {
 #define sysvar_keydelay	        0x22	// 2: Keyboard repeat delay
 #define sysvar_keyrate		    0x24	// 2: Keyboard repeat reat
 #define sysvar_keyled		    0x26	// 1: Keyboard LED status
+//TODO: for scrMode and below, we need to write getters
+#define sysvar_scrMode			0x27	// 1: Screen mode
+#define sysvar_rtcEnable		0x28	// 1: RTC enable flag (0: disabled, 1: use ESP32 RTC)
+#define sysvar_mouseX			0x29	// 2: Mouse X position
+#define sysvar_mouseY			0x2B	// 2: Mouse Y position
+#define sysvar_mouseButtons		0x2D	// 1: Mouse button state
+#define sysvar_mouseWheel		0x2E	// 1: Mouse wheel delta
+#define sysvar_mouseXDelta		0x2F	// 2: Mouse X delta
+#define sysvar_mouseYDelta		0x31	// 2: Mouse Y delta
 
 // Flags for the VPD protocol - sysvar_vpd_pflags
 #define vdp_pflag_cursor        0x01
@@ -99,6 +109,7 @@ typedef enum {
 #define vdp_pflag_audio         0x08
 #define vdp_pflag_mode          0x10
 #define vdp_pflag_rtc           0x20
+#define vdp_pflag_mouse			0x40
 
 // Stucture / union for accessing RTC data
 
@@ -150,6 +161,13 @@ typedef struct {
     uint16_t keyrate;
     uint8_t keyled;
     uint8_t scrMode;
+ 	uint8_t rtcEnable;
+	uint16_t mouseX;
+	uint16_t mouseY;
+	uint8_t mouseButtons;
+	uint8_t mouseWheel;
+	uint16_t mouseXDelta;
+	uint16_t mouseYDelta;
 } SYSVAR;
 
 
@@ -184,6 +202,28 @@ typedef struct {
 	uint32_t	dir_sect;  /* Sector number containing the directory entry (not used at exFAT) */ 
 	uint24_t*	dir_ptr;   /* Pointer to the directory entry in the win[] (not used at exFAT) */
 } FIL;
+
+/* File information structure (FILINFO) */
+typedef struct {
+	uint32_t	fsize;			/* File size */
+	uint16_t	fdate;			/* Modified date */
+	uint16_t	ftime;			/* Modified time */
+	BYTE	    fattrib;		/* File attribute */
+	char	    altname[13];	/* Alternative file name */
+	char	    fname[256]; 	/* Primary file name */
+} FILINFO;
+
+/* Directory information structure (DIR) */
+
+typedef struct {
+	FFOBJID	obj;			/* Object identifier */
+	uint32_t	dptr;			/* Current read/write offset */
+	uint32_t	clust;			/* Current cluster */
+	uint32_t	sect;			/* Current sector (0:Read operation has terminated) */
+	BYTE*	dir;			/* Pointer to the directory item in the win[] */
+	BYTE	fn[12];			/* SFN (in/out) {body[8],ext[3],status[1]} */
+	const char* pat;		/* Pointer to the name matching pattern */
+} DIR;
 
 #ifdef __cplusplus
 extern "C" {
@@ -255,6 +295,9 @@ extern void     mos_i2c_open(uint8_t frequency);
 extern void     mos_i2c_close(void);
 extern uint8_t  mos_i2c_write(uint8_t i2c_address, uint8_t size, unsigned char * buffer);
 extern uint8_t  mos_i2c_read(uint8_t i2c_address, uint8_t size, unsigned char * buffer);
+extern uint8_t  ffs_dopen(DIR *dir_handle, const char * dir_path);   // returns fresult
+extern uint8_t  ffs_dread(DIR *dir_handle, FILINFO *fil_handle);   // returns fresult
+extern uint8_t  ffs_dclose(DIR *dir_handle);   // returns fresult
 
 #ifdef __cplusplus
 }

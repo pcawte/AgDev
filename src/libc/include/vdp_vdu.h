@@ -132,10 +132,8 @@ void vdp_audio_enable_channel( int channel );
 void vdp_audio_disable_channel( int channel );
 void vdp_audio_reset_channel( int channel );
 
-
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-
