@@ -49,9 +49,9 @@
 	public  _mos_fgetc
 	public  _mos_fputc
 	public  _mos_feof
-	public  _mos_dopen
-	public  _mos_dread
-	public  _mos_dclose
+	public  _ffs_dopen
+	public  _ffs_dread
+	public  _ffs_dclose
 	public  _mos_getError
 	public  _mos_oscli
 	public  _mos_getrtc
