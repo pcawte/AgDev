@@ -510,7 +510,7 @@ _ffs_dopen:
 	ld	ix, 0
 	add	ix, sp
 	ld	hl, (ix+6)			; pointer to DIR handle
-	ld	de,  (ix+9)			; pointer to 0-terminated directory path in memory
+	ld	de, (ix+9)			; pointer to 0-terminated directory path in memory
 	ld	a, ffs_dopen
 	rst.lil	08h				; returns FRESULT in A
 	ld	sp, ix

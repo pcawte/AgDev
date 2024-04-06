@@ -209,7 +209,7 @@ typedef struct {
 	uint16_t	fdate;			/* Modified date */
 	uint16_t	ftime;			/* Modified time */
 	BYTE	    fattrib;		/* File attribute */
-	char	    altname[13];/* Altenative file name */
+	char	    altname[13];	/* Alternative file name */
 	char	    fname[256]; 	/* Primary file name */
 } FILINFO;
 
