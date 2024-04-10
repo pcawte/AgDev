@@ -12,7 +12,11 @@ jobs:
       - name: Run compile.sh
         run: |
           ${{ github.workspace }}/compile.sh
-
+          
+      - name: Delete unneeded files
+        run: |
+          rm -r /home/runner/work/AgDev/AgDev/build/CEDev
+          
       - name: Zip (Linux)
         run: |
           cd /home/runner/work/AgDev/AgDev/build/
