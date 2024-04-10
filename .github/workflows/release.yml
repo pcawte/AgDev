@@ -12,24 +12,6 @@ jobs:
       - name: Run compile.sh
         run: |
           ${{ github.workspace }}/compile.sh
-          # wget https://github.com/CE-Programming/toolchain/releases/download/v11.2/CEdev-Linux.tar.gz
-          # mkdir /usr/share/CEdev
-          # tar -xvf CEdev-Linux.tar.gz -C /usr/share/
-          # rm CEdev-Linux.tar.gz
-          # cp -r . /usr/share/CEdev/
-
-      - name: Zip (Linux)
-        run: |
-          cd /usr/share
-          zip -r AgDev_release_${{  github.ref_name }}_linux.zip CEdev -x '*.git*' -x '*.github*'
-
-      - name: Upload Linux ZIP to GitHub Release
-        uses: xresloader/upload-to-github-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          file: /usr/share/AgDev_release_${{  github.ref_name }}_linux.zip
-          tags: true
 
   release_windows:
     runs-on: ubuntu-latest
