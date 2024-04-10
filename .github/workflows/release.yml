@@ -15,7 +15,7 @@ jobs:
           
       - name: Zip (Linux)
         run: |
-          cd /home/runner/work/AgDev/AgDev/build/CEdev
+          cd /home/runner/work/AgDev/AgDev/build
           zip -r AgDev_release_${{  github.ref_name }}_linux.zip CEdev -x '*.git*' -x '*.github*'
 
       - name: Upload Linux ZIP to GitHub Release
@@ -23,7 +23,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          file: /home/runner/work/AgDev/AgDev/build/CEdev/AgDev_release_${{  github.ref_name }}_linux.zip
+          file: /home/runner/work/AgDev/AgDev/build/AgDev_release_${{  github.ref_name }}_linux.zip
           tags: true
 
   release_windows:
