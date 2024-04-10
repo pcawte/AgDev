@@ -9,13 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Add CEdev-Linux
+      - name: Run compile.sh
         run: |
-          wget https://github.com/CE-Programming/toolchain/releases/download/v11.2/CEdev-Linux.tar.gz
-          mkdir /usr/share/CEdev
-          tar -xvf CEdev-Linux.tar.gz -C /usr/share/
-          rm CEdev-Linux.tar.gz
-          cp -r . /usr/share/CEdev/
+          ${{ github.workspace }}/compile.sh
+          # wget https://github.com/CE-Programming/toolchain/releases/download/v11.2/CEdev-Linux.tar.gz
+          # mkdir /usr/share/CEdev
+          # tar -xvf CEdev-Linux.tar.gz -C /usr/share/
+          # rm CEdev-Linux.tar.gz
+          # cp -r . /usr/share/CEdev/
 
       - name: Zip (Linux)
         run: |
