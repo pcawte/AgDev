@@ -13,9 +13,9 @@ jobs:
         run: |
           ${{ github.workspace }}/compile.sh
           
-      - name: Delete unneeded files
+      - name: Prune unneeded files (Linux)
         run: |
-          rm -r /home/runner/work/AgDev/AgDev/build/CEDev
+          rm -r /home/runner/work/AgDev/AgDev/build/github/CEdev/CEdev/CEdev/
           
       - name: Zip (Linux)
         run: |
