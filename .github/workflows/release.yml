@@ -16,7 +16,8 @@ jobs:
       - name: Zip (Linux)
         run: |
           cd /home/runner/work/AgDev/AgDev/build
-          zip -r AgDev_release_${{  github.ref_name }}_linux.zip CEdev/* -x '*.git*' -x '*.github*'
+          ls -R
+          zip -r AgDev_release_${{  github.ref_name }}_linux.zip CEdev -x '*.git*' -x '*.github*'
 
       - name: Upload Linux ZIP to GitHub Release
         uses: xresloader/upload-to-github-release@v1
