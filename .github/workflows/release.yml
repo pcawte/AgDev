@@ -16,7 +16,7 @@ jobs:
       - name: Zip (Linux)
         run: |
           cd /home/runner/work/AgDev/AgDev/build
-          (cd CEdev && zip -r "$OLDPWD/AgDev_release_${{  github.ref_name }}_linux.zip" -x '*.git*' -x '*.github*')
+          (cd CEdev && zip -r "$OLDPWD/AgDev_release_${{  github.ref_name }}_linux.zip" * -x '*.git*' -x '*.github*')
           
 
       - name: Upload Linux ZIP to GitHub Release
