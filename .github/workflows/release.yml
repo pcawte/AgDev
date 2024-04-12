@@ -43,7 +43,7 @@ jobs:
       - name: Copy CEdev-Windows binaries into bin folder
 #TODO if we leave both in the directory, can we use the same build on Win and Linux? If so, migrate this up to compile.sh
         run: |
-          cp -a /usr/share/CEdev/bin/* /home/runner/work/AgDev/AgDev/build/bin/*
+          cp -a /usr/share/CEdev/bin/* /home/runner/work/AgDev/AgDev/build/bin/
           
       - name: Zip (Windows)
         run: |
