@@ -34,12 +34,12 @@ jobs:
         run: |
           ${{ github.workspace }}/compile.sh
           
-      - name: Download CEdev-Windows and copy over build binaries
+      - name: Download CEdev-Windows and copy Win binaries into bin folder
       #TODO if we leave both in the directory, can we use the same build on Win and Linux?
         run: |
           wget https://github.com/CE-Programming/toolchain/releases/download/v11.2/CEdev-Windows.zip
           unzip CEdev-Windows.zip -d /usr/share/
-          cp -r /usr/share/CEdev/bin/* /home/runner/work/AgDev/AgDev/build/bin
+          cp -a /usr/share/CEdev/bin/. /home/runner/work/AgDev/AgDev/build/bin/
           
       - name: Zip (Windows)
         run: |
