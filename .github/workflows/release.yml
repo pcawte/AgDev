@@ -18,7 +18,6 @@ jobs:
           cd /home/runner/work/AgDev/AgDev/build
           (cd CEdev && zip -r "$OLDPWD/AgDev_release_${{  github.ref_name }}_linux.zip" * -x '*.git*' -x '*.github*')
           
-
       - name: Upload Linux ZIP to GitHub Release
         uses: xresloader/upload-to-github-release@v1
         env:
@@ -52,5 +51,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          file: /home/runner/work/AgDev/AgDev/AgDev_release_${{  github.ref_name }}_windows.zip
+          file: /home/runner/work/AgDev/AgDev/build/AgDev_release_${{  github.ref_name }}_windows.zip
           tags: true
