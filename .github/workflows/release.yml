@@ -39,7 +39,7 @@ jobs:
         run: |
           wget https://github.com/CE-Programming/toolchain/releases/download/v11.2/CEdev-Windows.zip
           unzip CEdev-Windows.zip -d /usr/share/
-          cp -r /usr/share/CEdev/bin /home/runner/work/AgDev/AgDev/build/bin
+          cp -r /usr/share/CEdev/bin/* /home/runner/work/AgDev/AgDev/build/bin
           
       - name: Zip (Windows)
         run: |
