@@ -27,7 +27,7 @@ CEDEV_GIT=$GITHUB/CEdev
 
 # this is where you want your working CEdev directory
 # to be - this is where you will build and compile code
-CEDEV_FINAL=$BASEDIR/CEdev
+AGDEV_FINAL=$BASEDIR/CEdev
 
 
 # before you start you must have the modified CEdev
@@ -77,24 +77,24 @@ make install
 # Install
 #----------------------------------------
 
-# delete previous CEdev final directory
-rm -rf $CEDEV_FINAL
+# delete previous final directory
+rm -rf $AGDEV_FINAL
 
 # Get the full version of CEdev from the TAR file
 cd /tmp ; rm -rf CEdev
 tar xf $CEDEV_TAR
-mv CEdev $CEDEV_FINAL
+mv CEdev $AGDEV_FINAL
 
 # ... but now we can get our modified version which was created with agdev_make.sh
-cp -rf $CEDEV_GIT/CEdev/CEdev $CEDEV_FINAL
+cp -rf $CEDEV_GIT/CEdev/CEdev $AGDEV_FINAL
 
 # Copy over the AgDev stuff - this includes the ez80_clang compiler
 # and example code
-cp -rf $AGDEV_GIT/* $CEDEV_FINAL/
+cp -rf $AGDEV_GIT/* $AGDEV_FINAL/
 
 # now copy over the built binaries and libraries
-cp $CEDEV_GIT/CEdev/CEdev/bin/* $CEDEV_FINAL/bin/
-cp -r $CEDEV_GIT/CEdev/CEdev/lib/libc/vdp* $CEDEV_FINAL/lib/agon/
+cp $CEDEV_GIT/CEdev/CEdev/bin/* $AGDEV_FINAL/bin/
+cp -r $CEDEV_GIT/CEdev/CEdev/lib/libc/vdp* $AGDEV_FINAL/lib/agon/
 # finally copy the modified headers to the include directory
-cp $CEDEV_FINAL/src/libc/include/vdp*h $CEDEV_FINAL/include/agon/
+cp $AGDEV_FINAL/src/libc/include/vdp*h $AGDEV_FINAL/include/agon/
 
