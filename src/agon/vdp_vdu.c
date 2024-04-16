@@ -657,6 +657,14 @@ void vdp_adv_create_sprite( int sprite, int bitmap_num, int frames )
 //  	VDU 23, 0, &85, channel, 9
 // Command 10: Reset Channel
 //  	VDU 23, 0, &85, channel, 10
+// Command 11: Seek to position
+// 	VDU 23, 0, &85, channel, 11, position; positionHighByte
+// Command 12: Set duration
+// 	VDU 23, 0, &85, channel, 12, duration; durationHighByte
+// Command 13: Set sample rate
+// 	VDU 23, 0, &85, channel, 13, sampleRate;
+// Command 14: Set channel waveform parameters
+// 	VDU 23, 0, &85, channel, 14, parameter, value
 //
 
 typedef struct { uint8_t A; uint8_t B; uint8_t C; uint8_t channel; uint8_t CMD; } VDU_AUDIO_CMD;
@@ -670,6 +678,8 @@ typedef struct { uint8_t A; uint8_t B; uint8_t C; uint8_t sample; uint8_t CMD; u
 typedef struct { uint8_t A; uint8_t B; uint8_t C; uint8_t sample; uint8_t CMD; uint8_t b1; uint24_t ww2; } VDU_AUDIO_CMD_B_WW;
 typedef struct { uint8_t A; uint8_t B; uint8_t C; uint8_t sample; uint8_t CMD; uint8_t b1; uint16_t w2; uint24_t ww3; } VDU_AUDIO_CMD_B_W_WW;
 typedef struct { uint8_t A; uint8_t B; uint8_t C; uint8_t channel; uint8_t CMD; uint8_t b1; uint8_t b2; uint8_t b3; uint16_t w4; } VDU_AUDIO_CMD_B_B_B_W;
+typedef struct { uint8_t A; uint8_t B; uint8_t C; uint8_t channel; uint8_t CMD; uint24_t ww1; } VDU_AUDIO_CMD_WW;
+typedef struct { uint8_t A; uint8_t B; uint8_t C; uint8_t channel; uint8_t CMD; uint8_t b1; uint8_t b2; } VDU_AUDIO_CMD_B_B;
 
 static VDU_AUDIO_CMD vdu_audio = { 23, 0, 0x85, 0, 0 };
 static VDU_AUDIO_CMD_B vdu_audio_b = { 23, 0, 0x85, 0, 0, 0 };
@@ -682,6 +692,8 @@ static VDU_AUDIO_LOAD_SAMPLE vdu_audio_load_sample = { 23, 0, 0x85, 0, 5, 0, 0 }
 static VDU_AUDIO_CMD_B_WW vdu_audio_b_ww = { 23, 0, 0x85, 0, 0, 0, 0 };
 static VDU_AUDIO_CMD_B_W_WW vdu_audio_b_w_ww = { 23, 0, 0x85, 0, 0, 0, 0, 0 };
 static VDU_AUDIO_CMD_B_B_B_W vdu_audio_b_b_b_w = { 23, 0, 0x85, 0, 7, 1, 0, 0, 0 };
+static VDU_AUDIO_CMD_WW vdu_audio_ww = { 23, 0, 0x85, 0, 0, 0 };
+static VDU_AUDIO_CMD_B_B vdu_audio_b_b = { 23, 0, 0x85, 0, 0, 0, 0 };
 
 // Command 0: Play note 
 // 	VDU 23, 0, &85, channel, 0, volume, frequency; duration;
@@ -937,4 +949,57 @@ void vdp_audio_reset_channel( int channel )
 	vdu_audio.channel = channel;
 	vdu_audio.CMD = 10;
        	VDP_PUTS( vdu_audio ); 
+}
+
+// Command 11: Seek to position
+// 	VDU 23, 0, &85, channel, 11, position; positionHighByte
+void vdp_audio_sample_seek( int channel, int position )
+{
+	vdu_audio_ww.channel = channel;
+	vdu_audio_ww.CMD = 11;
+	vdu_audio_ww.ww1 = position;
+       	VDP_PUTS( vdu_audio_ww ); 
+}
+
+// Command 12: Set duration
+// 	VDU 23, 0, &85, channel, 12, duration; durationHighByte
+void vdp_audio_sample_duration( int channel, int duration )
+{
+	vdu_audio_ww.channel = channel;
+	vdu_audio_ww.CMD = 12;
+	vdu_audio_ww.ww1 = duration;
+       	VDP_PUTS( vdu_audio_ww ); 
+}
+
+// Command 13: Set sample rate
+// 	VDU 23, 0, &85, channel, 13, sampleRate;
+void vdp_audio_sample_rate( int channel, int rate )
+{
+	vdu_audio_w.channel = channel;
+	vdu_audio_w.CMD = 13;
+	vdu_audio_w.w1 = rate;
+       	VDP_PUTS( vdu_audio_w ); 
+}
+
+// Command 14: Set channel waveform parameters
+// 	VDU 23, 0, &85, channel, 14, parameter, value
+void vdp_audio_set_waveform_parameter( int channel, int parameter, int value )
+{
+	if ( parameter & 0x80 )
+	{
+		// send 16-bit value
+		vdu_audio_b_w.channel = channel;
+		vdu_audio_b_w.CMD = 14;
+		vdu_audio_b_w.b1 = parameter;
+		vdu_audio_b_w.w2 = value;
+		VDP_PUTS( vdu_audio_b_w ); 
+
+	} else {
+		// send 8-bit value
+		vdu_audio_b_b.channel = channel;
+		vdu_audio_b_b.CMD = 14;
+		vdu_audio_b_b.b1 = parameter;
+		vdu_audio_b_b.b2 = value;
+		VDP_PUTS( vdu_audio_b_b ); 
+	}
 }
