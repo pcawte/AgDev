@@ -132,6 +132,11 @@ void vdp_audio_enable_channel( int channel );
 void vdp_audio_disable_channel( int channel );
 void vdp_audio_reset_channel( int channel );
 
+void vdp_audio_sample_seek( int channel, int position );
+void vdp_audio_sample_duration( int channel, int duration );
+void vdp_audio_sample_rate( int channel, int rate );
+void vdp_audio_set_waveform_parameter( int channel, int parameter, int value );
+
 #ifdef __cplusplus
 }
 #endif
