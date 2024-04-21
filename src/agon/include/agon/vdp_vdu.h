@@ -170,7 +170,8 @@ void vdp_request_ascii_code_at_graphics_position( int x, int y, bool wait );
 uint8_t vdp_return_ascii_code_at_graphics_position( int x, int y );
 // VDU 23, 0, &94, n: Read colour palette entry n (returns a pixel colour data packet)
 void vdp_request_palette_entry( int n, bool wait );
-uint8_t vdp_read_palette_entry( int n );
+uint24_t vdp_return_palette_entry_colour( int n );
+uint8_t vdp_return_palette_entry_index( int n );
 // VDU 23, 0, &95, <command>, [<args>]: Font management commands
 // -- see below --
 // VDU 23, 0, &98, n: Turn control keys on and off
