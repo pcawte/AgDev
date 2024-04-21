@@ -467,7 +467,7 @@ void vdp_request_palette_entry( int n, bool wait )
 
 	if ( wait ) while ( !(sys_vars->vpd_pflags & vdp_pflag_point) );
 }
-uint8_t vdp_read_palette_entry( int n )
+uint24_t vdp_return_palette_entry_colour( int n )
 {
 	uint24_t pixel = 0;
 	if ( !sys_vars ) vdp_vdu_init();
@@ -477,8 +477,21 @@ uint8_t vdp_read_palette_entry( int n )
 	VDP_PUTS( vdu_request_palette_entry );
 
 	while ( !(sys_vars->vpd_pflags & vdp_pflag_point) );
-	pixel = getsysvar_scrpixel(); // FIXME doc says "screen pixel" but should it be index?
-	return (uint8_t) pixel;
+	pixel = getsysvar_scrpixel();
+	return pixel;
+}
+uint8_t vdp_return_palette_entry_index( int n )
+{
+	uint8_t index = 0;
+	if ( !sys_vars ) vdp_vdu_init();
+	sys_vars->vpd_pflags = 0;
+
+	vdu_request_palette_entry.b0 = n;
+	VDP_PUTS( vdu_request_palette_entry );
+
+	while ( !(sys_vars->vpd_pflags & vdp_pflag_point) );
+	index = getsysvar_scrpixelIndex();
+	return index;
 }
 
 
