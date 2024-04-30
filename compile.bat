@@ -1,4 +1,3 @@
-Rem @echo off
 setlocal
 
 set ORIGDIR=%cd%
@@ -12,11 +11,8 @@ if not exist %BASEDIR%\Cedev-Windows.zip powershell -Command "(New-Object Net.We
 if not exist %BASEDIR%\Cedev-Windows.zip powershell -Command "Invoke-WebRequest https://github.com/CE-Programming/toolchain/releases/latest/download/CEdev-Windows.zip -OutFile %BASEDIR%\Cedev-Windows.zip"
 set CEDEV_ZIP=%BASEDIR%\Cedev-Windows.zip
 
-Rem this is where you checkout the Source Code of CEdev and you will compile it with the AgDev mods and your own customisations.
-set CEDEV_GIT=%GITHUB%\CEdev
-
-Rem this is where you want your working CEdev directory to be - this is where you will build and compile code
-set AGDEV_FINAL=%BASEDIR%\CEdev
+Rem this is where your AgDev build will end up
+set AGDEV_FINAL=%BASEDIR%\AgDev_final
 
 Rem before you start you must have the modified CEdev extracted and CEdev/bin in your path. this is so it can find the ez80-clang compiler
 cd %BASEDIR%
@@ -45,8 +41,9 @@ set CEDEV_GIT=%GITHUB%\CEdev
 Rem ----------------------------------------
 Rem Copy in AgDev code to CEdev toolchain code
 Rem ----------------------------------------
-robocopy "%AGDEV_GIT%\src" "%CEDEV_GIT%\src" /S
-robocopy "%AGDEV_GIT%\include" "%CEDEV_GIT%\include" /S
+robocopy "%AGDEV_GIT%\src " "%CEDEV_GIT%\src " /e
+robocopy "%AGDEV_GIT%\include " "%CEDEV_GIT%\include " /e
+
 
 Rem Remove the previous build directory and make
 cd %CEDEV_GIT%
@@ -62,7 +59,7 @@ Rem Install
 Rem ----------------------------------------
 
 Rem delete previous final directory
-rd /s /q %AGDEV_FINAL%
+if exist %AGDEV_FINAL% rd /s /q %AGDEV_FINAL%
 
 Rem Get the full version of CEdev from the ZIP file
 mkdir tmp
@@ -72,18 +69,18 @@ powershell -Command "Expand-Archive -Force %CEDEV_ZIP% %cd%"
 move %cd%\CEdev %AGDEV_FINAL%
 
 Rem ... but now we can get our modified version
-robocopy "%CEDEV_GIT%\CEdev\CEdev" "%AGDEV_FINAL%" /S
+robocopy "%CEDEV_GIT%\CEdev\CEdev" "%AGDEV_FINAL%" /e
 
 Rem Copy over the AgDev stuff - this includes the ez80_clang compiler and example code
 robocopy "%AGDEV_GIT%" "%AGDEV_FINAL%"
 
 Rem now copy over the built binaries and libraries
 robocopy "%CEDEV_GIT%\CEdev\CEdev\bin" "%AGDEV_FINAL%\bin" /S
-robocopy "%CEDEV_GIT%\CEdev\CEdev\lib\libc" "%AGDEV_FINAL%\lib\agon" vdp* /S
+robocopy "%CEDEV_GIT%\CEdev\CEdev\lib\libc" "%AGDEV_FINAL%\lib\agon" vdp* /e
 
 Rem finally copy the modified headers to the include directory
-Rem robocopy "%AGDEV_FINAL%\src\libc\include" "%AGDEV_FINAL%\include\agon" vdp*.h /S
-robocopy "%CEDEV_GIT%\src\libc\include" "%AGDEV_FINAL%\include\agon" vdp*.h /S
+robocopy "%AGDEV_FINAL%\src\libc\include" "%AGDEV_FINAL%\include\agon" vdp*.h /e
+robocopy "%CEDEV_GIT%\src\libc\include" "%AGDEV_FINAL%\include\agon" vdp*.h /e
 
 cd %ORIGDIR%
 
