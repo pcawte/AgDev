@@ -71,6 +71,8 @@
 	public  _mos_i2c_read
 	public  _mos_i2c_close
 	public  _mos_i2c_open
+	public  _mos_port_read
+	public  _mos_port_write
 
 	public	_getsysvar_time
 	public  _getsysvar_vpd_pflags
@@ -763,3 +765,29 @@ _mos_i2c_read:
 	ld		sp,ix
 	pop		ix
 	ret
+
+_mos_port_read:
+	push	ix
+	ld	ix, 0
+	add	ix, sp
+	push	bc
+	ld	bc, 0
+	ld	c, (ix+6)
+	in	a, (bc)
+	pop	bc
+	pop	ix
+	ret
+
+_mos_port_write:
+	push	ix
+	ld	ix, 0
+	add	ix, sp
+	push	bc
+	ld	bc, 0
+	ld	c, (ix+6)
+	ld	a, (ix+9)
+	out	(bc),a
+	pop	bc
+	pop	ix
+	ret
+

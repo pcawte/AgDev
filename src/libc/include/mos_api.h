@@ -298,6 +298,8 @@ extern uint8_t  mos_i2c_read(uint8_t i2c_address, uint8_t size, unsigned char * 
 extern uint8_t  ffs_dopen(DIR *dir_handle, const char * dir_path);   // returns fresult
 extern uint8_t  ffs_dread(DIR *dir_handle, FILINFO *fil_handle);   // returns fresult
 extern uint8_t  ffs_dclose(DIR *dir_handle);   // returns fresult
+extern uint8_t  mos_port_read(uint8_t port); 	// read from the GPIO port specified
+extern uint8_t  mos_port_write(uint8_t port, uint8_t data); 	// write data to the GPIO port specified
 
 #ifdef __cplusplus
 }
