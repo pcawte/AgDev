@@ -97,4 +97,5 @@ cp $CEDEV_GIT/CEdev/CEdev/bin/* $CEDEV_FINAL/bin/
 cp -r $CEDEV_GIT/CEdev/CEdev/lib/libc/vdp* $CEDEV_FINAL/lib/agon/
 # finally copy the modified headers to the include directory
 cp $CEDEV_FINAL/src/libc/include/vdp*h $CEDEV_FINAL/include/agon/
+cp $CEDEV_FINAL/src/libc/include/mos_api.h $CEDEV_FINAL/include/
 
