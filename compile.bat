@@ -22,7 +22,7 @@ del %BASEDIR%\Cedev-Windows.zip
 
 Rem get AgDev code
 cd %GITHUB%
-if exist %GITHUB%\AgDev_git rd /s /q "\\?\%GITHUB%\AgDev_git"
+if exist %GITHUB%\AgDev_git rmdir /s /q "\\?\%GITHUB%\AgDev_git"
 Rem was a local location for AgDev code passed to us?
 if not "%1"=="" (
     robocopy "%1" "%GITHUB%\AgDev_git" /e
@@ -35,7 +35,7 @@ set AGDEV_GIT=%BASEDIR%\github\AgDev_git
 Rem get CEdev code - using a recent stable release
 cd %GITHUB%
 set CEDEV_GIT=%GITHUB%\CEdev_git
-if exist %CEDEV_GIT%  rd /s /q "\\?\%CEDEV_GIT%"
+if exist %CEDEV_GIT%  rmdir /s /q "\\?\%CEDEV_GIT%"
 git clone https://github.com/CE-Programming/toolchain.git CEdev_git --branch v11.2
 cd %CEDEV_GIT%
 git switch -c tmp
@@ -44,7 +44,7 @@ git merge tmp
 git submodule update --init --recursive
 
 Rem Duplicate CEdev repo - this will become the basis for the final build
-if exist %BASEDIR%\CEDEV_PLUS_AGDEV rd /s /q "\\?\%BASEDIR%\CEDEV_PLUS_AGDEV"
+if exist %BASEDIR%\CEDEV_PLUS_AGDEV rmdir /s /q "\\?\%BASEDIR%\CEDEV_PLUS_AGDEV"
 mkdir "%BASEDIR%\CEDEV_PLUS_AGDEV"
 set CEDEV_PLUS_AGDEV=%BASEDIR%\CEDEV_PLUS_AGDEV
 robocopy "%CEDEV_GIT% " "%CEDEV_PLUS_AGDEV% " /e
@@ -74,7 +74,7 @@ robocopy "%AGDEV_GIT%\src\agon\include\agon" "%CEDEV_PLUS_AGDEV%\src\include\ago
 
 Rem Remove the previous build directory and make
 cd %CEDEV_PLUS_AGDEV%
-if exist %CEDEV_PLUS_AGDEV%\CEdev rd /s /q "%CEDEV_PLUS_AGDEV%\CEdev"
+if exist %CEDEV_PLUS_AGDEV%\CEdev rmdir /s /q "%CEDEV_PLUS_AGDEV%\CEdev"
 mkdir "%CEDEV_PLUS_AGDEV%\CEdev"
 SET PATH=%PATH%;c:%BASEDIR%\CEdev_zip\bin
 
@@ -83,6 +83,11 @@ SET PATH=%PATH%;c:%BASEDIR%\CEdev_zip\bin
 Rem copy over .exe's from CEdev release - TODO investigate why they don't show up automatically
 robocopy "%BASEDIR%\CEdev_zip\bin" "%CEDEV_PLUS_AGDEV%\CEdev\bin" /e
 
-Rem TODO clean folders up at the end
+Rem clean folders up at the end
+if exist "%ORIGDIR%\AgDev" rmdir /s /q "%ORIGDIR%\AgDev"
+mkdir "%ORIGDIR%\AgDev"
+robocopy "%CEDEV_PLUS_AGDEV%\CEdev" "%ORIGDIR%\AgDev" /e
+cd "%ORIGDIR%"
+Rem rmdir "%ORIGDIR%\build" /s /q
 
 endlocal
