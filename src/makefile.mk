@@ -129,7 +129,6 @@ GFXDIR := $(call NATIVEPATH,$(GFXDIR))
 # generate default names
 TARGETBIN ?= $(NAME).bin
 TARGETMAP ?= $(NAME).map
-ICONIMG := $(wildcard $(call NATIVEPATH,$(ICON)))
 
 # startup routines
 LDCRT0 ?= $(call NATIVEPATH,$(CEDEV_TOOLCHAIN)/lib/crt/crt0.src)
@@ -236,7 +235,7 @@ FASMGFLAGS = \
 	-i $(call QUOTE_ARG,provide __stack = $$$(STACK_HIGH)) \
 	-i $(call QUOTE_ARG,locate .header at $$$(INIT_LOC)) \
 	$(LDMAPFLAG) \
-	-i $(call QUOTE_ARG,source $(LDICON)$(call FASMG_FILES,$(LDFILES))) \
+	-i $(call QUOTE_ARG,source $(call FASMG_FILES,$(LDFILES))) \
 	-i $(call QUOTE_ARG,library $(LDLIBS)) \
 	$(EXTRA_LDFLAGS)
 
@@ -255,7 +254,7 @@ debug: LDDEBUG = 1
 debug: CCDEBUG = -gdwarf-5 -g3
 debug: $(BINDIR)/$(TARGETBIN)
 
-$(BINDIR)/$(TARGETBIN): $(LDFILES) $(ICONSRC) $(MAKEFILE_LIST) $(DEPS)
+$(BINDIR)/$(TARGETBIN): $(LDFILES) $(MAKEFILE_LIST) $(DEPS)
 	$(Q)$(call MKDIR,$(@D))
 	$(Q)echo [linking] $(call NATIVEPATH,$@)
 	$(Q)$(FASMG) $(FASMGFLAGS) $(call NATIVEPATH,$@)
