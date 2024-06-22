@@ -90,7 +90,7 @@ _exec_name:
 	db	PROG_NAME, ".bin", 0	; The executable name, only used in argv
 
 	;align	64  			; The executable header is from byte 64 onwards
-	db  (-($ scale 0)) and 62  dup 0
+	db  (-($ scale 0)) and 63  dup 0
 	weak	__mos_header
 __mos_header:
 	db	"MOS"			; Flag for MOS - to confirm this is a valid MOS binary

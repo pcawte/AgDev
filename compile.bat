@@ -88,6 +88,6 @@ if exist "%ORIGDIR%\AgDev" rmdir /s /q "%ORIGDIR%\AgDev"
 mkdir "%ORIGDIR%\AgDev"
 robocopy "%CEDEV_PLUS_AGDEV%\CEdev" "%ORIGDIR%\AgDev" /e
 cd "%ORIGDIR%"
-Rem rmdir "%ORIGDIR%\build" /s /q
+rmdir "%ORIGDIR%\build" /s /q
 
 endlocal

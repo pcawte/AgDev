@@ -40,12 +40,12 @@ C_EXTENSION ?= c
 CUSTOM_FILE_FILE ?= stdio_file.h
 DEPS ?=
 HAS_UPPERCASE_NAME ?= YES
-HAS_PRINTF ?= YES
 HAS_CUSTOM_FILE ?= NO
 HAS_LIBC ?= YES
 HAS_LIBCXX ?= YES
 HAS_AGON ?= YES
 HAS_ARG_PROCESSING ?= NO
+# ALLOCATOR ?= SIMPLE
 ALLOCATOR ?= STANDARD
 PREFER_OS_CRT ?= NO
 PREFER_OS_LIBC ?= YES
@@ -71,7 +71,6 @@ CCDEBUG := -g0
 LDDEBUG := 0
 LDPREFER_OS_CRT := 0
 LDPREFER_OS_LIBC := 0
-LDHAS_PRINTF := 0
 LDHAS_LIBC := 0
 LDHAS_LIBCXX := 0
 LDHAS_AGON := 1
@@ -133,7 +132,7 @@ TARGETMAP ?= $(NAME).map
 ICONIMG := $(wildcard $(call NATIVEPATH,$(ICON)))
 
 # startup routines
-LDCRT0 = $(call NATIVEPATH,$(CEDEV_TOOLCHAIN)/lib/crt/crt0.src)
+LDCRT0 ?= $(call NATIVEPATH,$(CEDEV_TOOLCHAIN)/lib/crt/crt0.src)
 LDBCLTO = $(OBJDIR)/lto.bc
 LDLTO = $(OBJDIR)/lto.src
 
@@ -209,9 +208,6 @@ endif
 ifeq ($(HAS_AGON),YES)
 LDHAS_AGON := 1
 endif
-ifeq ($(HAS_PRINTF),YES)
-LDHAS_PRINTF := 1
-endif
 
 # define the c/c++ flags used by clang
 EZLLVMFLAGS = -mllvm -profile-guided-section-prefix=false
@@ -227,15 +223,14 @@ FASMGFLAGS = \
 	$(call QUOTE_ARG,$(call NATIVEPATH,$(CEDEV_TOOLCHAIN)/meta/ld.alm)) \
 	-i $(call QUOTE_ARG,DEBUG := $(LDDEBUG)) \
 	-i $(call QUOTE_ARG,PROG_NAME := '$(NAME)') \
-	-i $(call QUOTE_ARG,HAS_PRINTF := $(LDHAS_PRINTF)) \
 	-i $(call QUOTE_ARG,HAS_LIBC := $(LDHAS_LIBC)) \
 	-i $(call QUOTE_ARG,HAS_LIBCXX := $(LDHAS_LIBCXX)) \
 	-i $(call QUOTE_ARG,HAS_AGON := $(LDHAS_AGON)) \
 	-i $(call QUOTE_ARG,PREFER_OS_CRT := $(LDPREFER_OS_CRT)) \
 	-i $(call QUOTE_ARG,PREFER_OS_LIBC := $(LDPREFER_OS_LIBC)) \
+	-i $(call QUOTE_ARG,HAS_EXIT_HANDLER := $(LDHAS_EXIT_HANDLER)) \
 	-i $(call QUOTE_ARG,ALLOCATOR_$(ALLOCATOR) := 1) \
 	-i $(call QUOTE_ARG,HAS_ARG_PROCESSING := $(LDHAS_ARG_PROCESSING)) \
-	-i $(call QUOTE_ARG,HAS_EXIT_HANDLER := $(LDHAS_EXIT_HANDLER)) \
 	-i $(call QUOTE_ARG,include $(call FASMG_FILES,$(LINKER_SCRIPT))) \
 	-i $(call QUOTE_ARG,range .bss $$$(BSSHEAP_LOW) : $$$(BSSHEAP_HIGH)) \
 	-i $(call QUOTE_ARG,provide __stack = $$$(STACK_HIGH)) \
