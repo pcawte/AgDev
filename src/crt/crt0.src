@@ -79,6 +79,44 @@
 
 argv_ptrs_max := 16			; Maximum number of arguments allowed in argv
 
+; macro definitions
+; =================
+
+define align?
+
+align?.INDEX = 0
+
+macro align?.assume variable, pow2
+        assert bsf(pow2) = bsr(pow2)
+        repeat align?.INDEX+1
+                if % = %%
+                        align?.INDEX = align?.INDEX + 1
+                        align?.v% = variable
+                        align?.% = pow2
+                else if align?.v% relativeto variable
+                        align?.v% = variable
+                        align?.% = pow2
+                        break
+                end if
+        end repeat
+end macro
+
+macro align? pow2*, remainder:0, filler:?
+        local offset
+        offset = $
+        repeat align?.INDEX
+                if offset relativeto align?.v%
+                        if align?.% >= pow2
+                                offset = offset - align?.v%
+                        else
+                                err 'variable portion of address is not aligned enough'
+                        end if
+                end if
+        end repeat
+        assert bsf(pow2) = bsr(pow2)
+        db (-offset+remainder)and(pow2-1) dup filler
+end macro 
+
 section .header 			; The location of this is set by locate .header in makefile.mk
 
 	jp	__start			; Jump to start
@@ -89,8 +127,7 @@ section .header 			; The location of this is set by locate .header in makefile.m
 _exec_name:
 	db	PROG_NAME, ".bin", 0	; The executable name, only used in argv
 
-	;align	64  			; The executable header is from byte 64 onwards
-	db  (-($ scale 0)) and 63  dup 0
+	align	64  			; The executable header is from byte 64 onwards
 	weak	__mos_header
 __mos_header:
 	db	"MOS"			; Flag for MOS - to confirm this is a valid MOS binary
