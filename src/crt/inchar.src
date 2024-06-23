@@ -1,0 +1,18 @@
+; modified for Agon
+; Paul Cawte 03/06/2023
+;
+; Called by getchar to get character from stdin (the console)
+; Returns the character in A
+
+	assume	adl=1
+
+	section	.text
+	weak	_inchar
+_inchar:
+
+.getchar:
+	xor		a 				; A=0 for MOS get key
+	rst.lil	008h			; Call MOS get key, return value in A
+	or		a,a             ; test if zero returned
+	jr z,	.getchar      	; if so, repeat and get character again
+	ret 					; otherwise return it

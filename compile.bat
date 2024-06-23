@@ -1,7 +1,7 @@
 setlocal
 
 set ORIGDIR=%cd%
-set BASEDIR=%cd%\build
+set BASEDIR=%cd%\_temp
 set GITHUB=%BASEDIR%\github
 
 if not exist %BASEDIR% mkdir %BASEDIR%
@@ -83,11 +83,10 @@ SET PATH=%PATH%;c:%BASEDIR%\CEdev_zip\bin
 Rem copy over .exe's from CEdev release - TODO investigate why they don't show up automatically
 robocopy "%BASEDIR%\CEdev_zip\bin" "%CEDEV_PLUS_AGDEV%\CEdev\bin" /e
 
+Rem copy resulting build to root directory
+robocopy "%CEDEV_PLUS_AGDEV%\CEdev" "%ORIGDIR%" /e
+
 Rem clean folders up at the end
-if exist "%ORIGDIR%\AgDev" rmdir /s /q "%ORIGDIR%\AgDev"
-mkdir "%ORIGDIR%\AgDev"
-robocopy "%CEDEV_PLUS_AGDEV%\CEdev" "%ORIGDIR%\AgDev" /e
-cd "%ORIGDIR%"
-rmdir "%ORIGDIR%\build" /s /q
+Rem rmdir "%BASEDIR%" /s /q
 
 endlocal
