@@ -18,7 +18,7 @@ cd %BASEDIR%
 Rem Either we use this Win10-and-up command, or tar (also Win10), or we embed VBScript... this seems best for now
 powershell -Command "Expand-Archive -Force %BASEDIR%\Cedev-Windows.zip %BASEDIR%"
 rename "%BASEDIR%\CEdev" CEdev_zip
-del %BASEDIR%\Cedev-Windows.zip
+Rem del %BASEDIR%\Cedev-Windows.zip
 
 Rem get AgDev code
 cd %GITHUB%
@@ -35,13 +35,15 @@ set AGDEV_GIT=%BASEDIR%\github\AgDev_git
 Rem get CEdev code - using a recent stable release
 cd %GITHUB%
 set CEDEV_GIT=%GITHUB%\CEdev_git
-if exist %CEDEV_GIT%  rmdir /s /q "\\?\%CEDEV_GIT%"
-git clone https://github.com/CE-Programming/toolchain.git CEdev_git --branch v11.2
-cd %CEDEV_GIT%
-git switch -c tmp
-git switch master
-git merge tmp
-git submodule update --init --recursive
+if not exist %CEDEV_GIT%  (
+    mkdir %CEDEV_GIT%
+    git clone https://github.com/CE-Programming/toolchain.git CEdev_git --branch v11.2
+    cd %CEDEV_GIT%
+    git switch -c tmp
+    git switch master
+    git merge tmp
+    git submodule update --init --recursive
+)
 
 Rem Duplicate CEdev repo - this will become the basis for the final build
 if exist %BASEDIR%\CEDEV_PLUS_AGDEV rmdir /s /q "\\?\%BASEDIR%\CEDEV_PLUS_AGDEV"
@@ -65,6 +67,11 @@ del runprgm.src
 
 Rem delete printf.src since it's been superceded by nanoprintf and it causes a linker error if we leave it
 del "%CEDEV_PLUS_AGDEV%\src\libc\printf.src"
+
+Rem delete CEdev allocator code, since AgDev uses its own
+del "%CEDEV_PLUS_AGDEV%\src\libc\allocator.src"
+del "%CEDEV_PLUS_AGDEV%\src\libc\allocator_simple.src"
+del "%CEDEV_PLUS_AGDEV%\src\libc\allocator_standard.c"
 
 Rem copy over AgDev source files and build instructions
 robocopy "%AGDEV_GIT%" "%CEDEV_PLUS_AGDEV%" makefile

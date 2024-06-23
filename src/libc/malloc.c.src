@@ -1,0 +1,93 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_malloc
+_malloc:
+	ld	hl, -6
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	de, 6
+	ld	bc, 0
+	push	hl
+	pop	iy
+	add	iy, de
+	ld	de, -6
+	or	a, a
+	sbc	hl, de
+	jr	nc, BB0_10
+	lea	hl, iy
+	ld	iy, __alloc_base
+	ld	(ix - 3), hl
+BB0_2:
+	lea	de, iy
+	ld	iy, (iy)
+	lea	hl, iy
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB0_6
+	ld	(ix - 6), de
+	ld	bc, (iy + 3)
+	push	bc
+	pop	hl
+	ld	de, (ix - 3)
+	or	a, a
+	sbc	hl, de
+	ld	de, 12
+	jr	c, BB0_2
+	ld	hl, (ix + 6)
+	add	hl, de
+	or	a, a
+	sbc	hl, bc
+	jr	nc, BB0_8
+	push	bc
+	pop	hl
+	ld	bc, (ix - 3)
+	or	a, a
+	sbc	hl, bc
+	push	hl
+	pop	de
+	ld	(iy + 3), de
+	add	iy, de
+	ld	(iy + 3), bc
+	jr	BB0_9
+BB0_6:
+	ld	hl, (ix - 3)
+	push	hl
+	call	_sbrk
+	push	hl
+	pop	iy
+	pop	hl
+	lea	hl, iy
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	ld	bc, 0
+	jr	z, BB0_10
+	ld	hl, (ix - 3)
+	ld	(iy + 3), hl
+	jr	BB0_9
+BB0_8:
+	ld	de, (iy)
+	ld	hl, (ix - 6)
+	ld	(hl), de
+BB0_9:
+	lea	bc, iy + 6
+BB0_10:
+	push	bc
+	pop	hl
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.bss,"aw",@nobits
+	public	__alloc_base
+__alloc_base:
+	rb	6
+
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__frameset
+	extern	_sbrk
