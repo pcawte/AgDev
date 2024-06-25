@@ -11,9 +11,6 @@ Rem I don't feel guilty about requiring a recent version of Powershell... see be
 if not exist %BASEDIR%\Cedev_zip powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/CE-Programming/toolchain/releases/latest/download/CEdev-Windows.zip', '%BASEDIR%\Cedev-Windows.zip')"
 if not exist %BASEDIR%\Cedev_zip powershell -Command "Invoke-WebRequest https://github.com/CE-Programming/toolchain/releases/latest/download/CEdev-Windows.zip -OutFile %BASEDIR%\Cedev-Windows.zip"
 
-Rem this is where your AgDev build will end up
-set AGDEV_FINAL=%BASEDIR%\AgDev_final
-
 cd %BASEDIR%
 Rem Either we use this Win10-and-up command, or tar (also Win10), or we embed VBScript... this seems best for now
 powershell -Command "Expand-Archive -Force %BASEDIR%\Cedev-Windows.zip %BASEDIR%"
@@ -93,10 +90,15 @@ SET PATH=%PATH%;c:%BASEDIR%\CEdev_zip\bin
 Rem copy over .exe's from CEdev release - CEdev GitHub actions pull each .exe's repo and build, but we shouldn't need to do that.
 robocopy "%BASEDIR%\CEdev_zip\bin" "%CEDEV_PLUS_AGDEV%\CEdev\bin" /e
 
+Rem copy over AgDev example folders
+robocopy "%GITHUB%\AgDev_git\AgExamples" "%CEDEV_PLUS_AGDEV%\CEdev\AgExamples" /e
+robocopy "%GITHUB%\AgDev_git\sprite-demos" "%CEDEV_PLUS_AGDEV%\CEdev\sprite-demos" /e
+robocopy "%GITHUB%\AgDev_git\tests" "%CEDEV_PLUS_AGDEV%\CEdev\tests" /e
+
 Rem copy resulting build to root directory
 robocopy "%CEDEV_PLUS_AGDEV%\CEdev" "%ORIGDIR%" /e
 
-Rem clean folders up at the end
-Rem rmdir "%BASEDIR%" /s /q
+Rem clean folders up at the end - TODO make optional
+rmdir "%BASEDIR%" /s /q
 
 endlocal
