@@ -1,8 +1,8 @@
 setlocal
 
-set ORIGDIR=%cd%
-set BASEDIR=%cd%\_temp
-set GITHUB=%BASEDIR%\github
+set ORIGDIR="%cd%"
+set BASEDIR="%cd%\_temp"
+set GITHUB="%BASEDIR%\github"
 
 if not exist %BASEDIR% mkdir %BASEDIR%
 if not exist %GITHUB% mkdir %GITHUB%
@@ -11,7 +11,7 @@ Rem I don't feel guilty about requiring a recent version of Powershell... see be
 if not exist %BASEDIR%\Cedev_zip powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/CE-Programming/toolchain/releases/latest/download/CEdev-Windows.zip', '%BASEDIR%\Cedev-Windows.zip')"
 if not exist %BASEDIR%\Cedev_zip powershell -Command "Invoke-WebRequest https://github.com/CE-Programming/toolchain/releases/latest/download/CEdev-Windows.zip -OutFile %BASEDIR%\Cedev-Windows.zip"
 
-cd %BASEDIR%
+cd "%BASEDIR%"
 Rem Either we use this Win10-and-up command, or tar (also Win10), or we embed VBScript... this seems best for now
 powershell -Command "Expand-Archive -Force %BASEDIR%\Cedev-Windows.zip %BASEDIR%"
 rename "%BASEDIR%\CEdev" CEdev_zip
@@ -19,7 +19,7 @@ Rem del %BASEDIR%\Cedev-Windows.zip
 
 Rem get AgDev code
 cd %GITHUB%
-if exist %GITHUB%\AgDev_git rmdir /s /q "\\?\%GITHUB%\AgDev_git"
+if exist "%GITHUB%\AgDev_git" rmdir /s /q "\\?\%GITHUB%\AgDev_git"
 Rem was a local location for AgDev code passed to us?
 if not "%1"=="" (
     robocopy "%1" "%GITHUB%\AgDev_git" /e
@@ -31,7 +31,7 @@ set AGDEV_GIT=%BASEDIR%\github\AgDev_git
 
 Rem get CEdev code - using a recent stable release
 cd %GITHUB%
-set CEDEV_GIT=%GITHUB%\CEdev_git
+set CEDEV_GIT="%GITHUB%\CEdev_git"
 if not exist %CEDEV_GIT%  (
     mkdir %CEDEV_GIT%
     git clone https://github.com/CE-Programming/toolchain.git CEdev_git --branch v11.2
@@ -99,6 +99,7 @@ Rem copy resulting build to root directory
 robocopy "%CEDEV_PLUS_AGDEV%\CEdev" "%ORIGDIR%" /e
 
 Rem clean folders up at the end - TODO make optional
+cd "%ORIGDIR%"
 rmdir "%BASEDIR%" /s /q
 
 endlocal
