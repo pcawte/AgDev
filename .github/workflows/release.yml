@@ -38,7 +38,7 @@ jobs:
           
       - name: Zip (Windows)
         run: |
-          powershell Compress-Archive * AgDev_release_${{  github.ref_name }}_windows.zip
+          powershell -Command Compress-Archive * AgDev_release_${{  github.ref_name }}_windows.zip
 
       - name: Upload Windows ZIP to GitHub Release
         uses: xresloader/upload-to-github-release@v1
