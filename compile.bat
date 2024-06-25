@@ -8,8 +8,8 @@ if not exist %BASEDIR% mkdir %BASEDIR%
 if not exist %GITHUB% mkdir %GITHUB%
 
 Rem I don't feel guilty about requiring a recent version of Powershell... see below
-if not exist %BASEDIR%\Cedev-Windows.zip powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/CE-Programming/toolchain/releases/latest/download/CEdev-Windows.zip', '%BASEDIR%\Cedev-Windows.zip')"
-if not exist %BASEDIR%\Cedev-Windows.zip powershell -Command "Invoke-WebRequest https://github.com/CE-Programming/toolchain/releases/latest/download/CEdev-Windows.zip -OutFile %BASEDIR%\Cedev-Windows.zip"
+if not exist %BASEDIR%\Cedev_zip powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/CE-Programming/toolchain/releases/latest/download/CEdev-Windows.zip', '%BASEDIR%\Cedev-Windows.zip')"
+if not exist %BASEDIR%\Cedev_zip powershell -Command "Invoke-WebRequest https://github.com/CE-Programming/toolchain/releases/latest/download/CEdev-Windows.zip -OutFile %BASEDIR%\Cedev-Windows.zip"
 
 Rem this is where your AgDev build will end up
 set AGDEV_FINAL=%BASEDIR%\AgDev_final
@@ -65,13 +65,14 @@ del tice.src
 del os_textbuffer.src
 del runprgm.src
 
-Rem delete printf.src since it's been superceded by nanoprintf and it causes a linker error if we leave it
-del "%CEDEV_PLUS_AGDEV%\src\libc\printf.src"
-
 Rem delete CEdev allocator code, since AgDev uses its own
 del "%CEDEV_PLUS_AGDEV%\src\libc\allocator.src"
 del "%CEDEV_PLUS_AGDEV%\src\libc\allocator_simple.src"
 del "%CEDEV_PLUS_AGDEV%\src\libc\allocator_standard.c"
+
+Rem delete misc .c files which had hadmade asm edits made for AgDev
+del "%CEDEV_PLUS_AGDEV%\src\libc\time.c"
+del "%CEDEV_PLUS_AGDEV%\src\libc\strftime.c"
 
 Rem copy over AgDev source files and build instructions
 robocopy "%AGDEV_GIT%" "%CEDEV_PLUS_AGDEV%" makefile
@@ -87,7 +88,7 @@ SET PATH=%PATH%;c:%BASEDIR%\CEdev_zip\bin
 
 "%CEDEV_PLUS_AGDEV%/resources/windows/make.exe" install
 
-Rem copy over .exe's from CEdev release - TODO investigate why they don't show up automatically
+Rem copy over .exe's from CEdev release - CEdev pulls each repo and builds, but we shouldn't need to do that.
 robocopy "%BASEDIR%\CEdev_zip\bin" "%CEDEV_PLUS_AGDEV%\CEdev\bin" /e
 
 Rem copy resulting build to root directory

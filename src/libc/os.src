@@ -1,0 +1,3 @@
+	assume	adl=1
+
+	section	.text

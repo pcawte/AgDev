@@ -1,0 +1,65 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_time
+_time:
+	ld	hl, -30
+	call	__frameset
+	call	_getsysvar_rtc
+	ld	(ix - 30), hl
+	ld	hl, _time.rtc_buffer
+	push	hl
+	call	_mos_getrtc
+	pop	hl
+	ld	iy, (ix - 30)
+	ld	a, (iy + 7)
+	or	a, a
+	sbc	hl, hl
+	ld	l, a
+	ld	(ix - 27), hl
+	ld	l, (iy + 6)
+	ld	(ix - 24), hl
+	ld	l, (iy + 5)
+	ld	(ix - 21), hl
+	ld	l, (iy + 2)
+	ld	(ix - 18), hl
+	ld	l, (iy + 1)
+	ld	(ix - 15), hl
+	ld	a, (iy)
+	ld	l, a
+	ld	de, 80
+	add	hl, de
+	ld	(ix - 12), hl
+	pea	ix - 27
+	call	_mktime
+	ld	iy, (ix + 6)
+	push	hl
+	pop	bc
+	pop	hl
+	lea	hl, iy
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB0_2
+	ld	(iy), bc
+	ld	(iy + 3), e
+BB0_2:
+	push	bc
+	pop	hl
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.bss,"aw",@nobits
+	private	_time.rtc_buffer
+_time.rtc_buffer:
+	rb	33
+
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 6c61664110f888c0285ae4c48b150c9a7a4361bb)"
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__frameset
+	extern	_mktime
+	extern	_mos_getrtc
+	extern	_getsysvar_rtc

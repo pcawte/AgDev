@@ -1,0 +1,26 @@
+; clock_t clock(void)
+; ===================
+;
+; SYNOPSIS
+;       #include <time.h>
+;
+;       clock_t clock(void);
+;
+;DESCRIPTION
+;       The clock() function returns an approximation of processor time
+;       used by the program.
+;
+;RETURN VALUE 
+;       The value returned is the CPU time used so far as a clock_t; to
+;       get the number of seconds used, divide by CLOCKS_PER_SEC.  If the
+;       processor time used is not available or its value cannot be
+;       represented, the function returns the value (clock_t) -1.
+
+	assume	adl=1
+
+	section	.text
+	public	_clock
+_clock:
+	jp	_getsysvar_time
+
+	extern	_getsysvar_time
