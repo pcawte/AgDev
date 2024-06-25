@@ -53,7 +53,6 @@ robocopy "%CEDEV_GIT% " "%CEDEV_PLUS_AGDEV% " /e
 
 Rem Move some stuff around in /src
 Rem the /agon folder in AgDev is based on the /ce folder in CEdev, but with CE-specific stuff removed and Agon-specific stuff added
-Rem however, other CEdev files not in /ce link against /ce, so we need to keep it around... at least at build time
 mkdir "%CEDEV_PLUS_AGDEV%\src\agon"
 robocopy "%CEDEV_PLUS_AGDEV%\src\ce" "%CEDEV_PLUS_AGDEV%\src\agon"
 cd "%CEDEV_PLUS_AGDEV%\src\agon"
@@ -65,19 +64,22 @@ del tice.src
 del os_textbuffer.src
 del runprgm.src
 
+rmdir /s /q  "%CEDEV_PLUS_AGDEV%\src\ce"
+
 Rem delete CEdev allocator code, since AgDev uses its own
 del "%CEDEV_PLUS_AGDEV%\src\libc\allocator.src"
 del "%CEDEV_PLUS_AGDEV%\src\libc\allocator_simple.src"
 del "%CEDEV_PLUS_AGDEV%\src\libc\allocator_standard.c"
 
-Rem delete misc .c files which had hadmade asm edits made for AgDev
+Rem delete misc .c files which had handmade asm edits made for AgDev
 del "%CEDEV_PLUS_AGDEV%\src\libc\time.c"
 del "%CEDEV_PLUS_AGDEV%\src\libc\strftime.c"
 
 Rem copy over AgDev source files and build instructions
 robocopy "%AGDEV_GIT%" "%CEDEV_PLUS_AGDEV%" makefile
 robocopy "%AGDEV_GIT%\src " "%CEDEV_PLUS_AGDEV%\src" /e
-Rem vdp headers seem like they need to be in 2 places. TODO can this be avoided?
+
+Rem vdp headers need to be in 2 places
 robocopy "%AGDEV_GIT%\src\agon\include\agon" "%CEDEV_PLUS_AGDEV%\src\include\agon"
 
 Rem Remove the previous build directory and make
@@ -88,7 +90,7 @@ SET PATH=%PATH%;c:%BASEDIR%\CEdev_zip\bin
 
 "%CEDEV_PLUS_AGDEV%/resources/windows/make.exe" install
 
-Rem copy over .exe's from CEdev release - CEdev pulls each repo and builds, but we shouldn't need to do that.
+Rem copy over .exe's from CEdev release - CEdev GitHub actions pull each .exe's repo and build, but we shouldn't need to do that.
 robocopy "%BASEDIR%\CEdev_zip\bin" "%CEDEV_PLUS_AGDEV%\CEdev\bin" /e
 
 Rem copy resulting build to root directory
