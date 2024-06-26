@@ -1,10 +1,8 @@
-@echo off
-
 setlocal
 
 set ORIGDIR="%cd%"
-set BASEDIR="%cd%\_temp"
-set GITHUB="%BASEDIR%\github"
+set BASEDIR=%cd%\_temp
+set GITHUB=%BASEDIR%\github
 
 if not exist %BASEDIR% mkdir %BASEDIR%
 if not exist %GITHUB% mkdir %GITHUB%
@@ -16,12 +14,12 @@ if not exist %BASEDIR%\Cedev_zip powershell -Command "Invoke-WebRequest https://
 cd "%BASEDIR%"
 Rem Either we use this Win10-and-up command, or tar (also Win10), or we embed VBScript... this seems best for now
 powershell -Command "Expand-Archive -Force %BASEDIR%\Cedev-Windows.zip %BASEDIR%"
-rename "%BASEDIR%\CEdev" CEdev_zip
+rename %BASEDIR%\CEdev CEdev_zip
 Rem del %BASEDIR%\Cedev-Windows.zip
 
 Rem get AgDev code
 cd %GITHUB%
-if exist "%GITHUB%\AgDev_git" rmdir /s /q "\\?\%GITHUB%\AgDev_git"
+if exist %GITHUB%\AgDev_git rmdir /s /q \\?\%GITHUB%\AgDev_git
 Rem was a local location for AgDev code passed to us?
 if not "%1"=="" (
     robocopy "%1" "%GITHUB%\AgDev_git" /e
@@ -33,7 +31,7 @@ set AGDEV_GIT=%BASEDIR%\github\AgDev_git
 
 Rem get CEdev code - using a recent stable release
 cd %GITHUB%
-set CEDEV_GIT="%GITHUB%\CEdev_git"
+set CEDEV_GIT=%GITHUB%\CEdev_git
 if not exist %CEDEV_GIT%  (
     mkdir %CEDEV_GIT%
     git clone https://github.com/CE-Programming/toolchain.git CEdev_git --branch v11.2
@@ -45,16 +43,16 @@ if not exist %CEDEV_GIT%  (
 )
 
 Rem Duplicate CEdev repo - this will become the basis for the final build
-if exist %BASEDIR%\CEDEV_PLUS_AGDEV rmdir /s /q "\\?\%BASEDIR%\CEDEV_PLUS_AGDEV"
-mkdir "%BASEDIR%\CEDEV_PLUS_AGDEV"
+if exist %BASEDIR%\CEDEV_PLUS_AGDEV rmdir /s /q \\?\%BASEDIR%\CEDEV_PLUS_AGDEV
+mkdir %BASEDIR%\CEDEV_PLUS_AGDEV
 set CEDEV_PLUS_AGDEV=%BASEDIR%\CEDEV_PLUS_AGDEV
 robocopy "%CEDEV_GIT% " "%CEDEV_PLUS_AGDEV% " /e
 
 Rem Move some stuff around in /src
 Rem the /agon folder in AgDev is based on the /ce folder in CEdev, but with CE-specific stuff removed and Agon-specific stuff added
-mkdir "%CEDEV_PLUS_AGDEV%\src\agon"
-robocopy "%CEDEV_PLUS_AGDEV%\src\ce" "%CEDEV_PLUS_AGDEV%\src\agon"
-cd "%CEDEV_PLUS_AGDEV%\src\agon"
+mkdir %CEDEV_PLUS_AGDEV%\src\agon
+robocopy %CEDEV_PLUS_AGDEV%\src\ce %CEDEV_PLUS_AGDEV%\src\agon
+cd %CEDEV_PLUS_AGDEV%\src\agon
 del eval.src
 del getstringinput.src
 del gettokeninput.src
@@ -63,7 +61,7 @@ del tice.src
 del os_textbuffer.src
 del runprgm.src
 
-rmdir /s /q  "%CEDEV_PLUS_AGDEV%\src\ce"
+rmdir /s /q  %CEDEV_PLUS_AGDEV%\src\ce
 
 Rem delete CEdev allocator code, since AgDev uses its own
 del "%CEDEV_PLUS_AGDEV%\src\libc\allocator.src"
