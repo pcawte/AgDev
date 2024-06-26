@@ -48,5 +48,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          file: ${{ github.workspace }}\temp\AgDev_release_${{  github.ref_name }}_windows.zip
+          file: ${{ github.workspace }}\..\temp\AgDev_release_${{  github.ref_name }}_windows.zip
           tags: true
