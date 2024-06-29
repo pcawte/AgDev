@@ -13,9 +13,9 @@ if not exist %BASEDIR%\Cedev_zip powershell -Command "Invoke-WebRequest https://
 
 cd "%BASEDIR%"
 Rem Either we use this Win10-and-up command, or tar (also Win10), or we embed VBScript... this seems best for now
-powershell -Command "Expand-Archive -Force %BASEDIR%\Cedev-Windows.zip %BASEDIR%"
-rename %BASEDIR%\CEdev CEdev_zip
-Rem del %BASEDIR%\Cedev-Windows.zip
+if not exist %BASEDIR%\Cedev_zip powershell -Command "Expand-Archive -Force %BASEDIR%\Cedev-Windows.zip %BASEDIR%"
+if not exist %BASEDIR%\Cedev_zip rename %BASEDIR%\CEdev CEdev_zip
+del %BASEDIR%\Cedev-Windows.zip
 
 Rem get AgDev code
 cd %GITHUB%
@@ -27,7 +27,7 @@ if not "%1"=="" (
     git clone https://github.com/pcawte/AgDev.git AgDev_git
 )
 
-set AGDEV_GIT=%BASEDIR%\github\AgDev_git
+set AGDEV_GIT=%GITHUB%\AgDev_git
 
 Rem get CEdev code - using a recent stable release
 cd %GITHUB%
@@ -61,6 +61,7 @@ del tice.src
 del os_textbuffer.src
 del runprgm.src
 
+Rem now that we've copied its contents, we don't need /ce anymore
 rmdir /s /q  %CEDEV_PLUS_AGDEV%\src\ce
 
 Rem delete CEdev allocator code, since AgDev uses its own
@@ -68,7 +69,7 @@ del "%CEDEV_PLUS_AGDEV%\src\libc\allocator.src"
 del "%CEDEV_PLUS_AGDEV%\src\libc\allocator_simple.src"
 del "%CEDEV_PLUS_AGDEV%\src\libc\allocator_standard.c"
 
-Rem delete misc .c files which had handmade asm edits made for AgDev
+Rem delete misc .c files which had handmade asm edits made for AgDev - we will copy over these prebuilt .src files in the next step
 del "%CEDEV_PLUS_AGDEV%\src\libc\time.c"
 del "%CEDEV_PLUS_AGDEV%\src\libc\strftime.c"
 
@@ -76,7 +77,7 @@ Rem copy over AgDev source files and build instructions
 robocopy "%AGDEV_GIT%" "%CEDEV_PLUS_AGDEV%" makefile
 robocopy "%AGDEV_GIT%\src " "%CEDEV_PLUS_AGDEV%\src" /e
 
-Rem vdp headers need to be in 2 places
+Rem vdp headers need to be in 2 places for some reason
 robocopy "%AGDEV_GIT%\src\agon\include\agon" "%CEDEV_PLUS_AGDEV%\src\include\agon"
 
 Rem Remove the previous build directory and make
@@ -85,6 +86,7 @@ if exist %CEDEV_PLUS_AGDEV%\CEdev rmdir /s /q "%CEDEV_PLUS_AGDEV%\CEdev"
 mkdir "%CEDEV_PLUS_AGDEV%\CEdev"
 SET PATH=%PATH%;c:%BASEDIR%\CEdev_zip\bin
 
+pause
 "%CEDEV_PLUS_AGDEV%/resources/windows/make.exe" install
 
 Rem copy over .exe's from CEdev release - CEdev GitHub actions pull each .exe's repo and build, but we shouldn't need to do that.
@@ -95,11 +97,11 @@ robocopy "%GITHUB%\AgDev_git\AgExamples" "%CEDEV_PLUS_AGDEV%\CEdev\AgExamples" /
 robocopy "%GITHUB%\AgDev_git\sprite-demos" "%CEDEV_PLUS_AGDEV%\CEdev\sprite-demos" /e
 robocopy "%GITHUB%\AgDev_git\tests" "%CEDEV_PLUS_AGDEV%\CEdev\tests" /e
 
-Rem copy resulting build to root directory
+Rem copy resulting build to base directory
 robocopy "%CEDEV_PLUS_AGDEV%\CEdev" "%ORIGDIR%" /e
 
 Rem clean folders up at the end - TODO make optional
 cd "%ORIGDIR%"
-rmdir "%BASEDIR%" /s /q
+Rem rmdir "%BASEDIR%" /s /q
 
 endlocal

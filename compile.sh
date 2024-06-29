@@ -1,100 +1,111 @@
-#!/bin/bash -x
-
-# Working directory
-BASEDIR=`pwd`/build
-
-GITHUB=$BASEDIR/github
-if [ ! -d "$BASEDIR" ]
-then
-       	mkdir $BASEDIR
+# Note: this script requires ez80-clang to be accessible in PATH
+#
+ORIGDIR=$PWD
+BASEDIR=$PWD/_temp
+GITHUB=$PWD/_temp/github
+#
+if [ ! -d $BASEDIR ]; then
+mkdir $BASEDIR;
 fi
-if [ ! -d "$GITHUB" ]
-then
-       	mkdir $GITHUB
-fi
-
-# tar file of the CE Toolchain
-# Available from here https://github.com/CE-Programming/toolchain/releases/latest/download/CEdev-Linux.tar.gz
 cd $BASEDIR
-wget https://github.com/CE-Programming/toolchain/releases/latest/download/CEdev-Linux.tar.gz
-CEDEV_TAR=$BASEDIR/CEdev-Linux.tar.gz
-
-# this is where you checkout the Source Code of CEdev
-# and you will compile it with the AgDev mods and your own
-# customisations.
-# See agdev_make.sh for a script to do this build
-CEDEV_GIT=$GITHUB/CEdev
-
-# this is where you want your working CEdev directory
-# to be - this is where you will build and compile code
-AGDEV_FINAL=$BASEDIR/CEdev
-
-
-# before you start you must have the modified CEdev
-# extracted and CEdev/bin in your path
-# this is so it can find the ez80-clang compiler
-cd $BASEDIR; tar xf $CEDEV_TAR ; PATH=$PATH:$BASEDIR/CEdev/bin
-
-#----------------------------------------
-# get latest AgDev code
-# Only do this if you want AgDev updates
-#----------------------------------------
+#
+if [ ! -d $BASEDIR/CEdev_zip ]; then
+       	wget https://github.com/CE-Programming/toolchain/releases/latest/download/CEdev-Linux.tar.gz;
+		tar -zxvf $BASEDIR/CEdev-Linux.tar.gz;
+		find . -type d -exec chmod 755 {} \; # no clue why this is required.
+		mv CEdev Cedev_zip;
+fi
+#
+# Get AgDev code
+cd $BASEDIR
+mkdir $GITHUB
 cd $GITHUB
-rm -rf $GITHUB/AgDev
-git clone https://github.com/pcawte/AgDev.git
-
-AGDEV_GIT=$BASEDIR/github/AgDev
-
-#----------------------------------------
-# get latest CEdev code
-# Only do this if you want toolchain updates
-#----------------------------------------
+#
+if [ -d $GITHUB/AgDev_git ]; then
+	rm -r -f $GITHUB/AgDev_git;
+fi
+mkdir $GITHUB/AgDev_git;
+AGDEV_GIT=$GITHUB/AgDev_git
+# was a local location for AgDev code passed to us?
+if [ ! -z "$1" ]; then
+	cd $GITHUB
+	cp -r $1/. ./ $AGDEV_GIT;
+else
+	cd $GITHUB
+	git clone https://github.com/pcawte/AgDev.git  Agdev_git;
+fi
+#
+# get CEdev code - using a recent stable release
 cd $GITHUB
-rm -rf $GITHUB/CEdev
-git clone https://github.com/CE-Programming/toolchain.git CEdev
-cd CEdev
-git submodule update --init --recursive
-
-CEDEV_GIT=$GITHUB/CEdev
-
-#----------------------------------------
-# Copy in AgDev code to CEdev toolchain code
-#----------------------------------------
-cp -r $AGDEV_GIT/src/* $CEDEV_GIT/src/
-cp -r $AGDEV_GIT/include/* $CEDEV_GIT/src/include
-
+CEDEV_GIT=$GITHUB/CEdev_git
+if [ ! -d $CEDEV_GIT ]; then
+	mkdir $CEDEV_GIT;
+	git clone https://github.com/CE-Programming/toolchain.git CEdev_git --branch v11.2;
+	cd $CEDEV_GIT;
+	git switch -c tmp;
+    git switch master;
+    git merge tmp;
+    git submodule update --init --recursive;
+fi
+#
+# Duplicate CEdev repo - this will become the basis for the final build
+if [ -d $BASEDIR/CEDEV_PLUS_AGDEV ]; then
+	rm -r -f $BASEDIR/CEDEV_PLUS_AGDEV;
+fi
+mkdir $BASEDIR/CEDEV_PLUS_AGDEV
+CEDEV_PLUS_AGDEV=$BASEDIR/CEDEV_PLUS_AGDEV
+cp -r $CEDEV_GIT/. ./ $CEDEV_PLUS_AGDEV
+#
+# move some stuff around in src
+# the /agon folder in AgDev is based on the /ce folder in CEdev, but with CE-specific stuff removed and Agon-specific stuff added
+mkdir $CEDEV_PLUS_AGDEV/src/agon
+cp -r $CEDEV_PLUS_AGDEV/src/ce/* $CEDEV_PLUS_AGDEV/src/agon/
+cd $CEDEV_PLUS_AGDEV/src/agon
+rm -f eval.src
+rm -f getstringinput.src
+rm -f gettokeninput.src
+rm -f intce.src
+rm -f tice.src
+rm -f os_textbuffer.src
+rm -f runprgm.src
+#
+# now that we've copied its contents, we don't need /ce anymore
+rm -r -f $CEDEV_PLUS_AGDEV/src/ce
+#
+# delete CEdev allocator code, since AgDev uses its own
+rm -r -f $CEDEV_PLUS_AGDEV/src/libc/allocator.src
+rm -r -f $CEDEV_PLUS_AGDEV/src/libc/allocator_simple.src
+rm -r -f $CEDEV_PLUS_AGDEV/src/libc/allocator_standard.c
+#
+# delete misc .c files which had handmade asm edits made for AgDev - we will copy over these prebuilt .src files in the next step
+rm -r -f $CEDEV_PLUS_AGDEV/src/libc/time.c
+rm -r -f $CEDEV_PLUS_AGDEV/src/libc/strftime.c
+#
+# copy over AgDev source files and build instructions
+cp -r $AGDEV_GIT/makefile $CEDEV_PLUS_AGDEV 
+cp -r $AGDEV_GIT/src/. ./ $CEDEV_PLUS_AGDEV/src
+#
+# vdp headers need to be in 2 places for some reason
+cp -r $AGDEV_GIT/src/agon/include/agon/. ./ $CEDEV_PLUS_AGDEV/src/include/agon
+#
 # Remove the previous build directory and make
-cd $CEDEV_GIT
-rm -rf CEdev
-#make clean
-make install
-
-# will result in a install directory $CEDEV_GIT/CEdev/CEdev
-# because of the strange way the AgDev common.mk file sets up the
-# install directories
-
-#----------------------------------------
-# Install
-#----------------------------------------
-
-# delete previous final directory
-rm -rf $AGDEV_FINAL
-
-# Get the full version of CEdev from the TAR file
-cd /tmp ; rm -rf CEdev
-tar xf $CEDEV_TAR
-mv CEdev $AGDEV_FINAL
-
-# ... but now we can get our modified version which was created with agdev_make.sh
-cp -rf $CEDEV_GIT/CEdev/CEdev $AGDEV_FINAL
-
-# Copy over the AgDev stuff - this includes the ez80_clang compiler
-# and example code
-cp -rf $AGDEV_GIT/* $AGDEV_FINAL/
-
-# now copy over the built binaries and libraries
-cp $CEDEV_GIT/CEdev/CEdev/bin/* $AGDEV_FINAL/bin/
-cp -r $CEDEV_GIT/CEdev/CEdev/lib/libc/vdp* $AGDEV_FINAL/lib/agon/
-# finally copy the modified headers to the include directory
-cp $AGDEV_FINAL/src/libc/include/vdp*h $AGDEV_FINAL/include/agon/
-
+cd $CEDEV_PLUS_AGDEV
+if [ $CEDEV_PLUS_AGDEV/CEdev ]; then
+	rm -r -f $CEDEV_PLUS_AGDEV/CEdev;
+fi
+mkdir $CEDEV_PLUS_AGDEV/CEdev
+PATH=$PATH:$BASEDIR/Cedev_zip/bin
+#
+make install PREFIX=CEdev
+#
+#TODO all the post-build stuff
+#
+# copy over .exe's from CEdev release - CEdev GitHub actions pull each .exe's repo and build, but we shouldn't need to do that.
+#
+# copy over AgDev example folders
+#
+# copy resulting build to base directory
+#
+# clean folders up at the end - TODO make optional
+#
+exit
