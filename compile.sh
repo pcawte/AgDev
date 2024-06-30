@@ -82,8 +82,8 @@ rm -r -f $CEDEV_PLUS_AGDEV/src/libc/time.c
 rm -r -f $CEDEV_PLUS_AGDEV/src/libc/strftime.c
 #
 # copy over AgDev source files and build instructions
-cp -r $AGDEV_GIT/makefile $CEDEV_PLUS_AGDEV 
-cp -r $AGDEV_GIT/src/. ./ $CEDEV_PLUS_AGDEV/src
+cp -r $AGDEV_GIT/makefile $CEDEV_PLUS_AGDEV
+cp -r $AGDEV_GIT/src/. $CEDEV_PLUS_AGDEV/src/
 #
 # vdp headers need to be in 2 places for some reason
 cp -r $AGDEV_GIT/src/agon/include/agon/. ./ $CEDEV_PLUS_AGDEV/src/include/agon
@@ -96,7 +96,9 @@ fi
 mkdir $CEDEV_PLUS_AGDEV/CEdev
 PATH=$PATH:$BASEDIR/Cedev_zip/bin
 #
-make install PREFIX=CEdev
+# make -d install PREFIX=CEdev
+make -d PREFIX=CEdev
+make -d install PREFIX=CEdev
 #
 #TODO all the post-build stuff
 #

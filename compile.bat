@@ -86,8 +86,7 @@ if exist %CEDEV_PLUS_AGDEV%\CEdev rmdir /s /q "%CEDEV_PLUS_AGDEV%\CEdev"
 mkdir "%CEDEV_PLUS_AGDEV%\CEdev"
 SET PATH=%PATH%;c:%BASEDIR%\CEdev_zip\bin
 
-pause
-"%CEDEV_PLUS_AGDEV%/resources/windows/make.exe" install
+"%CEDEV_PLUS_AGDEV%/resources/windows/make.exe" -d install
 
 Rem copy over .exe's from CEdev release - CEdev GitHub actions pull each .exe's repo and build, but we shouldn't need to do that.
 robocopy "%BASEDIR%\CEdev_zip\bin" "%CEDEV_PLUS_AGDEV%\CEdev\bin" /e
