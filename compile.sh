@@ -1,5 +1,6 @@
 # Note: this script requires ez80-clang to be accessible in PATH
 #
+set -e
 ORIGDIR=$PWD
 BASEDIR=$PWD/_temp
 GITHUB=$PWD/_temp/github
@@ -32,7 +33,7 @@ if [ ! -z "$1" ]; then
 	cp -r $1/. ./ $AGDEV_GIT;
 else
 	cd $GITHUB
-	git clone https://github.com/pcawte/AgDev.git  Agdev_git;
+	git clone https://github.com/pcawte/AgDev.git  AgDev_git;
 fi
 #
 # get CEdev code - using a recent stable release
@@ -86,7 +87,7 @@ cp -r $AGDEV_GIT/makefile $CEDEV_PLUS_AGDEV
 cp -r $AGDEV_GIT/src/. $CEDEV_PLUS_AGDEV/src/
 #
 # vdp headers need to be in 2 places for some reason
-cp -r $AGDEV_GIT/src/agon/include/agon/. ./ $CEDEV_PLUS_AGDEV/src/include/agon
+cp -r $AGDEV_GIT/src/agon/include/agon $CEDEV_PLUS_AGDEV/src/include/
 #
 # Remove the previous build directory and make
 cd $CEDEV_PLUS_AGDEV
