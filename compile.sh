@@ -96,9 +96,12 @@ fi
 mkdir $CEDEV_PLUS_AGDEV/CEdev
 PATH=$PATH:$BASEDIR/Cedev_zip/bin
 #
-# make -d install PREFIX=CEdev
-make -d PREFIX=CEdev
-make -d install PREFIX=CEdev
+#read -p "PAUSE"
+#
+make V=1
+make V=1 libs
+make V=1 libs-zip
+make install V=1 DESTDIR=$ORIGDIR/ --debug=j,m
 #
 #TODO all the post-build stuff
 #
