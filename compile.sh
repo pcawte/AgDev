@@ -1,12 +1,12 @@
 # Note: this script requires ez80-clang to be accessible in PATH
 #
-set -e
+set -x
 ORIGDIR=$PWD
 BASEDIR=$PWD/_temp
 GITHUB=$PWD/_temp/github
 #
 if [ ! -d $BASEDIR ]; then
-mkdir $BASEDIR;
+	mkdir $BASEDIR;
 fi
 cd $BASEDIR
 #
@@ -14,7 +14,7 @@ if [ ! -d $BASEDIR/CEdev_zip ]; then
        	wget https://github.com/CE-Programming/toolchain/releases/latest/download/CEdev-Linux.tar.gz;
 		tar -zxvf $BASEDIR/CEdev-Linux.tar.gz;
 		find . -type d -exec chmod 755 {} \; # no clue why this is required.
-		mv CEdev Cedev_zip;
+		mv CEdev CEdev_zip;
 fi
 #
 # Get AgDev code
@@ -95,23 +95,34 @@ if [ $CEDEV_PLUS_AGDEV/CEdev ]; then
 	rm -r -f $CEDEV_PLUS_AGDEV/CEdev;
 fi
 mkdir $CEDEV_PLUS_AGDEV/CEdev
-PATH=$PATH:$BASEDIR/Cedev_zip/bin
-#
-#read -p "PAUSE"
+PATH=$PATH:$BASEDIR/CEdev_zip/bin
 #
 make V=1
-make V=1 libs
-make V=1 libs-zip
-make install V=1 DESTDIR=$ORIGDIR/ --debug=j,m
-#
-#TODO all the post-build stuff
+# make V=1 libs
+# make V=1 libs-zip
+make install V=1 DESTDIR=$CEDEV_PLUS_AGDEV/ --debug=j,m
 #
 # copy over .exe's from CEdev release - CEdev GitHub actions pull each .exe's repo and build, but we shouldn't need to do that.
+mkdir $CEDEV_PLUS_AGDEV/CEdev/bin/
+cp -r $BASEDIR/CEdev_zip/bin/. $CEDEV_PLUS_AGDEV/CEdev/bin/
 #
 # copy over AgDev example folders
+mkdir $CEDEV_PLUS_AGDEV/CEdev/AgExamples/
+cp -r $AGDEV_GIT/AgExamples/* $CEDEV_PLUS_AGDEV/CEdev/AgExamples/
+mkdir $CEDEV_PLUS_AGDEV/CEdev/sprite-demos/
+cp -r $AGDEV_GIT/sprite-demos/* $CEDEV_PLUS_AGDEV/CEdev/sprite-demos/
+mkdir $CEDEV_PLUS_AGDEV/CEdev/tests/
+cp -r $AGDEV_GIT/tests/* $CEDEV_PLUS_AGDEV/CEdev/tests/
 #
 # copy resulting build to base directory
+if [ -d  $ORIGDIR/AgDev_build/ ]; then
+	rm -r -f  $ORIGDIR/AgDev_build/;
+fi
+mkdir $ORIGDIR/AgDev_build/
+cp -r $CEDEV_PLUS_AGDEV/CEdev/* $ORIGDIR/AgDev_build/
 #
 # clean folders up at the end - TODO make optional
+cd "$ORIGDIR"
+# rm -r -f "$BASEDIR"
 #
 exit

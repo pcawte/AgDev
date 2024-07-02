@@ -92,15 +92,16 @@ Rem copy over .exe's from CEdev release - CEdev GitHub actions pull each .exe's 
 robocopy "%BASEDIR%\CEdev_zip\bin" "%CEDEV_PLUS_AGDEV%\CEdev\bin" /e
 
 Rem copy over AgDev example folders
-robocopy "%GITHUB%\AgDev_git\AgExamples" "%CEDEV_PLUS_AGDEV%\CEdev\AgExamples" /e
-robocopy "%GITHUB%\AgDev_git\sprite-demos" "%CEDEV_PLUS_AGDEV%\CEdev\sprite-demos" /e
-robocopy "%GITHUB%\AgDev_git\tests" "%CEDEV_PLUS_AGDEV%\CEdev\tests" /e
+robocopy "%AGDEV_GIT%\AgExamples" "%CEDEV_PLUS_AGDEV%\CEdev\AgExamples" /e
+robocopy "%AGDEV_GIT%\sprite-demos" "%CEDEV_PLUS_AGDEV%\CEdev\sprite-demos" /e
+robocopy "%AGDEV_GIT%\tests" "%CEDEV_PLUS_AGDEV%\CEdev\tests" /e
 
 Rem copy resulting build to base directory
-robocopy "%CEDEV_PLUS_AGDEV%\CEdev" "%ORIGDIR%" /e
+if exist "%ORIGDIR%\AgDev_build" rmdir /s /q "%ORIGDIR%\AgDev_build"
+robocopy "%CEDEV_PLUS_AGDEV%\CEdev" "%ORIGDIR%\AgDev_build" /e
 
 Rem clean folders up at the end - TODO make optional
 cd "%ORIGDIR%"
-Rem rmdir "%BASEDIR%" /s /q
+rmdir "%BASEDIR%" /s /q
 
 endlocal
