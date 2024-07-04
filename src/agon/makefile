@@ -26,6 +26,8 @@ EZCXXFLAGS += -isystem ../libc/include
 WILDCARD_SRC = $(wildcard *.src) $(BUILD_SRC)
 WILDCARD_H = $(wildcard include/*.h)
 WILDCARD_AGON_H = $(wildcard include/agon/*.h)
+WILDCARD_HW_H = $(wildcard include/sys/*.h)
+WILDCARD_TI_H = $(wildcard include/ti/*.h)
 
 all: $(BUILD_SRC)
 
@@ -44,7 +46,11 @@ install: $(addprefix install-,$(TARGETS))
 	$(Q)$(call MKDIR,$(INSTALL_H))
 	$(Q)$(call MKDIR,$(INSTALL_AGON))
 	$(Q)$(call MKDIR,$(INSTALL_AGON_H))
+	$(Q)$(call MKDIR,$(INSTALL_TI_H))
+	$(Q)$(call MKDIR,$(INSTALL_HW_H))
 	$(Q)$(call COPY,$(foreach file,$(call NATIVEPATH,$(WILDCARD_H)),$(call QUOTE_ARG,$(file))),$(INSTALL_H))
+	$(Q)$(call COPY,$(foreach file,$(call NATIVEPATH,$(WILDCARD_HW_H)),$(call QUOTE_ARG,$(file))),$(INSTALL_HW_H))
+	$(Q)$(call COPY,$(foreach file,$(call NATIVEPATH,$(WILDCARD_TI_H)),$(call QUOTE_ARG,$(file))),$(INSTALL_TI_H))
 	$(Q)$(call COPY,$(call NATIVEPATH,$(WILDCARD_SRC)),$(INSTALL_AGON))
 	$(Q)$(call COPY,$(foreach file,$(call NATIVEPATH,$(WILDCARD_AGON_H)),$(call QUOTE_ARG,$(file))),$(INSTALL_AGON_H))
 

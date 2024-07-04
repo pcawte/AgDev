@@ -30,7 +30,8 @@ AGDEV_GIT=$GITHUB/AgDev_git
 # was a local location for AgDev code passed to us?
 if [ ! -z "$1" ]; then
 	cd $GITHUB
-	cp -r $1/. ./ $AGDEV_GIT;
+	cp -r $1/* $AGDEV_GIT;
+	cp -r $1/.* $AGDEV_GIT;
 else
 	cd $GITHUB
 	git clone https://github.com/pcawte/AgDev.git  AgDev_git;
@@ -61,6 +62,8 @@ cp -r $CEDEV_GIT/. ./ $CEDEV_PLUS_AGDEV
 # the /agon folder in AgDev is based on the /ce folder in CEdev, but with CE-specific stuff removed and Agon-specific stuff added
 mkdir $CEDEV_PLUS_AGDEV/src/agon
 cp -r $CEDEV_PLUS_AGDEV/src/ce/* $CEDEV_PLUS_AGDEV/src/agon/
+mkdir $CEDEV_PLUS_AGDEV/src/agon/include
+cp -r $CEDEV_PLUS_AGDEV/src/ce/include* $CEDEV_PLUS_AGDEV/src/agon/
 cd $CEDEV_PLUS_AGDEV/src/agon
 rm -f eval.src
 rm -f getstringinput.src
@@ -120,6 +123,9 @@ if [ -d  $ORIGDIR/AgDev_build/ ]; then
 fi
 mkdir $ORIGDIR/AgDev_build/
 cp -r $CEDEV_PLUS_AGDEV/CEdev/* $ORIGDIR/AgDev_build/
+#
+# Set file permissions
+chmod +x $ORIGDIR/AgDev_build/bin/*
 #
 # clean folders up at the end - TODO make optional
 cd "$ORIGDIR"
