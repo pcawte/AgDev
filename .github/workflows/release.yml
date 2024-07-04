@@ -14,7 +14,7 @@ jobs:
           cd ..
           mkdir temp
           cd temp
-          sudo sh ${{ github.workspace }}\compile.sh ${{ github.workspace }}
+          sudo sh ${{ github.workspace }}/compile.sh ${{ github.workspace }}
           
       - name: Zip (Linux)
         run: |
