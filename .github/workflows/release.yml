@@ -27,7 +27,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          file: $/home/runner/work/AgDev/AgDev/../temp/AgDev_build/AgDev_release_${{  github.ref_name }}_linux.zip
+          file: $OLDPWD/AgDev_release_${{  github.ref_name }}_linux.zip
           tags: true
 
   release_windows:
