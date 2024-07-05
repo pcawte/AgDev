@@ -19,8 +19,7 @@ jobs:
       - name: Zip (Linux)
         run: |
           cd ${{ github.workspace }}/../temp/AgDev_build/
-          ls
-          (zip -r "$OLDPWD/AgDev_release_${{  github.ref_name }}_linux.zip")
+          zip -r "$OLDPWD/AgDev_release_${{  github.ref_name }}_linux.zip" .
           
       - name: Upload Linux ZIP to GitHub Release
         uses: xresloader/upload-to-github-release@v1
