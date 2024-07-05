@@ -1,28 +1,26 @@
-# AgDev - an Agon Light port of the CEdev C/C++ Toolchain
-
-Based on LLVM toolchain, generating eZ80 ADL code and fasmg eZ80 assembler and linker.
+# AgDev - a port of the CEdev C/C++ Toolchain to the Agon Platform
 
 ## Overview
 
-The Agon Light is based on the Zilog eZ80 processor. The eZ80 has a 24 bit address space supporting 16 megabytes of memory, compared to the 64 kilobytes of the original Z80. The eZ80 has two modes of operation, the standard Z80 mode, which has 16-bit registers making it easy to address 64k of memory, but requiring the use of "banking" to access more than 64k of memory. The other, ADL (address data long), mode of operation extends the registers to 24 bits, making the whole address space readily accessible. 
+The [Agon Light](https://agonconsole8.github.io/agon-docs/) and other Agon Platform revisions are based on the Zilog eZ80 processor. The eZ80 has a 24 bit address space supporting 16 megabytes of memory, compared to the 64 kilobytes of the original Z80. The eZ80 has two modes of operation: the standard Z80 mode, which has 16-bit registers making it easy to address 64k of memory, but requiring the use of "banking" to access more than 64k of memory; and ADL (address data long) mode of operation, which extends the registers to 24 bits, making the whole address space readily accessible. 
 
-When we consider high-level programming languages, there are a number available for the Z80, but they are limited to 64k of memory or have awkward bank switching methods to access greater memory. Consequently it is very interesting to have a available high-level languages that make use of the ADL mode to allow use of the full 16M address space.
+When we consider high-level programming languages, there are a number available for the Z80, but they are limited to 64k of memory or have awkward bank switching methods to access greater memory.
 
 Considering the C-programming languages, there are a number of Z80 C-compilers available. To date, the Agon community has focused on two:
 
-- Zilog ZDS II development environment which can produce eZ80 ADL code. This was the original set of tools used by the developers of Agon, but it is closed source, runs on Windows only, and only supports the data C89 standard
+- **Zilog ZDS II development environment** which can produce eZ80 ADL code. This was the original set of tools used by the developers of Agon, but it is closed source, runs on Windows only, and only supports the data C89 standard
 
-- SDCC (small devices C-compiler) this is a popular choice for 8-bit computers, and adapting this for Agon has been a focus of a number of people in the Agon computer. This is a good compile for Z80, but it only support Z80 and not ADL mode.
+- **SDCC (small devices C-compiler)**, a popular choice for 8-bit computers, and adapting this for Agon has been a focus of a number of people in the Agon computer. This is a good compiler for Z80, but it only supports Z80 and not ADL mode.
 
-As an alternative, open-source compiler that can produce ADL code there is the [CE C/C++ toolchain](https://ce-programming.github.io/toolchain/index.html). This has been developed for the  TI 84 Plus CE calculator that is based on the eZ80 processor and has a quite a reasonably sized community. There is a well developed toolchain, which is based on eZ80 versions of the LLVM compiler and fasmg assembler. It produces ADL code with 24 bit pointers, 24 bit integers, 32 bit longs, 16 bit shorts, and 32 bit floats. There is also quite an extensive library for C and C++ programs (though it is not ISO compliant... yet).
+As an alternative, the [CEdev C/C++ toolchain](https://ce-programming.github.io/toolchain/index.html) is an open-source compiler that can produce ADL code. It targets the TI-84 Plus CE calculator (based on the eZ80 processor) and has a reasonably sized community. CEdev is based on eZ80 versions of the LLVM compiler and fasmg assembler. It produces ADL code with 24 bit pointers, 24 bit integers, 32 bit longs, 16 bit shorts, and 32 bit floats. There is also quite an extensive library for C and C++ programs (though it is not ISO compliant... yet).
 
-CEdev is heavily optimized for the TI calculator, but AgDev is the result of an effort to modify it to tap into the feature set of the Agon platform. The result is a more powerful, and C++ capable, toolchain, compared to other options.
+AgDev is the result of an effort to modify CEdev to accommodate the feature set and hardware design of the Agon Platform. The result is a more powerful, and C++ capable, toolchain, compared to other options for the Agon.
 
 ### Installation
 
 Download a [release build](https://github.com/pcawte/agdev/releases/latest) or [build from source yourself](COMPILE.md). Place the build in a directory of your choosing. 
 
-Afterward, make sure the `/bin` folder can be found in `PATH`: if you're on Windows, follow [this guide](https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/), or you can run cedev.bat and execute commands from there instead. On Linux, run: `export PATH=/<insert path here>/bin:$PATH` in a terminal window.
+Afterward, make sure the `/bin` folder can be found in `PATH`; if you're on Windows, follow [this guide](https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/), or you can run cedev.bat and execute commands from there instead. On Linux, run `export PATH=/<insert path here>/bin:$PATH` in a terminal window.
 
 ### Building programs
 
@@ -36,8 +34,6 @@ make V=1
 ```
 
 The `make clean` command can be used to delete the results of previous compilations and thereby force a recompilation.
-
-There are other examples in the test directory which can be built in the same way.
 
 The build process goes through the following steps:
 
@@ -135,7 +131,7 @@ There's some other stuff in here - like `stdint` and such - but it should mostly
 
 ### `stdio` Redirection
 
-Can redirect output by using `freopen() `on `stdout` or `stderr`:
+Can redirect output by using `freopen()` on `stdout` or `stderr`:
 
 - `putchar()` - outputs to `outchar()` unless the output is redirected, in which case outputs to `fputc()`
 
@@ -143,13 +139,13 @@ Can redirect output by using `freopen() `on `stdout` or `stderr`:
 
 - `printf()` (and `vprintf()`) - calls `npf_putc_std()`, which calls `putchar()` in `nanoprintf.c`
 
-- `fputc()` - calls `mos_fputc()` unless called on `stdout` when calls `outchar()`- avoids calling `putchar()` so that no risk of function call loops
+- `fputc()` - calls `mos_fputc()` unless called on `stdout` when calls `outchar()` - avoids calling `putchar()` so that no risk of function call loops
 
 Can redirect input by using `freopen()` on `stdin`:
 
 - `getchar()` - calls `inchar()` to get the character and `outchar()` to echo the character (even if the output has been redirected). If output has not been re-directed calls `fgetc()` and does not echo the character.
 
-- `gets_s()`- calls `getchar()` if input has not been redirected (line are terminated with CR). Calls`fgets()` of input has been redirected (lines are terminated with CR/LF pair).
+- `gets_s()` - calls `getchar()` if input has not been redirected (line are terminated with CR). Calls`fgets()` of input has been redirected (lines are terminated with CR/LF pair).
 
 - `scanf()` - calls `getchar()` in `uscan.c` (doesn't need updating)
 
@@ -189,7 +185,7 @@ the splits the command line up using space as a delimiter. The command line opti
 
 #### Complex Command Line Processing - for Redirection & Quoting
 
-This is optionally included if the makefile includes:
+This is optionally included if the application makefile includes:
 
 ```makefile
 LDHAS_ARG_PROCESSING = 1
@@ -228,9 +224,9 @@ The VDP (video display processor) accepts a text stream from MOS, acting like a 
 
 - Normal text
 
-- Escape sequences / commands to control the display and send graphics
+- Escape sequences / commands to control the display and send graphics/sound/etc commands
 
-When results are returned by MOS as a result of sending a command, these are stored in the SYSVARs and not returned directly in response to the command. The response is asynchronous, to check that a result has been returned:
+When results are returned by MOS as a result of sending a command, these are stored in the `SYSVAR`'s and not returned directly in response to the command. The response is asynchronous - to check that a result has been returned:
 
 - Set `vdp_pflags` in `SYSVAR` to zero
 
@@ -240,10 +236,10 @@ When results are returned by MOS as a result of sending a command, these are sto
 
 Commands can be sent by:
 
-- `putch()` - single character (this is not part of the C standard library, on MS-DOS systems it is defined in `<conio.h>`
+- `putch()` - single character (this is not part of the C standard library)
 
 - `mos_puts()` - multi-character string
 
-Both of  which output directly to MOS/VDP - note that they are not part of STDIO library and not subject to CR/LF translation or redirection.
+Both of these output directly to MOS/VDP - note that they are not part of STDIO library and not subject to CR/LF translation or redirection.
 
-Convenience functions for many VDU commands are supplied in AgDev. For example, to change the screen MODE to 3, the C call `vdp_mode(3);` will send `22,3` as single bytes to the output, equivalent to `putch(22);putch(3);` For a list of these functions see `<vdp_vdu.h>`. Additional functions related to keyboard detection are found in `<vdp_key.h>`.
+Convenience functions for many VDU commands are supplied in AgDev. For example, to change the screen MODE to 3, the C call `vdp_mode(3);` will send `22,3` as single bytes to the output, equivalent to `putch(22); putch(3);` For a list of these functions see `<vdp_vdu.h>`. Additional functions related to keyboard handling are found in `<vdp_key.h>`.
