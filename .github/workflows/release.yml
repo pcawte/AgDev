@@ -20,13 +20,14 @@ jobs:
         run: |
           cd ${{ github.workspace }}/../temp/AgDev_build/
           zip -r "$OLDPWD/AgDev_release_${{  github.ref_name }}_linux.zip" .
+          ls
           
       - name: Upload Linux ZIP to GitHub Release
         uses: xresloader/upload-to-github-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          file: ${{ github.workspace }}/../temp/AgDev_build/AgDev_release_${{  github.ref_name }}_linux.zip
+          file: $/home/runner/work/AgDev/AgDev/../temp/AgDev_build/AgDev_release_${{  github.ref_name }}_linux.zip
           tags: true
 
   release_windows:
