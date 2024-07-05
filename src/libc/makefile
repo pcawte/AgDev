@@ -27,6 +27,12 @@ WILDCARD_SRC = $(wildcard *.src *.inc) $(BUILD_SRC)
 WILDCARD_H := $(wildcard include/*.h)
 WILDCARD_CXX_H = $(wildcard include/c++/*)
 
+ifeq ($(OS),Windows_NT)
+WINDOWS_INSTALL := $(Q)$(call COPY,$(call NATIVEPATH, $(WILDCARD_SRC)), $(INSTALL_AGON)) && $(Q)$(call COPY,$(foreach file, $(call NATIVEPATH, $(WILDCARD_CXX_H)), $(call QUOTE_ARG,$(file))), $(INSTALL_CXX_H)) && $(Q)$(call COPY,$(foreach file,$(call NATIVEPATH, $(WILDCARD_AGON_H)), $(call QUOTE_ARG,$(file))), $(INSTALL_AGON_H))
+else
+WINDOWS_INSTALL :=
+endif
+
 all: $(BUILD_SRC)
 
 build/%.c.src: %.c
@@ -45,10 +51,9 @@ install:  $(addprefix install-,$(TARGETS))
 	$(Q)$(call MKDIR,$(INSTALL_AGON))
 	$(Q)$(call MKDIR,$(INSTALL_AGON_H))
 	$(Q)$(call COPY,$(call NATIVEPATH,$(WILDCARD_SRC)),$(INSTALL_LIBC))
-	#$(Q)$(call COPY,$(foreach file, $(call NATIVEPATH, $(WILDCARD_CXX_H)), $(call QUOTE_ARG,$(file))), $(INSTALL_CXX_H))
 	$(Q)$(call COPY,$(foreach file, $(call NATIVEPATH, $(WILDCARD_H)), $(call QUOTE_ARG,$(file))), $(INSTALL_H))
-	#$(Q)$(call COPY,$(call NATIVEPATH, $(WILDCARD_SRC)), $(INSTALL_AGON))
-	#$(Q)$(call COPY,$(foreach file,$(call NATIVEPATH, $(WILDCARD_AGON_H)), $(call QUOTE_ARG,$(file))), $(INSTALL_AGON_H))
+	$(Q)$(WINDOWS_INSTALL)
+	
 
 .PHONY: all install clean
 

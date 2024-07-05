@@ -101,8 +101,6 @@ mkdir $CEDEV_PLUS_AGDEV/CEdev
 PATH=$PATH:$BASEDIR/CEdev_zip/bin
 #
 make V=1
-# make V=1 libs
-# make V=1 libs-zip
 make install V=1 DESTDIR=$CEDEV_PLUS_AGDEV/ --debug=j,m
 #
 # copy over .exe's from CEdev release - CEdev GitHub actions pull each .exe's repo and build, but we shouldn't need to do that.
@@ -129,6 +127,6 @@ chmod +x $ORIGDIR/AgDev_build/bin/*
 #
 # clean folders up at the end - TODO make optional
 cd "$ORIGDIR"
-# rm -r -f "$BASEDIR"
+rm -r -f "$BASEDIR"
 #
 exit

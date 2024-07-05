@@ -52,6 +52,7 @@ Rem Move some stuff around in /src
 Rem the /agon folder in AgDev is based on the /ce folder in CEdev, but with CE-specific stuff removed and Agon-specific stuff added
 mkdir %CEDEV_PLUS_AGDEV%\src\agon
 robocopy %CEDEV_PLUS_AGDEV%\src\ce %CEDEV_PLUS_AGDEV%\src\agon
+robocopy %CEDEV_PLUS_AGDEV%\src\ce\include %CEDEV_PLUS_AGDEV%\src\agon
 cd %CEDEV_PLUS_AGDEV%\src\agon
 del eval.src
 del getstringinput.src
@@ -86,7 +87,8 @@ if exist %CEDEV_PLUS_AGDEV%\CEdev rmdir /s /q "%CEDEV_PLUS_AGDEV%\CEdev"
 mkdir "%CEDEV_PLUS_AGDEV%\CEdev"
 SET PATH=%PATH%;c:%BASEDIR%\CEdev_zip\bin
 Rem pause
-"%CEDEV_PLUS_AGDEV%/resources/windows/make.exe" -d install
+"%CEDEV_PLUS_AGDEV%/resources/windows/make.exe" V=1
+"%CEDEV_PLUS_AGDEV%/resources/windows/make.exe" install V=1
 
 Rem copy over .exe's from CEdev release - CEdev GitHub actions pull each .exe's repo and build, but we shouldn't need to do that.
 robocopy "%BASEDIR%\CEdev_zip\bin" "%CEDEV_PLUS_AGDEV%\CEdev\bin" /e
@@ -102,6 +104,6 @@ robocopy "%CEDEV_PLUS_AGDEV%\CEdev" "%ORIGDIR%\AgDev_build" /e
 
 Rem clean folders up at the end - TODO make optional
 cd "%ORIGDIR%"
-rmdir "%BASEDIR%" /s /q
+Rem rmdir "%BASEDIR%" /s /q
 
 endlocal
