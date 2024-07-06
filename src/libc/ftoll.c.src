@@ -1,0 +1,124 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	__ftoll_c
+__ftoll_c:
+	ld	hl, -12
+	call	__frameset
+	ld	de, (ix + 6)
+	ld	l, 23
+	push	de
+	pop	bc
+	ld	a, (ix + 9)
+	call	__lshru
+	push	bc
+	pop	iy
+	ex	de, hl
+	ld	bc, -8388608
+	call	__ior
+	push	hl
+	pop	de
+	lea	hl, iy
+	ld	bc, 255
+	call	__iand
+	ld	a, l
+	cp	a, 127
+	jr	nc, BB0_2
+	ld.sis	bc, 0
+	ld	de, 0
+	push	de
+	pop	iy
+	jp	BB0_15
+BB0_2:
+	push	de
+	pop	iy
+	ld	a, l
+	cp	a, -105
+	jr	nc, BB0_6
+	ld	de, 150
+	ld	a, e
+	sub	a, l
+	lea	hl, iy
+	ld	c, a
+	call	__ishru
+	push	hl
+	pop	iy
+	call	__ineg
+	push	hl
+	pop	bc
+	ld	hl, (ix + 6)
+	ld	e, (ix + 9)
+	call	__lcmpzero
+	push	bc
+	pop	de
+	jp	m, BB0_5
+	lea	de, iy
+BB0_5:
+	push	de
+	pop	hl
+	push	de
+	pop	iy
+	add	iy, iy
+	sbc	hl, hl
+	push	hl
+	pop	iy
+	ld	c, iyl
+	ld	b, iyh
+	jr	BB0_15
+BB0_6:
+	ld	de, -127
+	ld.sis	bc, 0
+	add	hl, de
+	push	hl
+	lea	hl, iy
+	ld	de, 0
+	call	__llshl
+	pop	iy
+	ld	(ix - 12), hl
+	ld	(ix - 9), de
+	ld	(ix - 6), bc
+	call	__llneg
+	ld	(ix - 3), hl
+	push	de
+	pop	iy
+	ld	hl, (ix + 6)
+	ld	e, (ix + 9)
+	call	__lcmpzero
+	jp	m, BB0_8
+	ld	a, 0
+	jr	BB0_9
+BB0_8:
+	ld	a, 1
+BB0_9:
+	bit	0, a
+	ld	de, (ix - 3)
+	jr	nz, BB0_11
+	ld	de, (ix - 12)
+BB0_11:
+	bit	0, a
+	jr	nz, BB0_13
+	ld	iy, (ix - 9)
+BB0_13:
+	bit	0, a
+	jr	nz, BB0_15
+	ld	bc, (ix - 6)
+BB0_15:
+	ex	de, hl
+	lea	de, iy
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	extern	__ishru
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__llneg
+	extern	__frameset
+	extern	__iand
+	extern	__lcmpzero
+	extern	__llshl
+	extern	__ineg
+	extern	__ior
+	extern	__lshru

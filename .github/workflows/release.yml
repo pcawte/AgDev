@@ -8,49 +8,49 @@ jobs:
   release_linux:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Add CEdev-Linux
+      - uses: actions/checkout@v4
+      - name: Run compile.sh
         run: |
-          wget https://github.com/CE-Programming/toolchain/releases/download/v11.2/CEdev-Linux.tar.gz
-          mkdir /usr/share/CEdev
-          tar -xvf CEdev-Linux.tar.gz -C /usr/share/
-          rm CEdev-Linux.tar.gz
-          cp -r . /usr/share/CEdev/
-
+          cd ..
+          mkdir temp
+          cd temp
+          sudo sh ${{ github.workspace }}/compile.sh ${{ github.workspace }}
+          
       - name: Zip (Linux)
         run: |
-          cd /usr/share
-          zip -r AgDev_release_${{  github.ref_name }}_linux.zip CEdev -x '*.git*' -x '*.github*'
-
+          cd ${{ github.workspace }}/../temp/AgDev_build/
+          zip -r "${{ github.workspace }}/../temp/AgDev_release_${{  github.ref_name }}_linux.zip" .
+          ls
+          
       - name: Upload Linux ZIP to GitHub Release
         uses: xresloader/upload-to-github-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          file: /usr/share/AgDev_release_${{  github.ref_name }}_linux.zip
+          file: ${{ github.workspace }}/../temp/AgDev_release_${{  github.ref_name }}_linux.zip
           tags: true
 
   release_windows:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Add CEdev-Windows
+      - uses: actions/checkout@v4
+      - name: Run compile.bat
         run: |
-          wget https://github.com/CE-Programming/toolchain/releases/download/v11.2/CEdev-Windows.zip
-          mkdir /usr/share/CEdev
-          unzip CEdev-Windows.zip -d /usr/share/
-          rm CEdev-Windows.zip
-          cp -r . /usr/share/CEdev/
-
+          cd ..
+          mkdir temp
+          cd temp
+          ${{ github.workspace }}\compile.bat ${{ github.workspace }}
+          
       - name: Zip (Windows)
         run: |
-          cd /usr/share
-          zip -r AgDev_release_${{  github.ref_name }}_windows.zip CEdev -x '*.git*' -x '*.github*'
+          cd ${{ github.workspace }}\..\temp\AgDev_build
+          powershell -Command "Compress-Archive * AgDev_release_${{  github.ref_name }}_windows.zip"
+          dir
 
       - name: Upload Windows ZIP to GitHub Release
         uses: xresloader/upload-to-github-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          file: /usr/share/AgDev_release_${{  github.ref_name }}_windows.zip
+          file: ${{ github.workspace }}\..\temp\AgDev_build\AgDev_release_${{  github.ref_name }}_windows.zip
           tags: true

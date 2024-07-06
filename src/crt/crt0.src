@@ -1,0 +1,842 @@
+;
+; Title:	C++ Runtime Initialisation Code
+; Author:	Paul Cawte
+; Created:	30/06/2023
+; 
+; Modinfo:
+; Adapted from CE Toolchain crt0.src
+; with parts from init.asm by Dean Belfield - which is part of the Zilog toolchain for Agon
+; removed some of the optimisations from CE Toolchain for clarity
+; there also appear to be bugs in the CE Toolchain version
+
+; Labels defined in the linker_script
+;   ___low_bss
+;   ___len_bss
+;   ___heaptop
+;   ___heapbot
+;   ___libs        		- commented out - not currently used (part of dynamic libs)
+;   ___init_array_count		
+;   ___ctors_count		
+;   ___dtors_count		
+;   ___fini_array_count		
+
+; Labels defined in makefile.mk as part of the fasmg command line
+;   __stack
+
+; Symbols defined in makefile.mk
+;   PROG_NAME
+
+; In addition to calling the main function, sets up the environment
+; - saves stack pointer and sets up it's own stack
+; - zero the BSS section
+; - gets command line params if program has int main(int argc, char *argv[])
+; - resets and globals that need to be reset if program is re-run
+; - calls any C++ initialisers and constructors
+; - calls the main function
+;	- parameters are passed on the stack if int main(int argc, char *argv[])
+;	- return value in HL
+; - provides entry point for exit() function, getting return value of stack into HL
+; - calls any functions registered by earlier calls to atexit() or on_exit()
+; - calls any C++ destructors and finalisers
+; - provides entry point for _Exit() function, getting return value of stack into HL
+; - provides entry point for abort() function, setting exit code to SIGABRT in HL
+; - restore the stack
+; - and return with the status in HL
+; 
+; and provides the following standard C functions
+; - int atexit(void (* func)(void))
+; - int on_exit(void (* func)(int, void *), void *arg)
+; - void exit(int status)
+; - void _Exit(int status)
+; - void abort(void)
+; the code for atexit() and on_exit is logically separate whereas the rest "falls through"
+;
+; storage / data structures declared and used
+; - exit_functions		pointer to linked list of exit functions registered by atexit or on_exit
+; - init_functions		populated by the linker from init_array and ctors
+; - fini_functions		populated by the linker from dtors and fini_array
+; - exit.sp 			location for saving of stack point (in ld sp, ###### instruction)
+; - argv_ptrs 			storage for pointers to the command line paramters
+;
+; the following codes sections are used
+; - section .header 		for the MOS header
+; - section .libs 		not explicit - but required by linker 
+; - section .init 		for the initialisation code
+; - section .init.args
+; - section .init.bss
+; - section .fini 		for the finalistion code
+; - section .text 		for the atexit() and on_exit() functions - also the normal C code
+; sections used by the linker for constructors/destructors/initialisers and finalisers
+; - section .init_array
+; - section .ctors
+; - section .dtors
+; - section .fini_array
+; sections used by data
+; - section .rodata 		read-only data (static)
+; - section .data 		BSS
+
+	assume	adl = 1	
+
+argv_ptrs_max := 16			; Maximum number of arguments allowed in argv
+
+; macro definitions
+; =================
+
+define align?
+
+align?.INDEX = 0
+
+macro align?.assume variable, pow2
+        assert bsf(pow2) = bsr(pow2)
+        repeat align?.INDEX+1
+                if % = %%
+                        align?.INDEX = align?.INDEX + 1
+                        align?.v% = variable
+                        align?.% = pow2
+                else if align?.v% relativeto variable
+                        align?.v% = variable
+                        align?.% = pow2
+                        break
+                end if
+        end repeat
+end macro
+
+macro align? pow2*, remainder:0, filler:?
+        local offset
+        offset = $
+        repeat align?.INDEX
+                if offset relativeto align?.v%
+                        if align?.% >= pow2
+                                offset = offset - align?.v%
+                        else
+                                err 'variable portion of address is not aligned enough'
+                        end if
+                end if
+        end repeat
+        assert bsf(pow2) = bsr(pow2)
+        db (-offset+remainder)and(pow2-1) dup filler
+end macro 
+
+section .header 			; The location of this is set by locate .header in makefile.mk
+
+	jp	__start			; Jump to start
+
+; The header stuff required by MOS
+; --------------------------------
+
+_exec_name:
+	db	PROG_NAME, ".bin", 0	; The executable name, only used in argv
+
+	align	64  			; The executable header is from byte 64 onwards
+	weak	__mos_header
+__mos_header:
+	db	"MOS"			; Flag for MOS - to confirm this is a valid MOS binary
+	db	00h			; MOS header version 0
+	db	01h			; Flag for run mode (0: Z80, 1: ADL)
+
+; In CE Toolchain there are a few things before __start
+; -----------------------------------------------------
+
+;	section .init.libs 		; May want to add this later to Agon port
+;	section .init.clock 		; TI-84-CE specific
+; 	section .text
+
+;
+; Start or initialisation code and C-runtime start
+; ------------------------------------------------
+	section .init
+	weak 	__start
+__start:				; entry point - this will normally by at $040045
+	PUSH	AF			; Preserve registers
+	PUSH	BC
+	PUSH	DE
+	PUSH	IX
+	PUSH	IY			; Need to preserve IY for MOS
+
+; Save stack pointer and set up program specific
+
+	ld 	(_exit.sp), sp 		; save SP for exiting (self-modifying)
+	ld	sp, __stack		; defined in makefile.mk
+
+	PUSH	HL			; HL is the address of the cmd line param string
+
+; Zero the bss section
+; --------------------
+; The HEADER __alloc_base for malloc() is in BSS, so it should be reset as part of this
+
+if ___len_bss > 0			
+	CALL	_clear_bss 		; Clear the RAM in the BSS segment
+end if
+
+; Reset any global items necessary for rerun
+; ------------------------------------------
+; This includes:
+; - bottom of heap used by sbrk()
+; - stdin, stdout and stderr because they may have been redirected e.g. by freopen()
+;   need to do this before processing command line options as they may redirect stdio
+
+ifextern __sbrkbase
+	ld 	hl, ___heapbot
+	ld 	(__sbrkbase), hl
+end if
+
+ifextern __stdio_init
+	call 	__stdio_init
+end if
+
+; Process command line parameters
+; -------------------------------
+; If calling with argc & argv get the parameters from the command line put on the stack (conditionally included)
+; - this is done after clearing BSS as pointers stored in BSS
+
+	POP	HL 				; address of command line - saved earlier on the stack
+
+; process command line if C program is of the form int main(argc, *argv[]) 
+; or the command line switch HAS_ARG_PROCESSING (as defined in the makefile) is true
+
+ifextern ___main_argc_argv | HAS_ARG_PROCESSING
+	LD 	IX, argv_ptrs			; The argv array pointer address
+	PUSH	IX				; Parameter 2: *argv[0] = IX
+	CALL	_parse_params			; Parse the parameters
+	LD	B, 0				; Clear B from UBC as we just want ARGC
+	PUSH	BC				; Parameter 1: argc
+end if 		; ___main_argc_argv
+
+
+; Call initialisers and constructors
+; ----------------------------------
+
+.init_count := ___init_array_count + ___ctors_count
+
+	; Optimised version if <= 21
+
+if .init_count <= 21
+  repeat ___init_array_count				; This creates a series of inline function calls
+    load function: long from init_array: (%-1) * long   ; to functs with addresses stored following the
+	call	function 				; - label  init_array::  (see below) and
+  end repeat
+  repeat ___ctors_count
+    load function: long from ctors: (%-1) * long 	; - label  ctors::   (see below)
+	call	function
+  end repeat
+
+else 	; Unoptimised version - iterates over table and makes indirect calls
+ 	; - optimisations for number being: 1, 2 or 3 bytes
+
+	ld	ix,init_functions			; prepare to iterate through init_functions
+	ld	b,((.init_count-1) shr  0 and $FF)+1 	; [b] as counter
+  if .init_count > $100
+	ld	c,((.init_count-1) shr  8 and $FF)+1 	; [b:c] as counter
+    if .init_count > $10000
+	ld	a,((.init_count-1) shr 16 and $FF)+1    ; [a:b:c] as counter
+    end if
+  end if
+
+.init_loop:
+	push	bc 					; save iteration counter
+  if .init_count > $10000
+	push	af
+  end if
+	ld	hl,(ix) 				; get address of the current initialisation function
+	lea	ix,ix+long 				; move point to next function ready for next iteration
+	call	__indcallhl 				; call the initialisation function
+  if .init_count > $10000
+	pop	af 					; restore iteration counter
+  end if
+	pop	bc
+	djnz	.init_loop 				; iterate on the count in [b]
+  if .init_count > $100
+	dec	c 					; iterate on the count in [c]
+	jq	nz,.init_loop
+    if .init_count > $10000 				
+	dec	a 					; iterate on the count in [a]
+	jq	nz,.init_loop
+    end if
+  end if
+end if 		; .init_count <=21
+
+; Call main function
+; ------------------
+; Start of the C program called either as int main(void) or int main(int argc, char *argv[])
+; - value returned will be in HL
+
+ifextern ___main_argc_argv
+	call	___main_argc_argv		; int main(int argc, char *argv[])
+else
+	call	_main 				; int main(void)
+end if
+	public	__start._main
+__start._main := $ - 3
+
+; clear up the stack if called with argc & argv (conditionally included)
+;
+;ifextern ___main_argc_argv 			; if int main(argc, *argv[]) clear up the stack
+;	POP	DE				; strictly don't need to do this as will ld sp, #
+;	POP	DE
+;end if
+
+; Normal return form main
+;------------------------
+; return value / exit code will be in HL
+
+	section	.fini
+	public	___exithl
+
+; make it look like we are arriving here from a call to exit()
+___exithl:
+	push 	hl  				; dummy value for return address
+	push 	hl 				; return code from main
+
+; entry point for void exit(int status) function
+; ----------------------------------------------
+;       The exit() function causes normal process termination and the
+;       least significant byte of status (i.e., status & 0xFF) is
+;       returned to the parent (see wait(2)).
+;
+;       All functions registered with atexit(3) and on_exit(3) are
+;       called, in the reverse order of their registration.  (It is
+;       possible for one of these functions to use atexit(3) or
+;       on_exit(3) to register an additional function to be executed
+;       during exit processing; the new registration is added to the
+;       front of the list of functions that remain to be called.)  If one
+;       of these functions does not return (e.g., it calls _exit(2), or
+;       kills itself with a signal), then none of the remaining functions
+;       is called, and further exit processing (in particular, flushing
+;       of stdio(3) streams) is abandoned.  If a function has been
+;       registered multiple times using atexit(3) or on_exit(3), then it
+;       is called as many times as it was registered.
+;
+;       All open stdio(3) streams are flushed and closed.  Files created
+;       by tmpfile(3) are removed.
+;
+;       The C standard specifies two constants, EXIT_SUCCESS and
+;       EXIT_FAILURE, that may be passed to exit() to indicate successful
+;       or unsuccessful termination, respectively.
+; RETURN VALUE - The exit() function does not return.
+
+	public	_exit
+_exit:		 			; if called exit() unwanted return address (to be discarded)
+					; and exit code will be on the stack
+
+; Finalisation after return from main or exit()
+; ---------------------------------------------
+; call functions registered earlier by atexit or on_exit()
+; and free the space used to store them in the linked list
+
+	jq	.function_enter
+.function_loop:
+	ld	hl,(ix+1+0*long) 	; pointer to next item in linked list
+	ld	(exit_functions),hl 	; save it in the exit_functions (pointer to list top)
+	pop	hl 			; on 1st time round loop, this is a pop for the push at ___exithl:
+	ld	de,(ix+1+2*long)	; on_exit() void *arg parameter
+	push	hl,de,hl 		; juggle stack so that have DE on stack above a copy of HL
+	ld	hl,(ix+1+1*long)	; on_exit() / atexit() *func() parameter - pointer to func to call
+	push	hl,ix+1 		; push hl; pea ix+1
+	call	_free 			; free the memory previously allocated
+					; address should be on the stack
+	pop	bc,hl
+	call	__indcallhl 		; equivalent to call (hl)
+	pop	bc,bc
+.function_enter:
+	ld	ix,(exit_functions) 	; get address of next item in linked list
+	ld	bc,-1 			; subtract 1 to test if 0 (NULL pointer)
+	add	ix,bc
+	jq	c,.function_loop 	; repeat if not yet reached NULL
+
+; Calling of destructors and finalisers
+; -------------------------------------
+
+; Optimised version if <= 21
+
+.fini_count := ___dtors_count + ___fini_array_count
+if .fini_count <= 21
+  repeat ___fini_array_count
+    load function: long from fini_array: (%%-%) * long
+	call	function
+  end repeat
+  repeat ___dtors_count
+    load function: long from dtors: (%%-%) * long
+	call	function
+  end repeat
+
+; Unoptimised version - iterates table and makes indirect calls
+;
+; optimisations for number being: 1, 2 or 3 bytes
+
+else
+	ld	ix,fini_functions
+	ld	b,((.fini_count-1) shr  0 and $FF)+1
+  if .fini_count > $100
+	ld	c,((.fini_count-1) shr  8 and $FF)+1
+    if .fini_count > $10000
+	ld	a,((.fini_count-1) shr 16 and $FF)+1
+    end if
+  end if
+.fini_loop:
+	push	bc
+  if .fini_count > $10000
+	push	af
+  end if
+	lea	ix,ix-long
+	ld	hl,(ix)
+	call	__indcallhl
+  if .fini_count > $10000
+	pop	af
+  end if
+	pop	bc
+	djnz	.fini_loop
+  if .fini_count > $100
+	dec	c
+	jq	nz,.fini_loop
+    if .fini_count > $10000
+	dec	a
+	jq	nz,.fini_loop
+    end if
+  end if
+end if
+
+; entry point for void _Exit(int status) function
+; -----------------------------------------------
+;       The exit() function causes normal process termination and the
+;       least significant byte of status (i.e., status & 0xFF) is
+;       returned to the parent (see wait(2)).
+;
+;       The value of status may be 0, EXIT_SUCCESS, EXIT_FAILURE, or any
+;       other value, though only the least significant 8 bits (that is,
+;       status & 0377) shall be available from wait() and waitpid(); the
+;       full value shall be available from waitid() and in the siginfo_t
+;       passed to a signal handler for SIGCHLD.
+;
+;       The _Exit() and _exit() functions shall be functionally
+;       equivalent.
+;
+;       The _Exit() and _exit() functions shall not call functions
+;       registered with atexit() nor any registered signal handlers.
+;       Open streams shall not be flushed.  Whether open streams are
+;       closed (without flushing) is implementation-defined. Finally, the
+;       calling process shall be terminated with the consequences
+;       described below.
+;
+; RETURN VALUE - The _Exit() function does not return.
+
+	public	__Exit
+__Exit: 				; if called _Exit() unwanted return address (to be discarded)
+					; and exit code will be on the stack
+	pop 	de 			; get rid of return address
+	pop 	hl 			; get return code in hl ready for end of program
+	jr	skip._abort
+
+; entry point for void abort(void) function
+; -----------------------------------------
+; Accoridng to the Linux man-page
+;       The abort() function first unblocks the SIGABRT signal, and then
+;       raises that signal for the calling process (as though raise(3)
+;       was called).  This results in the abnormal termination of the
+;       process unless the SIGABRT signal is caught and the signal
+;       handler does not return (see longjmp(3)).
+;
+;       If the SIGABRT signal is ignored, or caught by a handler that
+;       returns, the abort() function will still terminate the process.
+;       It does this by restoring the default disposition for SIGABRT and
+;       then raising the signal for a second time.
+;
+; In the case of this toolchain - it exits with the SIGABRT code
+;
+; RETURN VALUE - The abort() function does not return.
+
+	public	_abort
+_abort:
+	ld	hl, EXIT_ABORT			; EXIT_ABORT
+
+; restore the stack location before exiting
+
+	private	skip._abort
+skip._abort:
+	ld 	sp,0 				; stack pointer is stored on entry, overwriting the zero
+	public	_exit.sp 
+_exit.sp := $-3
+
+if HAS_EXIT_HANDLER
+	call 	_exit_handler
+end if
+
+	POP	IY				; Restore registers before exiting the program
+	POP	IX
+	POP	DE
+	POP 	BC
+	POP	AF
+
+	RET					; exit the program 
+
+; exit handler
+; ------------
+; printers error text based on exit code before returning to MOS
+; this is because MOS interprets anything not zero a file error
+; this is only included if HAS_EXIT_HANDLER (defined in makefile) is true
+
+
+EXIT_SUCCESS	:=	0
+EXIT_FAILURE	:=	1
+EXIT_ABORT	:= 	2
+EXIT_CODE_MAX	:=	2
+
+if HAS_EXIT_HANDLER
+_exit_handler:
+	ld 	a, l
+	cp 	a, EXIT_CODE_MAX+1
+	jr	c, .have_exit_code
+	ld 	a, EXIT_ABORT
+.have_exit_code:
+	sla 	a 				; multiply by nine
+	sla 	a
+	sla 	a
+	add 	a, l
+	ld 	de, exit_strings
+	or 	a, a 				; ld hl, 0
+	sbc 	hl, hl
+	ld 	l, a 				; hl = offset into exit strings table
+	add 	hl, de 				; hl = ptr to exit string
+
+	ld 	b, 9
+.print_err_str_loop:
+	ld 	a, (hl)
+	inc 	hl
+	rst.lil	10h 				; Output character to MOS
+	djnz 	.print_err_str_loop
+
+; Set HL to zero so can exit normally without MOS printing a file error
+
+	or 	a, a 				; ld hl, 0
+	sbc 	hl, hl
+	ret
+
+; Each exit string is 9 bytes long
+
+exit_strings:
+	db 	13, 10, "Okay ", 13, 10
+	db 	13, 10, "Quit ", 13, 10
+	db 	13, 10, "Abort", 13, 10
+
+end if 	; HAS_EXIT_HANDLER
+			
+; Clear the memory (the heap used for dynamic variables)
+; ------------------------------------------------------
+;
+; Location of BSS is defined by the labels (coming from linker_script)
+;   ___low_bss
+;   ___len_bss
+;
+	section .init.bss
+	private _clear_bss
+_clear_bss:
+
+if ___len_bss > 0 				; no need if BSS is 0 bytes
+  if ___len_bss = 1 				; special case of 1 byte
+	xor	a,a
+	ld	(___low_bss),a
+	ret
+
+  else if ___len_bss = 2 				; special case of 2 bytes
+	ld	hl,___low_bss
+	xor	a,a
+	ld	(hl),a
+	inc	hl
+	ld	(hl),a
+	ret
+
+  else if ___len_bss = 3 				; special case of 3 bytes
+	or	a,a
+	sbc	hl,hl
+	ld	(___low_bss),hl
+	ret
+
+  else if ___len_bss < 256 			; case <256 bytes
+	ld	hl,___low_bss			
+	xor	a,a
+	ld	b,___len_bss
+.clearbssloop:
+	ld 	(hl),a
+	inc 	hl
+	djnz 	.clearbssloop
+	ret
+
+  else if ___len_bss = 256 | ___len_bss = 257
+	ld	hl,___low_bss			
+	xor	a,a
+	ld	b,a
+.clearbssloop:
+	ld	(hl),a
+	inc	hl
+	djnz	.clearbssloop
+    if ___len_bss = 257
+	ld	(hl),a
+    end if
+  	ret
+
+  else 						; case >257 bytes
+	ld	bc, ___len_bss-1		; first byte hence is done manually
+ 	ld 	hl, ___low_bss
+ 	ld 	de, ___low_bss+1
+ 	ld 	(hl), 0
+ 	ldir 					; copy 0 from previous location to next
+ 	ret
+  end if
+end if 	; ___len_bss > 0
+
+
+; Process the command line into argc & argv[]
+; -------------------------------------------
+;			
+; Parse the parameter string into a C array
+; Parameters
+; - HL: Address of parameter string (seems to be set by MOS at start of programme)
+; - IX: Address for array pointer storage
+; Returns:
+; -  C: Number of parameters parsed
+;
+; Only include conditionally if ___main_argc_argv is present
+
+	section .init.args
+ifextern ___main_argc_argv | HAS_ARG_PROCESSING
+
+	private _parse_params
+_parse_params:
+
+  if HAS_ARG_PROCESSING				; if want to do complex arg processing
+
+  	extern 	___arg_processing
+
+  	ld 	bc, _exec_name			; first value in argv is program name
+  	ld 	(ix+0), bc
+  	push	ix
+  	push	hl
+  	call 	___arg_processing 		; call a C function to do this
+  	pop     hl
+  	pop 	hl
+  	ld 	bc, 0 				; clear out top of UBC
+  	ld 	c, a
+  	ret
+
+  else 						; otherwise do simple arg processing
+
+	LD	BC, _exec_name			; start of the program image 
+	LD	(IX+0), BC			; store *ARGV[0] = the executable name
+	INC	IX
+	INC	IX
+	INC	IX
+	CALL	_skip_spaces			; Skip HL past any leading spaces
+;
+	LD	BC, 1				; C: ARGC = 1 - also clears out top 16 bits of BCU
+	LD	B, argv_ptrs_max - 1		; B: Maximum number of argv_ptrs
+;
+_parse_params_1:	
+	PUSH	BC				; Stack ARGC	
+	PUSH	HL				; Stack start address of token
+	CALL	_get_token			; Get the next token
+	LD	A, C				; A: Length of the token in characters
+	POP	DE				; Start address of token (was in HL)
+	POP	BC				; ARGC
+	OR	A				; Check for A=0 (no token found) OR at end of string
+	RET	Z
+;
+	LD	(IX+0), DE			; Store the pointer to the token
+	PUSH	HL				; DE=HL
+	POP	DE
+	CALL	_skip_spaces			; And skip HL past any spaces onto the next character
+	XOR	A
+	LD	(DE), A				; Zero-terminate the token
+	INC	IX
+	INC	IX
+	INC	IX				; Advance to next pointer position
+	INC	C				; Increment ARGC
+	LD	A, C				; Check for C >= A
+	CP	B
+	JR C, 	_parse_params_1			; And loop
+	RET
+
+; Get the next token
+; Parameters:
+; - HL: Address of parameter string
+; Returns:
+; - HL: Address of first character after token
+; -  C: Length of token (in characters)
+;
+_get_token:
+	LD	C, 0				; Initialise length
+get_token_loop:
+	LD	A, (HL)				; Get the character from the parameter string
+	OR	A				; Exit if 0 (end of parameter string in MOS)
+	RET Z
+	CP	13				; Exit if CR (end of parameter string in BBC BASIC)
+	RET	Z
+	CP	' '				; Exit if space (end of token)
+	RET	Z
+	INC	HL				; Advance to next character
+	INC 	C				; Increment length
+	JR	get_token_loop
+	
+; Skip spaces in the parameter string
+; Parameters:
+; - HL: Address of parameter string
+; Returns:
+; - HL: Address of next none-space character
+;    F: Z if at end of string, otherwise NZ if there are more tokens to be parsed
+;
+_skip_spaces:
+	LD	A, (HL)				; Get the character from the parameter string	
+	CP	' '				; Exit if not space
+	RET	NZ
+	INC	HL				; Advance to next character
+	JR	_skip_spaces			; Increment length
+
+  end if 	; HAS_ARG_PROCESSING
+end if 		; ___main_argc_argv | HAS_ARG_PROCESSING
+
+; Storage for the argv array pointers
+;
+	section .data				; need private directive to make visible in .init section
+
+ifextern ___main_argc_argv | HAS_ARG_PROCESSING
+
+	private argv_ptrs
+argv_ptrs:
+  repeat argv_ptrs_max
+	dl	0			
+  end repeat
+
+end if 		; ___main_argc_argv | HAS_ARG_PROCESSING
+
+
+; Registering of exit functions
+; -----------------------------
+; Routine to allow exit functions to be registered
+; they are saved on a linked list
+; accepts two parameters on the stack and adds them to a linked list
+; pointed to by (exit_functions)
+
+; There are two functions functions defined in <stdlib.h>
+; - int atexit(void (* func)(void))
+;
+;	The atexit() function registers the given function to be called
+;	at normal process termination, either via exit(3) or via return
+;	from the program's main().  Functions so registered are called in
+;	the reverse order of their registration; no arguments are passed
+; 	RETURN VALUE
+;	The atexit() function returns the value 0 if successful;
+;	otherwise it returns a nonzero value.
+
+; - int on_exit(void (* func)(int, void *), void *arg)
+;
+;	The on_exit() function registers the given function to be called
+;	at normal process termination, whether via exit(3) or via return
+;	from the program's main().  The function is passed the status
+;	argument given to the last call to exit(3) and the arg argument
+;	from on_exit().
+; 	RETURN VALUE
+;	The on_exit() function returns the value 0 if successful;
+;	otherwise it returns a nonzero value.
+
+; Allocate storage for elems in linked list of 3 pointers on heap using malloc
+; - pointer to next item in linked list
+; - pointer to function
+; - pointer to arg if on_exit, otherwise will just container whatever was on the stack
+
+	section	.text
+	public	_atexit
+_atexit:
+	public	_on_exit
+_on_exit:
+	ld	hl,3*long 		; need to confirm but I think long is 3 (bytes)
+	push	hl
+	call	_malloc			; allocate storage for 3 pointers
+	pop	bc 			; discard parameter off stack
+	ex	de,hl 			; save address of storage in DE
+	scf
+	sbc	hl,hl 			; load HL with 0FFFFh (-1)
+	add	hl,de 			; check if address is zero (NULL pointer)
+	ret	nc 			; return if NULL pointer - DE holds address of malloced storage
+
+	; Add to front of linked-list (I'm guessing) pointed to by exit_functions
+
+	ld	hl,(exit_functions) 	; get address stored in exit_functions
+	ex	de,hl 			; DE = address stored in exit_functions, HL = malloced storage
+	ld	(exit_functions),hl 	; Save malloced storage address in exit_functions
+	ld	(hl),de 		; save previous address from exit_functions in malloced storage
+
+	pop	de 			; Get return address in DE - making stacked parameters accessible
+repeat 2
+  repeat long
+	inc	hl 			; advance HL by 3 - to next space in malloced storage (x2)
+  end repeat
+	pop	bc 			; get parameter of stack (x2)
+	ld	(hl),bc 		; stored it in malloced space (x2)
+end repeat
+	push	bc,bc 			; restore same number of parameters to stack
+	ex	de,hl 			; get return address in hl
+	jp	(hl) 			; and return
+
+	section	.data
+	private	exit_functions		
+exit_functions dl 0 			; Address of top of linked list for exit_functions
+					; initialised to NULL pointer
+
+; Storage for Initialisers, Constructors, Destructors & Finalisers 
+; ----------------------------------------------------------------
+; C++ has constructors (ctors) and destructors (dtors)
+; with initialisation (init_functions) and finalisation(fini_functions)
+; I assume some "magic" is done by the linker to fill thses tables
+
+	section	.rodata
+	private	init_functions
+init_functions:				; adddress at the beginning because call from 1st to last
+
+load functions: ___init_array_count * long from init_array: 0
+	dl	functions
+load functions: ___ctors_count * long from ctors: 0
+	dl	functions 
+
+	section	.rodata
+	private	fini_functions
+load functions: ___dtors_count * long from dtors: 0
+	dl	functions
+load functions: ___fini_array_count * long from fini_array: 0
+	dl	functions
+
+fini_functions: 			; address at the end because call from last to 1st
+
+
+; Sections for initialisers and constructors
+
+	section	.init_array
+init_array::
+	section	.ctors
+ctors::
+
+; Sections for destructors and finalisers
+
+	section	.dtors
+dtors::
+	section	.fini_array
+fini_array::
+
+	extern 	_main
+	extern 	___main_argc_argv
+
+	extern 	__indcallhl
+	extern 	_free
+	extern 	_malloc
+	extern  __sbrkbase
+
+	extern 	___len_bss			; coming from linker_script, defined in makefile.mk
+	extern 	___low_bss			; coming from linker_script, defined in makefile.mk
+	extern  ___heapbot 			; coming from linker_script, defined in makefile.mk
+	extern 	__stack				; defined in makefile.mk
+;	extern 	___libs
+
+	extern 	__stdio_init
+
+	extern	___ctors_count
+	extern	___dtors_count
+	extern	___fini_array_count
+	extern	___init_array_count
+

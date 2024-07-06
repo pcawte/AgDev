@@ -1,0 +1,75 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_realloc
+_realloc:
+	ld	hl, -3
+	call	__frameset
+	ld	iy, (ix + 6)
+	lea	hl, iy
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB0_2
+	ld	hl, (ix + 9)
+	push	hl
+	call	_malloc
+	push	hl
+	pop	bc
+	jr	BB0_6
+BB0_2:
+	ld	de, 6
+	ld	hl, (iy - 3)
+	lea	bc, iy
+	ld	iy, (ix + 9)
+	add	iy, de
+	lea	de, iy
+	or	a, a
+	sbc	hl, de
+	jr	nc, BB0_7
+	ld	hl, (ix + 9)
+	push	hl
+	call	_malloc
+	push	hl
+	pop	de
+	pop	hl
+	push	de
+	pop	hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB0_5
+	ld	bc, 0
+	jr	BB0_7
+BB0_5:
+	ld	hl, (ix + 9)
+	push	hl
+	ld	hl, (ix + 6)
+	push	hl
+	push	de
+	ld	(ix - 3), de
+	call	_memcpy
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix + 6)
+	push	hl
+	call	_free
+	ld	bc, (ix - 3)
+BB0_6:
+	pop	hl
+BB0_7:
+	push	bc
+	pop	hl
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__frameset
+	extern	_malloc
+	extern	_free
+	extern	_memcpy

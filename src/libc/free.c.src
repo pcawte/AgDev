@@ -1,0 +1,104 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_free
+_free:
+	ld	hl, -12
+	call	__frameset
+	ld	hl, (ix + 6)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jp	z, BB0_10
+	push	hl
+	pop	iy
+	ld	de, __alloc_base
+	lea	hl, iy - 6
+	ld	(ix - 3), hl
+	ld	bc, (ix - 3)
+BB0_2:
+	push	de
+	pop	iy
+	ld	(ix - 6), iy
+	ld	hl, (iy)
+	push	hl
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB0_4
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	jr	c, BB0_2
+BB0_4:
+	ld	iy, (ix + 6)
+	ld	bc, (iy - 3)
+	ld	hl, (ix - 3)
+	ld	(ix - 12), bc
+	add	hl, bc
+	ld	(ix - 9), hl
+	push	de
+	pop	hl
+	ld	bc, (ix - 9)
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB0_6
+	push	de
+	pop	iy
+	ld	hl, (iy + 3)
+	ld	bc, (ix - 12)
+	add	hl, bc
+	ld	iy, (ix + 6)
+	ld	(ix - 9), hl
+	ld	(iy - 3), hl
+	ld	hl, (ix - 6)
+	push	hl
+	pop	de
+	ld	hl, (hl)
+	ld	hl, (hl)
+	jr	BB0_7
+BB0_6:
+	ld	hl, (ix - 12)
+	ld	(ix - 9), hl
+	ex	de, hl
+	ld	de, (ix - 6)
+BB0_7:
+	ld	iy, (ix + 6)
+	ld	(iy - 6), hl
+	push	de
+	pop	iy
+	ld	de, (iy + 3)
+	lea	bc, iy
+	ld	(ix - 6), de
+	add	iy, de
+	lea	hl, iy
+	ld	de, (ix - 3)
+	or	a, a
+	sbc	hl, de
+	push	bc
+	pop	iy
+	jr	nz, BB0_9
+	ld	hl, (ix - 9)
+	ld	de, (ix - 6)
+	add	hl, de
+	ld	(iy + 3), hl
+	lea	hl, iy
+	ld	iy, (ix + 6)
+	ld	de, (iy - 6)
+	push	hl
+	pop	iy
+BB0_9:
+	ld	(iy), de
+BB0_10:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	extern	__Unwind_SjLj_Register
+	extern	__Unwind_SjLj_Unregister
+	extern	__frameset
+	extern	__alloc_base
