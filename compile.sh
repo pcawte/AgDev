@@ -4,6 +4,7 @@ set -x
 ORIGDIR=$PWD
 BASEDIR=$PWD/_temp
 GITHUB=$PWD/_temp/github
+CEDEV_VER=v11.2
 #
 if [ ! -d $BASEDIR ]; then
 	mkdir $BASEDIR;
@@ -11,7 +12,7 @@ fi
 cd $BASEDIR
 #
 if [ ! -d $BASEDIR/CEdev_zip ]; then
-       	wget https://github.com/CE-Programming/toolchain/releases/latest/download/CEdev-Linux.tar.gz;
+		wget https://github.com/CE-Programming/toolchain/releases/download/$CEDEV_VER/CEdev-Linux.tar.gz
 		tar -zxvf $BASEDIR/CEdev-Linux.tar.gz;
 		find . -type d -exec chmod 755 {} \; # no clue why this is required.
 		mv CEdev CEdev_zip;
@@ -42,7 +43,7 @@ cd $GITHUB
 CEDEV_GIT=$GITHUB/CEdev_git
 if [ ! -d $CEDEV_GIT ]; then
 	mkdir $CEDEV_GIT;
-	git clone https://github.com/CE-Programming/toolchain.git CEdev_git --branch v11.2;
+	git clone https://github.com/CE-Programming/toolchain.git CEdev_git --branch $CEDEV_VER;
 	cd $CEDEV_GIT;
 	git switch -c tmp;
     git switch master;

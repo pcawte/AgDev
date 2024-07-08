@@ -3,13 +3,14 @@ setlocal
 set ORIGDIR="%cd%"
 set BASEDIR=%cd%\_temp
 set GITHUB=%BASEDIR%\github
+set CEDEV_VER=v11.2
 
 if not exist %BASEDIR% mkdir %BASEDIR%
 if not exist %GITHUB% mkdir %GITHUB%
 
 Rem I don't feel guilty about requiring a recent version of Powershell... see below
-if not exist %BASEDIR%\Cedev_zip powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/CE-Programming/toolchain/releases/latest/download/CEdev-Windows.zip', '%BASEDIR%\Cedev-Windows.zip')"
-if not exist %BASEDIR%\Cedev_zip powershell -Command "Invoke-WebRequest https://github.com/CE-Programming/toolchain/releases/latest/download/CEdev-Windows.zip -OutFile %BASEDIR%\Cedev-Windows.zip"
+if not exist %BASEDIR%\Cedev_zip powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/CE-Programming/toolchain/releases/%CEDEV_VER%/download/CEdev-Windows.zip', '%BASEDIR%\Cedev-Windows.zip')"
+if not exist %BASEDIR%\Cedev_zip powershell -Command "Invoke-WebRequest https://github.com/CE-Programming/toolchain/releases/%CEDEV_VER%/download/CEdev-Windows.zip -OutFile %BASEDIR%\Cedev-Windows.zip"
 
 cd "%BASEDIR%"
 Rem Either we use this Win10-and-up command, or tar (also Win10), or we embed VBScript... this seems best for now
@@ -34,7 +35,7 @@ cd %GITHUB%
 set CEDEV_GIT=%GITHUB%\CEdev_git
 if not exist %CEDEV_GIT%  (
     mkdir %CEDEV_GIT%
-    git clone https://github.com/CE-Programming/toolchain.git CEdev_git --branch v11.2
+    git clone https://github.com/CE-Programming/toolchain.git CEdev_git --branch %CEDEV_VER%
     cd %CEDEV_GIT%
     git switch -c tmp
     git switch master
