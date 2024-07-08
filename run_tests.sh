@@ -8,4 +8,8 @@ make -f Makefile-agon
 cd ..
 git clone https://github.com/BlastBrothers/agon-mega-io.git --depth 1 && cd agon-mega-io
 make
+cd ..
+git clone https://github.com/lennart-benschop/agon-utilities.git --depth 1 && cd agon-utilities/mc
+make
+cd ../..
 echo "All tests done."
