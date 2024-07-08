@@ -28,7 +28,7 @@ void vdp_clear_graphics( void );
 void vdp_reset_graphics( void );
 void vdp_disable_screen( void );
 void vdp_cursor_home( void );
-void vdp_cursor_tab( int row, int col );
+void vdp_cursor_tab( int col, int row );
 void vdp_set_text_colour( int colour );
 void vdp_set_graphics_colour( int mode, int colour );
 #define vdp_gcol( M, C ) vdp_set_graphics_colour( M, C )
