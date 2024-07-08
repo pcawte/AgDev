@@ -1,0 +1,24 @@
+name: test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: build
+        run: |
+          cd ..
+          mkdir temp
+          cd temp
+          sudo sh ${{ github.workspace }}/compile.sh ${{ github.workspace }}
+          
+      - name: tests
+        run: |
+          export PATH=$PATH:${{ github.workspace }}/../temp/AgDev_build/bin
+          sh ${{ github.workspace }}/run_tests.sh
