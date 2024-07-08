@@ -7,15 +7,15 @@ GITHUB=$PWD/_temp/github
 CEDEV_VER=v11.2
 #
 if [ ! -d $BASEDIR ]; then
-	mkdir $BASEDIR;
+    mkdir $BASEDIR;
 fi
 cd $BASEDIR
 #
 if [ ! -d $BASEDIR/CEdev_zip ]; then
-		wget https://github.com/CE-Programming/toolchain/releases/download/$CEDEV_VER/CEdev-Linux.tar.gz
-		tar -zxvf $BASEDIR/CEdev-Linux.tar.gz;
-		find . -type d -exec chmod 755 {} \; # no clue why this is required.
-		mv CEdev CEdev_zip;
+        wget https://github.com/CE-Programming/toolchain/releases/download/$CEDEV_VER/CEdev-Linux.tar.gz
+        tar -zxvf $BASEDIR/CEdev-Linux.tar.gz;
+        find . -type d -exec chmod 755 {} \; # no clue why this is required.
+        mv CEdev CEdev_zip;
 fi
 #
 # Get AgDev code
@@ -24,28 +24,28 @@ mkdir $GITHUB
 cd $GITHUB
 #
 if [ -d $GITHUB/AgDev_git ]; then
-	rm -r -f $GITHUB/AgDev_git;
+    rm -r -f $GITHUB/AgDev_git;
 fi
 mkdir $GITHUB/AgDev_git;
 AGDEV_GIT=$GITHUB/AgDev_git
 # was a local location for AgDev code passed to us?
 if [ ! -z "$1" ]; then
-	cd $GITHUB
-	cp -r $1/* $AGDEV_GIT;
+    cd $GITHUB
+    cp -r $1/* $AGDEV_GIT;
 else
-	exit
-	cd $GITHUB
-	git clone https://github.com/pcawte/AgDev.git  AgDev_git;
+    exit
+    cd $GITHUB
+    git clone https://github.com/pcawte/AgDev.git  AgDev_git;
 fi
 #
 # get CEdev code - using a recent stable release
 cd $GITHUB
 CEDEV_GIT=$GITHUB/CEdev_git
 if [ ! -d $CEDEV_GIT ]; then
-	mkdir $CEDEV_GIT;
-	git clone https://github.com/CE-Programming/toolchain.git CEdev_git --branch $CEDEV_VER;
-	cd $CEDEV_GIT;
-	git switch -c tmp;
+    mkdir $CEDEV_GIT;
+    git clone https://github.com/CE-Programming/toolchain.git CEdev_git --branch $CEDEV_VER;
+    cd $CEDEV_GIT;
+    git switch -c tmp;
     git switch master;
     git merge tmp;
     git submodule update --init --recursive;
@@ -53,7 +53,7 @@ fi
 #
 # Duplicate CEdev repo - this will become the basis for the final build
 if [ -d $BASEDIR/CEDEV_PLUS_AGDEV ]; then
-	rm -r -f $BASEDIR/CEDEV_PLUS_AGDEV;
+    rm -r -f $BASEDIR/CEDEV_PLUS_AGDEV;
 fi
 mkdir $BASEDIR/CEDEV_PLUS_AGDEV
 CEDEV_PLUS_AGDEV=$BASEDIR/CEDEV_PLUS_AGDEV
@@ -96,7 +96,7 @@ cp -r $AGDEV_GIT/src/agon/include/agon $CEDEV_PLUS_AGDEV/src/include/
 # Remove the previous build directory and make
 cd $CEDEV_PLUS_AGDEV
 if [ $CEDEV_PLUS_AGDEV/CEdev ]; then
-	rm -r -f $CEDEV_PLUS_AGDEV/CEdev;
+    rm -r -f $CEDEV_PLUS_AGDEV/CEdev;
 fi
 mkdir $CEDEV_PLUS_AGDEV/CEdev
 PATH=$PATH:$BASEDIR/CEdev_zip/bin
@@ -118,7 +118,7 @@ cp -r $AGDEV_GIT/tests/* $CEDEV_PLUS_AGDEV/CEdev/tests/
 #
 # copy resulting build to base directory
 if [ -d  $ORIGDIR/AgDev_build/ ]; then
-	rm -r -f  $ORIGDIR/AgDev_build/;
+    rm -r -f  $ORIGDIR/AgDev_build/;
 fi
 mkdir $ORIGDIR/AgDev_build/
 cp -r $CEDEV_PLUS_AGDEV/CEdev/* $ORIGDIR/AgDev_build/
