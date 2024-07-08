@@ -9,8 +9,8 @@ if not exist %BASEDIR% mkdir %BASEDIR%
 if not exist %GITHUB% mkdir %GITHUB%
 
 Rem I don't feel guilty about requiring a recent version of Powershell... see below
-if not exist %BASEDIR%\Cedev_zip powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/CE-Programming/toolchain/releases/%CEDEV_VER%/download/CEdev-Windows.zip', '%BASEDIR%\Cedev-Windows.zip')"
-if not exist %BASEDIR%\Cedev_zip powershell -Command "Invoke-WebRequest https://github.com/CE-Programming/toolchain/releases/%CEDEV_VER%/download/CEdev-Windows.zip -OutFile %BASEDIR%\Cedev-Windows.zip"
+if not exist %BASEDIR%\Cedev_zip powershell -Command "(New-Object Net.WebClient).DownloadFile('https://github.com/CE-Programming/toolchain/releases/download/%CEDEV_VER%/CEdev-Windows.zip', '%BASEDIR%\Cedev-Windows.zip')"
+if not exist %BASEDIR%\Cedev_zip powershell -Command "Invoke-WebRequest https://github.com/CE-Programming/toolchain/releases/download/%CEDEV_VER%/CEdev-Windows.zip -OutFile %BASEDIR%\Cedev-Windows.zip"
 
 cd "%BASEDIR%"
 Rem Either we use this Win10-and-up command, or tar (also Win10), or we embed VBScript... this seems best for now
