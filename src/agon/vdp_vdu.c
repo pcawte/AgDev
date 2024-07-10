@@ -1866,5 +1866,3 @@ void vdp_mouse_wheel_accel( int wheelAccel )
 }
 
 
-
-
