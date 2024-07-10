@@ -368,7 +368,7 @@ Data packet sent from VDP (4 bytes):
 
 ```
 ; Keyboard Data
-; Received after a keypress event in the VPD
+; Received after a keypress event in the VDP
 ;
 vdp_protocol_KEY:
             LD        A, (_vdp_protocol_data + 0)    ; ASCII key code

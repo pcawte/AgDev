@@ -32,12 +32,12 @@ void vdp_get_scr_dims( bool wait )
 {
 	if ( !sv ) vdp_vdu_init();
 
-	if ( wait ) sv->vpd_pflags = 0;
+	if ( wait ) sv->vdp_pflags = 0;
 
 	mos_puts( (char *)&_vdp_get_scr_dims, sizeof(_vdp_get_scr_dims), 0 );
 
 	// wait for results of mode change to be reflected in SYSVARs
-	if ( wait ) while ( !(sv->vpd_pflags & vdp_pflag_mode) );
+	if ( wait ) while ( !(sv->vdp_pflags & vdp_pflag_mode) );
 }
 
 static struct { uint8_t vdu_23; uint8_t vdu_23_0; uint8_t vdu_23_0_0xC0; uint8_t flag; }

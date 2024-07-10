@@ -155,12 +155,12 @@ void vdp_get_scr_dims( bool wait )
 {
 	if ( !sys_vars ) vdp_vdu_init();
 
-	if ( wait ) sys_vars->vpd_pflags = 0;
+	if ( wait ) sys_vars->vdp_pflags = 0;
 
 	VDP_PUTS( vdu_get_scr_dims );
 
 	// wait for results of mode change to be reflected in SYSVARs
-	if ( wait ) while ( !(sys_vars->vpd_pflags & vdp_pflag_mode) );
+	if ( wait ) while ( !(sys_vars->vdp_pflags & vdp_pflag_mode) );
 }
 
 void vdp_logical_scr_dims( bool flag )
