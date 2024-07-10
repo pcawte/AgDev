@@ -73,7 +73,7 @@
 	public  _mos_i2c_open
 
 	public	_getsysvar_time
-	public  _getsysvar_vpd_pflags
+	public  _getsysvar_vdp_pflags
 	public  _getsysvar_keyascii
 	public  _getsysvar_keymods
 	public  _getsysvar_cursorX
@@ -149,11 +149,11 @@ _getsysvar_time:
 	pop	ix
 	ret
 
-_getsysvar_vpd_pflags:
+_getsysvar_vdp_pflags:
 	push	ix
 	ld	a, mos_sysvars
 	rst.lil	08h
-	ld	a, (ix+sysvar_vpd_pflags)
+	ld	a, (ix+sysvar_vdp_pflags)
 	pop	ix
 	ret
 

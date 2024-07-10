@@ -8,7 +8,7 @@
 ; Modinfo:
 ; 05/08/2022:	Added mos_feof
 ; 09/08/2022:	Added system variables: cursorX, cursorY
-; 18/08/2022:	Added system variables: scrchar, scrpixel, audioChannel, audioSuccess, vpd_pflags
+; 18/08/2022:	Added system variables: scrchar, scrpixel, audioChannel, audioSuccess, vdp_pflags
 ; 05/09/2022:	Added mos_ren, vdp_pflag_mode
 ; 24/09/2022:	Added mos_getError, mos_mkdir
 ; 13/10/2022:	Added mos_oscli
@@ -139,7 +139,7 @@ fa_open_append		:=	030h
 ; Index into _sysvars in globals.asm
 ;
 sysvar_time		:=	000h	; 4: Clock timer in centiseconds (incremented by 2 every VBLANK)
-sysvar_vpd_pflags	:=	004h	; 1: Flags to indicate completion of VDP commands
+sysvar_vdp_pflags	:=	004h	; 1: Flags to indicate completion of VDP commands
 sysvar_keyascii		:=	005h	; 1: ASCII keycode, or 0 if no key is pressed
 sysvar_keymods		:=	006h	; 1: Keycode modifiers
 sysvar_cursorX		:=	007h	; 1: Cursor X position
@@ -162,7 +162,7 @@ sysvar_keydelay		:=	022h	; 2: Keyboard repeat delay
 sysvar_keyrate		:=	024h	; 2: Keyboard repeat reat
 sysvar_keyled		:=	026h	; 1: Keyboard LED status
 	
-; Flags for the VPD protocol
+; Flags for the VDP protocol
 ;
 vdp_pflag_cursor	:=	00000001b
 vdp_pflag_scrchar	:=	00000010b

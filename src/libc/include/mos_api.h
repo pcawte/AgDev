@@ -102,7 +102,7 @@ typedef enum {
 #define sysvar_mouseXDelta		0x2F	// 2: Mouse X delta
 #define sysvar_mouseYDelta		0x31	// 2: Mouse Y delta
 
-// Flags for the VPD protocol - sysvar_vpd_pflags
+// Flags for the VDP protocol - sysvar_vdp_pflags
 #define vdp_pflag_cursor        0x01
 #define vdp_pflag_scrchar       0x02
 #define vdp_pflag_point         0x04
@@ -131,7 +131,7 @@ typedef union {
 
 typedef struct {
     uint32_t time;
-    uint8_t vpd_pflags;
+    uint8_t vdp_pflags;
     uint8_t keyascii;
     uint8_t keymods;
     uint8_t cursorX;
@@ -237,7 +237,7 @@ extern void  mos_puts(char * buffer, uint24_t size, char delimiter);
 
 // Get system variables
 extern uint32_t getsysvar_time();
-extern uint8_t  getsysvar_vpd_pflags();
+extern uint8_t  getsysvar_vdp_pflags();
 extern uint8_t  getsysvar_keyascii();
 extern uint8_t  getsysvar_keymods();
 extern uint8_t  getsysvar_cursorX();
