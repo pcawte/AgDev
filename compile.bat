@@ -94,10 +94,8 @@ Rem pause
 Rem copy over .exe's from CEdev release - CEdev GitHub actions pull each .exe's repo and build, but we shouldn't need to do that.
 robocopy "%BASEDIR%\CEdev_zip\bin" "%CEDEV_PLUS_AGDEV%\CEdev\bin" /e
 
-Rem copy over AgDev example folders
-robocopy "%AGDEV_GIT%\AgExamples" "%CEDEV_PLUS_AGDEV%\CEdev\AgExamples" /e
-robocopy "%AGDEV_GIT%\sprite-demos" "%CEDEV_PLUS_AGDEV%\CEdev\sprite-demos" /e
-robocopy "%AGDEV_GIT%\tests" "%CEDEV_PLUS_AGDEV%\CEdev\tests" /e
+Rem copy over AgDev example folder
+robocopy "%AGDEV_GIT%\examples" "%CEDEV_PLUS_AGDEV%\CEdev\examples" /e
 
 Rem copy resulting build to base directory
 if exist "%ORIGDIR%\AgDev_build" rmdir /s /q "%ORIGDIR%\AgDev_build"
