@@ -3,7 +3,7 @@
 # ----------------------------
 
 NAME = big-bitmap
-DESCRIPTION = "Ag C Toolchain Demo"
+DESCRIPTION = "Big Bitmap Demo"
 COMPRESSED = NO
 LDHAS_ARG_PROCESSING = 0
 
