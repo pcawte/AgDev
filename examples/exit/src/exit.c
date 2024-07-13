@@ -18,5 +18,5 @@ int main( void )
 } 
 
 void f1( void ) {
-	exit( EXIT_ABORT );
+	exit( -1 );
 }

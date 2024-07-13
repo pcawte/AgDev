@@ -81,7 +81,7 @@ int fputc(int c, FILE *stream);
 
 char *fgets(char *__restrict str, int num, FILE *__restrict stream);
 
-//int remove(const char *filename);
+int remove(const char *filename);
 
 //void rewind(FILE *stream);
 

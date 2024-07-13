@@ -3,7 +3,7 @@
 # ----------------------------
 
 NAME = exit
-DESCRIPTION = "Ag C Toolchain Demo"
+DESCRIPTION = "AgDev exit example"
 COMPRESSED = NO
 LDHAS_ARG_PROCESSING = 0
 LDHAS_EXIT_HANDLER = 1

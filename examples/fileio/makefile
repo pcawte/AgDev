@@ -3,7 +3,7 @@
 # ----------------------------
 
 NAME = fileio
-DESCRIPTION = "Ag C Toolchain Demo"
+DESCRIPTION = "AgDev File I/O Demo"
 COMPRESSED = NO
 
 CFLAGS = -Wall -Wextra -Oz

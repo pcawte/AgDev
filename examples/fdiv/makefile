@@ -3,7 +3,7 @@
 # ----------------------------
 
 NAME = fdiv
-DESCRIPTION = "Ag C Toolchain Demo"
+DESCRIPTION = "Float Division Demo"
 COMPRESSED = NO
 
 CFLAGS = -Wall -Wextra -Oz
