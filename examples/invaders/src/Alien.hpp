@@ -2,8 +2,8 @@
 
 #define _ALIEN_HPP
 
-#include <Sprite/Sprite.hpp>
-#include <Sprite/SpriteArray.hpp>
+#include "Sprite/Sprite.hpp"
+#include "Sprite/SpriteArray.hpp"
 
 void alien_init();
 

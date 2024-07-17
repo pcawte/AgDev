@@ -3,7 +3,7 @@
 # ----------------------------
 
 NAME = malloc
-DESCRIPTION = "Ag C Toolchain Demo"
+DESCRIPTION = "AgDev Malloc Demo"
 COMPRESSED = NO
 LDHAS_ARG_PROCESSING = 0
 

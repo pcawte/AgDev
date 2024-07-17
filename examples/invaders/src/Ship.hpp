@@ -2,7 +2,7 @@
 
 #define _SHIP_HPP
 
-#include <Sprite/RotSprite.hpp>
+#include "Sprite/RotSprite.hpp"
 
 
 void ship_init();

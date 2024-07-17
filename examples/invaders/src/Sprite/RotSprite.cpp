@@ -1,4 +1,5 @@
-#include <Sprite/RotSprite.hpp>
+#include "RotSprite.hpp"
+#include <stdio.h>
 #include <agon/vdp_vdu.h>
 
 RotSprite::RotSprite( int x, int y, int dx, int dy, int w, int h, int brd, int bitmap )
@@ -16,8 +17,12 @@ void RotSprite::add_rotations( ROT_TABLE *rot_table, int num_rot, int cur_rot, b
 	rs_num_rot = num_rot;
 	rs_cur_rot = cur_rot;
 	rs_circular = circular;
-
+	printf("About to set rotation...");
+	waitvblank();
 	set_frame( rs_rot_table[rs_cur_rot].frame );
+	printf("Done\n");
+	waitvblank();
+
 }
 
 // Gettters

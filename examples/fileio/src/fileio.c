@@ -128,7 +128,8 @@ int main( void )
 
 	if ( str[0] != 'n' && str[0] != 'N' ) {
 		puts( "Deleting..." );
-		if ( remove( fname_str ) ) {
+		int i =  remove( fname_str );
+		if ( i ) {
 			puts( "Error deleting the file" );
 			return 0;
 		}

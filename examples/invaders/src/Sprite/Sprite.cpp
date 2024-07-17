@@ -1,4 +1,4 @@
-#include <Sprite/Sprite.hpp>
+#include "Sprite.hpp"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <agon/vdp_vdu.h>
@@ -30,7 +30,9 @@ int Sprite::init( int num_sprites )
 
 Sprite::Sprite( int x, int y, int dx, int dy, int width, int height, int border, int bitmap )
 {
+	printf("Setting sprite details... ");
 	set_details( x, y, dx, dy, width, height, border, bitmap );
+	printf("Done\n");
 }
 
 Sprite::Sprite( Coords coords, int dx, int dy, int width, int height, int border, int bitmap )
@@ -150,18 +152,24 @@ void Sprite::add_bitmap( int bitmap_id, int die )
 	else die_frames++;
 }
 
-void Sprite::add_bitmaps( int bitmap_id, int num, int die )
-{
+void Sprite::add_bitmaps( int bitmap_id, int num, int die ) {
+	printf("add_bitmaps: begin. ID %d | num %d | die %d\n", bitmap_id, num, die);
 	vdp_select_sprite( s_vdp_id );
-	for ( int i = 0; i < num; i++ ) vdp_add_sprite_bitmap( bitmap_id++ );
+	printf("add_bitmaps: sprite selected\n");
+	for ( int i = 0; i < num; i++ ) {
+		vdp_add_sprite_bitmap( bitmap_id++ ); 
+	}
+	printf("add_bitmaps: vdp_add_sprite_bitmap done\n");
 	if ( !die ) frames += num;
 	else die_frames += num;
+	printf("add_bitmaps: frames increment done\n");
 }
 
 // Visibility
 
 void Sprite::show()
 {
+	printf("#Showing sprite......\n");
 	if ( !visible ) {
 		vdp_select_sprite( s_vdp_id );
 		vdp_show_sprite();
@@ -371,7 +379,7 @@ Sprite *Sprite::dead()
 
 void Sprite::dump()
 {
-//	printf( "x %d, y %d, w %d, h %d, brd %d, dx %d, dy %d\n", s_x, s_y, s_w, s_h, s_brd, s_dx, s_dy );
+	printf( "x %d, y %d, w %d, h %d, brd %d, dx %d, dy %d\n", s_x, s_y, s_w, s_h, s_brd, s_dx, s_dy );
 	printf( "Sprite normal %d, die %d, current %d, state %d\n", frames, die_frames, cur_frame, state );
 } 
 

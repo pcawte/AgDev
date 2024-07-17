@@ -3,7 +3,7 @@
 # ----------------------------
 
 NAME = stdout
-DESCRIPTION = "Ag C Toolchain Demo"
+DESCRIPTION = "stdout"
 COMPRESSED = NO
 
 CFLAGS = -Wall -Wextra -Oz

@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.src": "platformio-debug.asm",
+        "stdio.h": "c"
+    }
+}

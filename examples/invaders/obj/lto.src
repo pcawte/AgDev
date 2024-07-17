@@ -1,0 +1,7566 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	weak	__ZN5AlienD0Ev
+__ZN5AlienD0Ev:
+	ld	hl, -3
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	(ix - 3), hl
+	push	hl
+	call	__ZN6SpriteD2Ev
+	pop	hl
+	ld	hl, (ix - 3)
+	ld	(ix + 6), hl
+	pop	hl
+	pop	ix
+	jp	__ZdlPv
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN5Alien7at_leftEv
+__ZN5Alien7at_leftEv:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	de, 16
+	ld	bc, (iy + 21)
+	push	bc
+	pop	hl
+	call	__ineg
+	ld	(iy + 21), hl
+	ld	hl, (iy + 6)
+	or	a, a
+	sbc	hl, bc
+	ld	iy, (ix + 6)
+	ld	iy, (iy + 9)
+	add	iy, de
+	push	iy
+	push	hl
+	ld	hl, (ix + 6)
+	push	hl
+	call	__ZN6Sprite7move_toEii
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix + 6)
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN5Alien8at_rightEv
+__ZN5Alien8at_rightEv:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	de, 16
+	ld	bc, (iy + 21)
+	push	bc
+	pop	hl
+	call	__ineg
+	ld	(iy + 21), hl
+	ld	hl, (iy + 6)
+	or	a, a
+	sbc	hl, bc
+	ld	iy, (ix + 6)
+	ld	iy, (iy + 9)
+	add	iy, de
+	push	iy
+	push	hl
+	ld	hl, (ix + 6)
+	push	hl
+	call	__ZN6Sprite7move_toEii
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix + 6)
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN5Alien4deadEv
+__ZN5Alien4deadEv:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	ld	iy, (iy + 3)
+	push	hl
+	call	__indcall
+	pop	hl
+	ld	hl, (_score)
+	inc	hl
+	ld	(_score), hl
+	ld	hl, 0
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN5Alien6hit_byEP6Sprite
+__ZN5Alien6hit_byEP6Sprite:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	ex	de, hl
+	ld	hl, (iy + 18)
+	push	de
+	call	__indcallhl
+	pop	hl
+	ld	hl, (ix + 6)
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN10AlienArray7at_leftEv
+__ZN10AlienArray7at_leftEv:
+	ld	hl, -6
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	de, 1
+	ld	hl, (iy + 33)
+	ld	(ix - 3), hl
+	ld	hl, (iy + 36)
+	ld	(ix - 6), hl
+	ld	hl, (iy + 39)
+	call	__ineg
+	ld	(iy + 39), hl
+BB5_1:
+	ld	bc, 3
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	ex	de, hl
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (iy)
+	ld	de, (ix + 6)
+	push	de
+	call	__indcallhl
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB5_3
+	ld	hl, 16
+	push	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	ld	hl, (ix + 6)
+	push	hl
+	call	__ZN11SpriteGroup7move_byEii
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	de, 2
+	jr	BB5_1
+BB5_3:
+	ld	de, 16
+	ld	hl, (ix - 6)
+	add	hl, de
+	push	hl
+	pop	bc
+	ld	hl, (ix + 6)
+	ex	de, hl
+	ld	hl, (ix - 3)
+	push	de
+	pop	iy
+	ld	(iy + 33), hl
+	ld	(iy + 36), bc
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN10AlienArray8at_rightEv
+__ZN10AlienArray8at_rightEv:
+	ld	hl, -6
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	de, 1
+	ld	hl, (iy + 33)
+	ld	(ix - 3), hl
+	ld	hl, (iy + 36)
+	ld	(ix - 6), hl
+	ld	hl, (iy + 39)
+	call	__ineg
+	ld	(iy + 39), hl
+BB6_1:
+	ld	bc, 3
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	ex	de, hl
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (iy)
+	ld	de, (ix + 6)
+	push	de
+	call	__indcallhl
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB6_3
+	ld	hl, 16
+	push	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	ld	hl, (ix + 6)
+	push	hl
+	call	__ZN11SpriteGroup7move_byEii
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	de, 2
+	jr	BB6_1
+BB6_3:
+	ld	de, 16
+	ld	hl, (ix - 6)
+	add	hl, de
+	push	hl
+	pop	bc
+	ld	hl, (ix + 6)
+	ex	de, hl
+	ld	hl, (ix - 3)
+	push	de
+	pop	iy
+	ld	(iy + 33), hl
+	ld	(iy + 36), bc
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__Z10alien_initv
+__Z10alien_initv:
+	ld	hl, -21
+	call	__frameset
+	ld	iy, _.str.1
+	ld	hl, 16
+	ld	bc, 0
+	ld	de, 4
+	push	de
+	push	bc
+	push	hl
+	push	hl
+	push	iy
+	ld	hl, _.str
+	push	hl
+	call	_vdp_load_sprite_bitmaps
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 4
+	push	hl
+	push	hl
+	ld	hl, 16
+	push	hl
+	push	hl
+	ld	hl, _.str.1
+	push	hl
+	ld	hl, _.str.2
+	push	hl
+	call	_vdp_load_sprite_bitmaps
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 69
+	push	hl
+	call	__Znwj
+	push	hl
+	pop	de
+	ld	(ix - 3), de
+	pop	hl
+	ld	hl, 480
+	push	hl
+	ld	hl, 656
+	push	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	push	hl
+	push	hl
+	ld	hl, 2
+	push	hl
+	ld	hl, 64
+	push	hl
+	push	hl
+	ld	hl, 32
+	push	hl
+	push	hl
+	ld	hl, 5
+	push	hl
+	ld	hl, 10
+	push	hl
+	push	de
+	call	__ZN10AlienArrayC2Eiiiiiiiiiiii
+	ld	de, 64
+	ld	hl, 39
+	add	hl, sp
+	ld	sp, hl
+	ld	hl, (ix - 3)
+	ld	(_aliens), hl
+	ld	bc, 10
+	or	a, a
+	sbc	hl, hl
+	ld	(ix - 3), hl
+	ld	(ix - 12), de
+BB7_1:
+	ld	hl, (ix - 3)
+	or	a, a
+	sbc	hl, bc
+	ld	(ix - 9), de
+	ld	hl, 0
+	jp	z, BB7_5
+BB7_2:
+	ld	(ix - 15), hl
+	ld	bc, 5
+	or	a, a
+	sbc	hl, bc
+	jp	z, BB7_4
+	ld	hl, 43
+	push	hl
+	call	__Znwj
+	push	hl
+	pop	de
+	ld	(ix - 6), de
+	pop	hl
+	scf
+	sbc	hl, hl
+	push	hl
+	ld	hl, 3
+	push	hl
+	ld	hl, 16
+	push	hl
+	push	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	ld	hl, 2
+	push	hl
+	ld	hl, (ix - 9)
+	push	hl
+	ld	hl, (ix - 12)
+	push	hl
+	push	de
+	call	__ZN5AlienC2Eiiiiiiii
+	ld	hl, 27
+	add	hl, sp
+	ld	sp, hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	ld	hl, 4
+	push	hl
+	sbc	hl, hl
+	push	hl
+	ld	hl, (ix - 6)
+	push	hl
+	call	__ZN6Sprite11add_bitmapsEiii
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 1
+	push	hl
+	ld	hl, 4
+	push	hl
+	push	hl
+	ld	hl, (ix - 6)
+	push	hl
+	call	__ZN6Sprite11add_bitmapsEiii
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 6)
+	push	hl
+	call	__ZN6Sprite4showEv
+	pop	hl
+	ld	iy, (_aliens)
+	ld	(ix - 18), iy
+	ld	hl, (iy + 18)
+	ld	(ix - 21), hl
+	ld	bc, (iy + 24)
+	ld	hl, (ix - 3)
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	de, (ix - 15)
+	push	de
+	pop	hl
+	add	hl, bc
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	iy, (ix - 21)
+	add	iy, bc
+	ld	hl, (ix - 6)
+	ld	(iy), hl
+	ld	bc, (ix - 18)
+	push	bc
+	pop	hl
+	ld	iy, (ix - 6)
+	ld	(iy + 40), hl
+	push	bc
+	pop	iy
+	ld	hl, (iy + 3)
+	inc	hl
+	ld	(iy + 3), hl
+	ex	de, hl
+	ld	de, 64
+	ld	bc, 32
+	ld	iy, (ix - 9)
+	add	iy, bc
+	ld	(ix - 9), iy
+	inc	hl
+	jp	BB7_2
+BB7_4:
+	ld	bc, 32
+	ld	hl, (ix - 12)
+	add	hl, bc
+	ld	(ix - 12), hl
+	ld	hl, (ix - 3)
+	inc	hl
+	ld	(ix - 3), hl
+	ld	bc, 10
+	jp	BB7_1
+BB7_5:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	weak	__ZN10AlienArrayC2Eiiiiiiiiiiii
+__ZN10AlienArrayC2Eiiiiiiiiiiii:
+	call	__frameset0
+	ld	iy, (ix + 33)
+	ld	bc, (ix + 36)
+	ld	de, (ix + 39)
+	ld	hl, (ix + 42)
+	push	hl
+	push	de
+	push	bc
+	push	iy
+	ld	hl, (ix + 30)
+	push	hl
+	ld	hl, (ix + 27)
+	push	hl
+	ld	hl, (ix + 24)
+	push	hl
+	ld	hl, (ix + 21)
+	push	hl
+	ld	hl, (ix + 18)
+	push	hl
+	ld	hl, (ix + 15)
+	push	hl
+	ld	hl, (ix + 12)
+	push	hl
+	ld	hl, (ix + 9)
+	push	hl
+	ld	hl, (ix + 6)
+	push	hl
+	call	__ZN11SpriteArrayC2Eiiiiiiiiiiii
+	ld	hl, 39
+	add	hl, sp
+	ld	sp, hl
+	ld	hl, (ix + 6)
+	ld	de, __ZTV10AlienArray+6
+	ld	(hl), de
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	weak	__ZN5AlienC2Eiiiiiiii
+__ZN5AlienC2Eiiiiiiii:
+	call	__frameset0
+	ld	de, (ix + 6)
+	ld	iy, (ix + 24)
+	ld	bc, (ix + 27)
+	ld	hl, (ix + 30)
+	push	hl
+	push	bc
+	push	iy
+	ld	hl, (ix + 21)
+	push	hl
+	ld	hl, (ix + 18)
+	push	hl
+	ld	hl, (ix + 15)
+	push	hl
+	ld	hl, (ix + 12)
+	push	hl
+	ld	hl, (ix + 9)
+	push	hl
+	push	de
+	call	__ZN6SpriteC2Eiiiiiiii
+	ld	hl, 27
+	add	hl, sp
+	ld	sp, hl
+	ld	hl, __ZTV5Alien+6
+	ld	iy, (ix + 6)
+	ld	(iy), hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	weak	__ZN4BombD0Ev
+__ZN4BombD0Ev:
+	ld	hl, -3
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	(ix - 3), hl
+	push	hl
+	call	__ZN6SpriteD2Ev
+	pop	hl
+	ld	hl, (ix - 3)
+	ld	(ix + 6), hl
+	pop	hl
+	pop	ix
+	jp	__ZdlPv
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN4Bomb9at_bottomEv
+__ZN4Bomb9at_bottomEv:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	ld	iy, (iy + 3)
+	push	hl
+	call	__indcall
+	pop	hl
+	ld	hl, 0
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN4Bomb7hittingEP6Sprite
+__ZN4Bomb7hittingEP6Sprite:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	ld	iy, (iy + 3)
+	push	hl
+	call	__indcall
+	pop	hl
+	ld	hl, 0
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN4Bomb7hittingEP9TileArray
+__ZN4Bomb7hittingEP9TileArray:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	ld	iy, (iy + 3)
+	push	hl
+	call	__indcall
+	pop	hl
+	ld	hl, 0
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__Z9bomb_initv
+__Z9bomb_initv:
+	ld	hl, 252
+	push	hl
+	call	_vdp_select_bitmap
+	pop	hl
+	ld	hl, 255
+	push	hl
+	push	hl
+	push	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	ld	hl, 2
+	push	hl
+	push	hl
+	call	_vdp_solid_bitmap
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 27
+	push	hl
+	call	__Znwj
+	push	hl
+	pop	iy
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+	ld	(iy + 3), hl
+	ld	(iy + 6), hl
+	ld	(iy + 9), hl
+	ld	hl, 640
+	ld	(iy + 12), hl
+	ld	hl, 480
+	ld	(iy + 15), hl
+	ld	hl, __ZTV10SpriteList+6
+	ld	(iy), hl
+	ld	hl, 0
+	ld	(iy + 18), hl
+	ld	(iy + 21), hl
+	ld	(iy + 24), hl
+	ld	(_bombs), iy
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	weak	__ZN6BulletD0Ev
+__ZN6BulletD0Ev:
+	ld	hl, -3
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	(ix - 3), hl
+	push	hl
+	call	__ZN6SpriteD2Ev
+	pop	hl
+	ld	hl, (ix - 3)
+	ld	(ix + 6), hl
+	pop	hl
+	pop	ix
+	jp	__ZdlPv
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Bullet6at_topEv
+__ZN6Bullet6at_topEv:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	ld	iy, (iy + 3)
+	push	hl
+	call	__indcall
+	pop	hl
+	ld	hl, 0
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Bullet7hittingEP6Sprite
+__ZN6Bullet7hittingEP6Sprite:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	ld	iy, (iy + 3)
+	push	hl
+	call	__indcall
+	pop	hl
+	ld	hl, 0
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Bullet7hittingEP9TileArray
+__ZN6Bullet7hittingEP9TileArray:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	ld	iy, (iy + 3)
+	push	hl
+	call	__indcall
+	pop	hl
+	ld	hl, 0
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__Z11bullet_initv
+__Z11bullet_initv:
+	ld	hl, 253
+	push	hl
+	call	_vdp_select_bitmap
+	pop	hl
+	ld	hl, _str
+	push	hl
+	call	_puts
+	pop	hl
+	ld	de, 255
+	push	de
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	push	de
+	push	de
+	ld	hl, 4
+	push	hl
+	ld	hl, 2
+	push	hl
+	call	_vdp_solid_bitmap
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, _str.2
+	push	hl
+	call	_puts
+	pop	hl
+	ld	hl, 27
+	push	hl
+	call	__Znwj
+	push	hl
+	pop	iy
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+	ld	(iy + 3), hl
+	ld	(iy + 6), hl
+	ld	(iy + 9), hl
+	ld	hl, 640
+	ld	(iy + 12), hl
+	ld	hl, 480
+	ld	(iy + 15), hl
+	ld	hl, __ZTV10SpriteList+6
+	ld	(iy), hl
+	ld	hl, 0
+	ld	(iy + 18), hl
+	ld	(iy + 21), hl
+	ld	(iy + 24), hl
+	ld	(_bullets), iy
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	weak	__ZN4ShipD0Ev
+__ZN4ShipD0Ev:
+	ld	hl, -3
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	(ix - 3), hl
+	push	hl
+	call	__ZN6SpriteD2Ev
+	pop	hl
+	ld	hl, (ix - 3)
+	ld	(ix + 6), hl
+	pop	hl
+	pop	ix
+	jp	__ZdlPv
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN4Ship4deadEv
+__ZN4Ship4deadEv:
+	call	__frameset0
+	ld	hl, _.str.7
+	ld	de, (_score)
+	push	de
+	push	hl
+	call	_printf
+	pop	hl
+	pop	hl
+	ld	hl, 1
+	push	hl
+	call	_vdp_cursor_enable
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	call	_exit
+	pop	hl
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN4Ship6hit_byEP6Sprite
+__ZN4Ship6hit_byEP6Sprite:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	ex	de, hl
+	ld	hl, (iy + 18)
+	push	de
+	call	__indcallhl
+	pop	hl
+	ld	hl, (ix + 6)
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__Z9ship_initv
+__Z9ship_initv:
+	ld	hl, -3
+	call	__frameset
+	ld	iy, _.str.1.4
+	ld	hl, 16
+	ld	bc, 24
+	ld	de, 8
+	push	de
+	push	bc
+	push	hl
+	push	hl
+	push	iy
+	ld	hl, _.str.3
+	push	hl
+	call	_vdp_load_sprite_bitmaps
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 55
+	push	hl
+	call	__Znwj
+	push	hl
+	pop	de
+	ld	(ix - 3), de
+	pop	hl
+	scf
+	sbc	hl, hl
+	push	hl
+	ld	hl, 3
+	push	hl
+	ld	hl, 16
+	push	hl
+	push	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	push	hl
+	ld	hl, 300
+	push	hl
+	ld	hl, 256
+	push	hl
+	push	de
+	call	__ZN4ShipC2Eiiiiiiii
+	ld	hl, 27
+	add	hl, sp
+	ld	sp, hl
+	ld	de, (ix - 3)
+	ld	(_ship), de
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	ld	hl, 24
+	push	hl
+	ld	hl, 8
+	push	hl
+	push	de
+	call	__ZN6Sprite11add_bitmapsEiii
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (_ship)
+	ld	de, 1
+	push	de
+	ld	de, 4
+	push	de
+	push	de
+	push	hl
+	call	__ZN6Sprite11add_bitmapsEiii
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, _str.5
+	push	hl
+	call	_puts
+	pop	hl
+	ld	hl, (_ship)
+	ld	de, 1
+	push	de
+	dec	de
+	push	de
+	ld	de, 24
+	push	de
+	ld	de, __ZL8rot_ship
+	push	de
+	push	hl
+	call	__ZN9RotSprite13add_rotationsEP9ROT_TABLEiib
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, _str.8
+	push	hl
+	call	_puts
+	pop	hl
+	ld	hl, (_ship)
+	push	hl
+	call	__ZN6Sprite4showEv
+	pop	hl
+	ld	hl, _str.9
+	push	hl
+	call	_puts
+	pop	hl
+	ld	hl, 18
+	push	hl
+	call	__Znwj
+	push	hl
+	pop	iy
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+	ld	(iy + 3), hl
+	ld	(iy + 6), hl
+	ld	(iy + 9), hl
+	ld	hl, 640
+	ld	(iy + 12), hl
+	ld	hl, 480
+	ld	(iy + 15), hl
+	ld	hl, __ZTV16DummySpriteGroup+6
+	ld	(iy), hl
+	ld	(__ZL8viewport), iy
+	ld	hl, _str.10
+	push	hl
+	call	_puts
+	pop	hl
+	ld	hl, (__ZL8viewport)
+	ld	iy, (_ship)
+	ld	(iy + 40), hl
+	ld	hl, _str.11
+	push	hl
+	call	_puts
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	weak	__ZN4ShipC2Eiiiiiiii
+__ZN4ShipC2Eiiiiiiii:
+	call	__frameset0
+	ld	de, (ix + 6)
+	ld	iy, (ix + 24)
+	ld	bc, (ix + 27)
+	ld	hl, (ix + 30)
+	push	hl
+	push	bc
+	push	iy
+	ld	hl, (ix + 21)
+	push	hl
+	ld	hl, (ix + 18)
+	push	hl
+	ld	hl, (ix + 15)
+	push	hl
+	ld	hl, (ix + 12)
+	push	hl
+	ld	hl, (ix + 9)
+	push	hl
+	push	de
+	call	__ZN9RotSpriteC2Eiiiiiiii
+	ld	hl, 27
+	add	hl, sp
+	ld	sp, hl
+	ld	hl, __ZTV4Ship+6
+	ld	iy, (ix + 6)
+	ld	(iy), hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	weak	__ZN16DummySpriteGroup6removeEP6Sprite
+__ZN16DummySpriteGroup6removeEP6Sprite:
+	call	__frameset0
+	ld	hl, 0
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	weak	__ZN16DummySpriteGroup5beginEv
+__ZN16DummySpriteGroup5beginEv:
+	call	__frameset0
+	ld	hl, 0
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	weak	__ZN16DummySpriteGroup4nextEv
+__ZN16DummySpriteGroup4nextEv:
+	call	__frameset0
+	ld	hl, 0
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN4Ship7move_byEii
+__ZN4Ship7move_byEii:
+	ld	hl, -27
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	hl, (ix + 9)
+	ld	(ix - 3), hl
+	ld	de, (ix + 12)
+	lea	bc, iy
+	ld	iy, (iy + 40)
+	lea	hl, iy
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB28_2
+	push	bc
+	pop	iy
+	ld	bc, (iy + 6)
+	ld	hl, (iy + 9)
+	ld	(ix - 9), hl
+	ld	hl, (ix - 3)
+	ld	(ix - 6), de
+	jp	BB28_11
+BB28_2:
+	ld	(ix - 6), de
+	ld	hl, (iy + 6)
+	ld	(ix - 18), hl
+	ld	hl, (iy + 12)
+	ld	(ix - 15), hl
+	ld	(ix - 27), iy
+	ld	hl, (iy + 15)
+	ld	(ix - 9), hl
+	push	bc
+	pop	iy
+	ld	(ix - 12), iy
+	ld	hl, (iy + 6)
+	ld	bc, (iy + 12)
+	ld	(ix - 24), hl
+	push	hl
+	pop	iy
+	ld	de, (ix - 3)
+	add	iy, de
+	lea	hl, iy
+	add	hl, bc
+	ld	(ix - 21), hl
+	ld	bc, 0
+	lea	hl, iy
+	ld	de, (ix - 18)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	push	bc
+	pop	de
+	ld	iy, (ix - 12)
+	jp	m, BB28_4
+	ld	de, (ix - 3)
+BB28_4:
+	ld	hl, (ix - 21)
+	ld	bc, (ix - 15)
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB28_6
+	ld	de, 0
+BB28_6:
+	ld	(ix - 3), de
+	ld	hl, (iy + 9)
+	ld	de, (iy + 15)
+	ld	(ix - 15), hl
+	ld	bc, (ix - 6)
+	add	hl, bc
+	push	hl
+	pop	bc
+	add	hl, de
+	ld	de, (ix - 9)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB28_10
+	ld	iy, (ix - 27)
+	ld	de, (iy + 9)
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	hl, 0
+	jp	m, BB28_9
+	ld	hl, (ix - 6)
+BB28_9:
+	ld	(ix - 6), hl
+	ld	bc, (ix - 24)
+	ld	hl, (ix - 15)
+	ld	(ix - 9), hl
+	ld	hl, (ix - 3)
+	ld	iy, (ix - 12)
+	jr	BB28_11
+BB28_10:
+	ld	bc, (ix - 24)
+	or	a, a
+	sbc	hl, hl
+	ld	(ix - 6), hl
+	ld	hl, (ix - 15)
+	ld	(ix - 9), hl
+	ld	hl, (ix - 3)
+BB28_11:
+	ld	(ix - 3), hl
+	add	hl, bc
+	ld	(iy + 6), hl
+	ld	hl, (ix - 6)
+	ld	de, (ix - 9)
+	add	hl, de
+	ld	(iy + 9), hl
+	ld	hl, (iy + 3)
+	push	hl
+	call	_vdp_select_sprite
+	pop	hl
+	ld	hl, (ix - 3)
+	ld	(ix + 6), hl
+	ld	hl, (ix - 6)
+	ld	(ix + 9), hl
+	ld	sp, ix
+	pop	ix
+	jp	_vdp_move_sprite_by
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	weak	__ZN9RotSpriteD0Ev
+__ZN9RotSpriteD0Ev:
+	ld	hl, -3
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	(ix - 3), hl
+	push	hl
+	call	__ZN6SpriteD2Ev
+	pop	hl
+	ld	hl, (ix - 3)
+	ld	(ix + 6), hl
+	pop	hl
+	pop	ix
+	jp	__ZdlPv
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN9RotSprite10rot_c_wiseEv
+__ZN9RotSprite10rot_c_wiseEv:
+	ld	hl, -3
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	de, (iy + 46)
+	ld	(ix - 3), de
+	inc	de
+	ld	(iy + 46), de
+	ld	bc, (iy + 49)
+	ld	iy, (iy + 52)
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB30_3
+	lea	hl, iy
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB30_3
+	ld	iy, (ix + 6)
+	ld	hl, (ix - 3)
+	ld	(iy + 46), hl
+	scf
+	sbc	hl, hl
+	jr	BB30_6
+BB30_3:
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB30_5
+	ld	iy, (ix + 6)
+	ld	de, 0
+	ld	(iy + 46), de
+BB30_5:
+	ld	iy, (ix + 6)
+	ld	iy, (iy + 43)
+	ld	bc, 12
+	ex	de, hl
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (iy + 9)
+	push	hl
+	ld	hl, (ix + 6)
+	push	hl
+	call	__ZN6Sprite9set_frameEi
+	pop	hl
+	pop	hl
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 46)
+BB30_6:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN9RotSprite11rot_ac_wiseEv
+__ZN9RotSprite11rot_ac_wiseEv:
+	ld	hl, -6
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	bc, (iy + 46)
+	push	bc
+	pop	de
+	dec	de
+	ld	(iy + 46), de
+	ld	hl, (iy + 52)
+	ld	(ix - 6), hl
+	ld	iy, 1
+	ld	(ix - 3), bc
+	push	bc
+	pop	hl
+	lea	bc, iy
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB31_3
+	ld	hl, (ix - 6)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB31_3
+	ld	iy, (ix + 6)
+	ld	hl, (ix - 3)
+	ld	(iy + 46), hl
+	scf
+	sbc	hl, hl
+	jr	BB31_6
+BB31_3:
+	ld	hl, (ix - 3)
+	ld	bc, 1
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB31_5
+	ld	hl, (ix + 6)
+	push	hl
+	pop	iy
+	ld	de, (iy + 49)
+	dec	de
+	ld	(iy + 46), de
+BB31_5:
+	ld	iy, (ix + 6)
+	ld	iy, (iy + 43)
+	ld	bc, 12
+	ex	de, hl
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (iy + 9)
+	push	hl
+	ld	hl, (ix + 6)
+	push	hl
+	call	__ZN6Sprite9set_frameEi
+	pop	hl
+	pop	hl
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 46)
+BB31_6:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN9RotSpriteC2Eiiiiiiii
+__ZN9RotSpriteC2Eiiiiiiii:
+	call	__frameset0
+	ld	de, (ix + 6)
+	ld	iy, (ix + 24)
+	ld	bc, (ix + 27)
+	ld	hl, (ix + 30)
+	push	hl
+	push	bc
+	push	iy
+	ld	hl, (ix + 21)
+	push	hl
+	ld	hl, (ix + 18)
+	push	hl
+	ld	hl, (ix + 15)
+	push	hl
+	ld	hl, (ix + 12)
+	push	hl
+	ld	hl, (ix + 9)
+	push	hl
+	push	de
+	call	__ZN6SpriteC2Eiiiiiiii
+	ld	hl, 27
+	add	hl, sp
+	ld	sp, hl
+	ld	iy, (ix + 6)
+	ld	hl, __ZTV9RotSprite+6
+	ld	(iy), hl
+	lea	hl, iy + 43
+	ld	(iy + 43), 0
+	push	hl
+	pop	de
+	inc	de
+	ld	bc, 11
+	ldir
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN9RotSpriteC2E6Coordsiiiiii
+__ZN9RotSpriteC2E6Coordsiiiiii:
+	call	__frameset0
+	lea	hl, ix + 9
+	ld	iy, -24
+	add	iy, sp
+	ld	sp, iy
+	ld	iy, 0
+	add	iy, sp
+	ld	bc, 6
+	lea	de, iy
+	ldir
+	ld	hl, (ix + 15)
+	ld	(iy + 6), hl
+	ld	hl, (ix + 18)
+	ld	(iy + 9), hl
+	ld	hl, (ix + 21)
+	ld	(iy + 12), hl
+	ld	hl, (ix + 24)
+	ld	(iy + 15), hl
+	ld	hl, (ix + 27)
+	ld	(iy + 18), hl
+	ld	hl, (ix + 30)
+	ld	(iy + 21), hl
+	ld	hl, (ix + 6)
+	push	hl
+	call	__ZN6SpriteC2E6Coordsiiiiii
+	ld	hl, 27
+	add	hl, sp
+	ld	sp, hl
+	ld	iy, (ix + 6)
+	ld	hl, __ZTV9RotSprite+6
+	ld	(iy), hl
+	lea	hl, iy + 43
+	ld	(iy + 43), 0
+	push	hl
+	pop	de
+	inc	de
+	ld	bc, 11
+	ldir
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN9RotSprite13add_rotationsEP9ROT_TABLEiib
+__ZN9RotSprite13add_rotationsEP9ROT_TABLEiib:
+	ld	hl, -6
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	(ix - 3), iy
+	ld	hl, (ix + 9)
+	ld	bc, (ix + 12)
+	ld	de, (ix + 15)
+	ld	a, (ix + 18)
+	ld	(iy + 43), hl
+	ld	(iy + 49), bc
+	ld	(iy + 46), de
+	ld	bc, 1
+	ld	l, a
+	call	__iand
+	ld	iy, (ix - 3)
+	ld	(iy + 52), hl
+	ld	hl, _.str.16
+	push	hl
+	call	_printf
+	pop	hl
+	call	_waitvblank
+	ld	iy, (ix - 3)
+	ld	hl, (iy + 43)
+	ld	(ix - 6), hl
+	ld	hl, (iy + 46)
+	ld	bc, 12
+	call	__imulu
+	push	hl
+	pop	de
+	ld	iy, (ix - 6)
+	add	iy, de
+	ld	hl, (iy + 9)
+	push	hl
+	ld	hl, (ix - 3)
+	push	hl
+	call	__ZN6Sprite9set_frameEi
+	pop	hl
+	pop	hl
+	ld	hl, _str.43
+	push	hl
+	call	_puts
+	ld	sp, ix
+	pop	ix
+	jp	_waitvblank
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN9RotSprite11get_dir_vecEv
+__ZN9RotSprite11get_dir_vecEv:
+	ld	hl, -3
+	call	__frameset
+	ld	hl, (ix + 9)
+	push	hl
+	pop	iy
+	ld	de, (iy + 43)
+	ld	(ix - 3), de
+	ld	hl, (iy + 46)
+	ld	bc, 12
+	call	__imulu
+	push	hl
+	pop	de
+	ld	iy, (ix - 3)
+	add	iy, de
+	ld	hl, (iy + 3)
+	ld	de, (iy + 6)
+	ld	iy, (ix + 6)
+	ld	(iy), hl
+	ld	(iy + 3), de
+	lea	hl, iy
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN9RotSprite10next_frameEv
+__ZN9RotSprite10next_frameEv:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 3)
+	push	hl
+	call	_vdp_select_sprite
+	ld	iy, (ix + 6)
+	pop	hl
+	ld	hl, (iy + 37)
+	ld	de, 1
+	or	a, a
+	sbc	hl, de
+	jr	nz, BB36_5
+	ld	de, (iy + 34)
+	inc	de
+	ld	(iy + 34), de
+	ld	bc, (iy + 28)
+	ld	hl, (iy + 31)
+	add	hl, bc
+	push	hl
+	pop	bc
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB36_3
+	push	de
+	call	_vdp_nth_sprite_frame
+	jr	BB36_4
+BB36_3:
+	lea	hl, iy
+	ld	iy, (hl)
+	ex	de, hl
+	ld	hl, (iy + 21)
+	push	de
+	call	__indcallhl
+BB36_4:
+	pop	hl
+BB36_5:
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6SpriteD2Ev
+__ZN6SpriteD2Ev:
+	ld	hl, -3
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	hl, __ZTV6Sprite+6
+	ld	(iy), hl
+	ld	hl, (iy + 3)
+	push	hl
+	call	_vdp_select_sprite
+	pop	hl
+	call	_vdp_clear_sprite
+	call	_vdp_hide_sprite
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 40)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB37_2
+	ld	iy, (hl)
+	ld	iy, (iy)
+	ld	de, (ix + 6)
+	push	de
+	push	hl
+	call	__indcall
+	pop	hl
+	pop	hl
+BB37_2:
+	ld	hl, (__ZN6Sprite11sprites_vdpE)
+	ld	(ix - 3), hl
+	ld	bc, 3
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 3)
+	call	__imulu
+	push	hl
+	pop	de
+	ld	iy, (ix - 3)
+	add	iy, de
+	ld	hl, 0
+	ld	(iy), hl
+	ld	hl, (__ZN6Sprite11sprites_numE)
+	dec	hl
+	ld	(__ZN6Sprite11sprites_numE), hl
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6SpriteD0Ev
+__ZN6SpriteD0Ev:
+	ld	hl, -3
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	(ix - 3), hl
+	push	hl
+	call	__ZN6SpriteD2Ev
+	pop	hl
+	ld	hl, (ix - 3)
+	ld	(ix + 6), hl
+	pop	hl
+	pop	ix
+	jp	__ZdlPv
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite7at_leftEv
+__ZN6Sprite7at_leftEv:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	de, (iy + 21)
+	push	de
+	pop	hl
+	call	__ineg
+	ld	(iy + 21), hl
+	ld	hl, (iy + 6)
+	or	a, a
+	sbc	hl, de
+	ld	(iy + 6), hl
+	lea	hl, iy
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite8at_rightEv
+__ZN6Sprite8at_rightEv:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	de, (iy + 21)
+	push	de
+	pop	hl
+	call	__ineg
+	ld	(iy + 21), hl
+	ld	hl, (iy + 6)
+	or	a, a
+	sbc	hl, de
+	ld	(iy + 6), hl
+	lea	hl, iy
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite6at_topEv
+__ZN6Sprite6at_topEv:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	de, (iy + 24)
+	push	de
+	pop	hl
+	call	__ineg
+	ld	(iy + 24), hl
+	ld	hl, (iy + 9)
+	or	a, a
+	sbc	hl, de
+	ld	(iy + 9), hl
+	lea	hl, iy
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite9at_bottomEv
+__ZN6Sprite9at_bottomEv:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	de, (iy + 24)
+	push	de
+	pop	hl
+	call	__ineg
+	ld	(iy + 24), hl
+	ld	hl, (iy + 9)
+	or	a, a
+	sbc	hl, de
+	ld	(iy + 9), hl
+	lea	hl, iy
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite3dieEv
+__ZN6Sprite3dieEv:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 3)
+	push	hl
+	call	_vdp_select_sprite
+	pop	hl
+	ld	iy, (ix + 6)
+	ld	de, (iy + 28)
+	ld	(iy + 34), de
+	ld	hl, (iy + 31)
+	ld	bc, 1
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB43_2
+	push	de
+	call	_vdp_nth_sprite_frame
+	pop	hl
+	ld	iy, (ix + 6)
+	ld	hl, 1
+	ld	(iy + 37), hl
+	jr	BB43_3
+BB43_2:
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	ex	de, hl
+	ld	hl, (iy + 21)
+	push	de
+	call	__indcallhl
+	pop	hl
+BB43_3:
+	ld	hl, (ix + 6)
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite4deadEv
+__ZN6Sprite4deadEv:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 3)
+	push	hl
+	call	_vdp_select_sprite
+	pop	hl
+	call	_vdp_hide_sprite
+	ld	iy, (ix + 6)
+	ld	hl, 2
+	ld	(iy + 37), hl
+	lea	hl, iy
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite6hit_byEPS_
+__ZN6Sprite6hit_byEPS_:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite7hittingEPS_
+__ZN6Sprite7hittingEPS_:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite7hittingEP9TileArray
+__ZN6Sprite7hittingEP9TileArray:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite4initEi
+__ZN6Sprite4initEi:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	bc, 0
+	ld	de, 256
+	lea	hl, iy
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB48_3
+	ld	hl, 3
+	ld	(__ZN6Sprite15sprites_max_numE), iy
+	push	hl
+	push	iy
+	call	_calloc
+	ld	bc, 0
+	pop	de
+	pop	de
+	ld	(__ZN6Sprite11sprites_vdpE), hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB48_3
+	ld	bc, (ix + 6)
+BB48_3:
+	push	bc
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6SpriteC2Eiiiiiiii
+__ZN6SpriteC2Eiiiiiiii:
+	ld	hl, -27
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	(ix - 24), iy
+	ld	hl, (ix + 9)
+	ld	(ix - 3), hl
+	ld	hl, (ix + 12)
+	ld	(ix - 6), hl
+	ld	hl, (ix + 15)
+	ld	(ix - 9), hl
+	ld	hl, (ix + 18)
+	ld	(ix - 12), hl
+	ld	hl, (ix + 21)
+	ld	(ix - 15), hl
+	ld	hl, (ix + 24)
+	ld	(ix - 18), hl
+	ld	hl, (ix + 27)
+	ld	(ix - 21), hl
+	ld	hl, (ix + 30)
+	ld	(ix - 27), hl
+	ld	hl, __ZTV6Sprite+6
+	ld	(iy), hl
+	lea	hl, iy + 27
+	ld	(iy + 27), 0
+	push	hl
+	pop	de
+	inc	de
+	ld	bc, 12
+	ldir
+	ld	hl, _.str.42
+	push	hl
+	call	_printf
+	pop	hl
+	ld	hl, (ix - 27)
+	push	hl
+	ld	hl, (ix - 21)
+	push	hl
+	ld	hl, (ix - 18)
+	push	hl
+	ld	hl, (ix - 15)
+	push	hl
+	ld	hl, (ix - 12)
+	push	hl
+	ld	hl, (ix - 9)
+	push	hl
+	ld	hl, (ix - 6)
+	push	hl
+	ld	hl, (ix - 3)
+	push	hl
+	ld	hl, (ix - 24)
+	push	hl
+	call	__ZN6Sprite11set_detailsEiiiiiiii
+	ld	hl, 27
+	add	hl, sp
+	ld	sp, hl
+	ld	hl, _str.43
+	ld	(ix + 6), hl
+	ld	sp, ix
+	pop	ix
+	jp	_puts
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite11set_detailsEiiiiiiii
+__ZN6Sprite11set_detailsEiiiiiiii:
+	ld	hl, -27
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	(ix - 3), hl
+	ld	hl, (ix + 9)
+	ld	(ix - 6), hl
+	ld	hl, (ix + 12)
+	ld	(ix - 9), hl
+	ld	hl, (ix + 15)
+	ld	(ix - 12), hl
+	ld	hl, (ix + 18)
+	ld	(ix - 15), hl
+	ld	hl, (ix + 21)
+	ld	(ix - 21), hl
+	ld	hl, (ix + 24)
+	ld	(ix - 24), hl
+	ld	hl, (ix + 27)
+	ld	(ix - 18), hl
+	ld	iy, (ix + 30)
+	ld	bc, (__ZN6Sprite11sprites_numE)
+	ld	de, (__ZN6Sprite15sprites_max_numE)
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB50_2
+	ld	hl, _.str.2.44
+	push	de
+	push	bc
+	push	hl
+	call	_printf
+	pop	hl
+	jr	BB50_4
+BB50_2:
+	ld	(ix - 27), iy
+	call	__ZN6Sprite18get_free_sprite_idEv
+	push	hl
+	pop	de
+	ld	iy, (ix - 3)
+	ld	(iy + 3), de
+	ld	bc, 0
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB50_5
+	ld	hl, _.str.3.45
+	push	de
+	push	hl
+	call	_printf
+BB50_4:
+	pop	hl
+	pop	hl
+	ld	hl, 1
+	push	hl
+	call	_vdp_cursor_enable
+	pop	hl
+	ld	hl, 1
+	push	hl
+	call	_exit
+	pop	hl
+BB50_5:
+	ld	iy, (__ZN6Sprite11sprites_vdpE)
+	ld	bc, 3
+	push	de
+	pop	hl
+	call	__imulu
+	push	hl
+	pop	bc
+	lea	hl, iy
+	add	hl, bc
+	ld	iy, (ix - 3)
+	ld	(hl), iy
+	ld	hl, (__ZN6Sprite11sprites_numE)
+	inc	hl
+	ld	(__ZN6Sprite11sprites_numE), hl
+	ld	hl, (ix - 6)
+	ld	(iy + 6), hl
+	ld	hl, (ix - 9)
+	ld	(iy + 9), hl
+	ld	hl, (ix - 21)
+	ld	(iy + 12), hl
+	ld	hl, (ix - 24)
+	ld	(iy + 15), hl
+	ld	hl, (ix - 12)
+	ld	(iy + 21), hl
+	ld	hl, (ix - 15)
+	ld	(iy + 24), hl
+	ld	hl, (ix - 18)
+	ld	(iy + 18), hl
+	ld	(iy + 27), 0
+	ld	hl, 0
+	ld	(iy + 40), hl
+	push	de
+	call	_vdp_select_sprite
+	pop	hl
+	call	_vdp_clear_sprite
+	ld	hl, (ix - 9)
+	push	hl
+	ld	hl, (ix - 6)
+	push	hl
+	call	_vdp_move_sprite_to
+	pop	hl
+	pop	hl
+	ld	de, (ix - 27)
+	push	de
+	pop	hl
+	ld	bc, 0
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB50_7
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	push	de
+	ld	hl, (ix - 3)
+	push	hl
+	call	__ZN6Sprite10add_bitmapEii
+	pop	hl
+	pop	hl
+	pop	hl
+	call	_vdp_show_sprite
+	ld	iy, (ix - 3)
+	ld	(iy + 27), 1
+	jr	BB50_8
+BB50_7:
+	call	_vdp_hide_sprite
+BB50_8:
+	ld	hl, (__ZN6Sprite15sprites_max_numE)
+	ld	(ix + 6), hl
+	ld	sp, ix
+	pop	ix
+	jp	_vdp_activate_sprites
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite18get_free_sprite_idEv
+__ZN6Sprite18get_free_sprite_idEv:
+	ld	hl, -9
+	call	__frameset
+	ld	iy, -1
+	ld	hl, (__ZN6Sprite15sprites_max_numE)
+	ld	de, (__ZN6Sprite11sprites_vdpE)
+	ld	(ix - 3), de
+	ld	bc, 1
+	ld	(ix - 6), hl
+BB51_1:
+	push	hl
+	pop	de
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB51_6
+	ld	(ix - 9), de
+	ld	iy, (ix - 3)
+	ld	de, (__ZN6Sprite17sprites_next_freeE)
+	push	de
+	pop	hl
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	bc
+	add	iy, bc
+	ld	hl, (iy)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB51_7
+	inc	de
+	push	de
+	pop	hl
+	ld	bc, (ix - 6)
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	ld	hl, 0
+	jp	m, BB51_5
+	ex	de, hl
+BB51_5:
+	ld	(__ZN6Sprite17sprites_next_freeE), de
+	ld	hl, (ix - 9)
+	dec	hl
+	ld	iy, -1
+	ld	bc, 1
+	jr	BB51_1
+BB51_6:
+	lea	de, iy
+BB51_7:
+	ex	de, hl
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite10add_bitmapEii
+__ZN6Sprite10add_bitmapEii:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 3)
+	push	hl
+	call	_vdp_select_sprite
+	pop	hl
+	ld	hl, (ix + 9)
+	push	hl
+	call	_vdp_add_sprite_bitmap
+	pop	hl
+	ld	hl, (ix + 12)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB52_2
+	ld	de, 31
+	jr	BB52_3
+BB52_2:
+	ld	de, 28
+BB52_3:
+	ld	hl, (ix + 6)
+	push	hl
+	pop	iy
+	add	iy, de
+	ld	hl, (iy)
+	inc	hl
+	ld	(iy), hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6SpriteC2E6Coordsiiiiii
+__ZN6SpriteC2E6Coordsiiiiii:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	hl, __ZTV6Sprite+6
+	ld	(iy), hl
+	lea	hl, iy + 27
+	ld	(iy + 27), 0
+	push	hl
+	pop	de
+	inc	de
+	ld	bc, 12
+	ldir
+	ld	hl, (ix + 9)
+	ld	de, (ix + 12)
+	ld	bc, (ix + 30)
+	push	bc
+	ld	bc, (ix + 27)
+	push	bc
+	ld	bc, (ix + 24)
+	push	bc
+	ld	bc, (ix + 21)
+	push	bc
+	ld	bc, (ix + 18)
+	push	bc
+	ld	bc, (ix + 15)
+	push	bc
+	push	de
+	push	hl
+	push	iy
+	call	__ZN6Sprite11set_detailsEiiiiiiii
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite10get_centreEv
+__ZN6Sprite10get_centreEv:
+	ld	hl, -3
+	call	__frameset
+	ld	iy, (ix + 9)
+	ld	bc, 2
+	ld	de, (iy + 6)
+	ld	hl, (iy + 12)
+	call	__idivs
+	add	hl, de
+	ld	(ix - 3), hl
+	ld	iy, (ix + 9)
+	ld	de, (iy + 9)
+	ld	iy, (ix + 9)
+	ld	hl, (iy + 15)
+	call	__idivs
+	add	hl, de
+	ld	de, (ix + 6)
+	push	de
+	pop	iy
+	ld	de, (ix - 3)
+	ld	(iy), de
+	ld	(iy + 3), hl
+	lea	hl, iy
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite14get_top_middleEv
+__ZN6Sprite14get_top_middleEv:
+	call	__frameset0
+	ld	iy, (ix + 9)
+	ld	bc, 2
+	ld	de, (iy + 6)
+	ld	hl, (iy + 12)
+	call	__idivs
+	add	hl, de
+	push	hl
+	pop	bc
+	ld	de, (iy + 9)
+	ld	hl, (iy + 18)
+	add	hl, de
+	ld	iy, (ix + 6)
+	ld	(iy), bc
+	ld	iy, (ix + 6)
+	ld	(iy + 3), hl
+	ld	hl, (ix + 6)
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite17get_bottom_middleEv
+__ZN6Sprite17get_bottom_middleEv:
+	ld	hl, -3
+	call	__frameset
+	ld	iy, (ix + 9)
+	ld	bc, 2
+	ld	de, (iy + 6)
+	ld	hl, (iy + 12)
+	call	__idivs
+	add	hl, de
+	ld	(ix - 3), hl
+	ld	de, (iy + 9)
+	ld	hl, (iy + 15)
+	add	hl, de
+	ld	de, (iy + 18)
+	or	a, a
+	sbc	hl, de
+	ld	de, (ix + 6)
+	push	de
+	pop	iy
+	ld	de, (ix - 3)
+	ld	(iy), de
+	ld	(iy + 3), hl
+	lea	hl, iy
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite15get_left_middleEv
+__ZN6Sprite15get_left_middleEv:
+	ld	hl, -3
+	call	__frameset
+	ld	iy, (ix + 9)
+	ld	bc, 2
+	ld	de, (iy + 6)
+	lea	hl, iy
+	ld	iy, (iy + 18)
+	add	iy, de
+	ld	(ix - 3), iy
+	push	hl
+	pop	iy
+	ld	de, (iy + 9)
+	ld	hl, (iy + 15)
+	call	__idivs
+	add	hl, de
+	ld	de, (ix + 6)
+	push	de
+	pop	iy
+	ld	de, (ix - 3)
+	ld	(iy), de
+	ld	(iy + 3), hl
+	lea	hl, iy
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite16get_right_middleEv
+__ZN6Sprite16get_right_middleEv:
+	ld	hl, -3
+	call	__frameset
+	ld	iy, (ix + 9)
+	ld	bc, 2
+	ld	de, (iy + 6)
+	ld	hl, (iy + 12)
+	add	hl, de
+	ld	de, (iy + 18)
+	or	a, a
+	sbc	hl, de
+	ld	(ix - 3), hl
+	ld	de, (iy + 9)
+	ld	hl, (iy + 15)
+	call	__idivs
+	add	hl, de
+	ld	iy, (ix + 6)
+	ld	de, (ix - 3)
+	ld	(iy), de
+	ld	(iy + 3), hl
+	lea	hl, iy
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite12get_top_leftEv
+__ZN6Sprite12get_top_leftEv:
+	call	__frameset0
+	ld	iy, (ix + 9)
+	ld	de, (iy + 6)
+	ld	bc, (iy + 18)
+	push	bc
+	pop	hl
+	add	hl, de
+	ex	de, hl
+	ld	hl, (iy + 9)
+	add	hl, bc
+	push	hl
+	pop	bc
+	ld	hl, (ix + 6)
+	ld	(hl), de
+	ld	iy, (ix + 6)
+	ld	(iy + 3), bc
+	ld	hl, (ix + 6)
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite16get_bottom_rightEv
+__ZN6Sprite16get_bottom_rightEv:
+	ld	hl, -3
+	call	__frameset
+	ld	iy, (ix + 9)
+	ld	de, (iy + 6)
+	ld	hl, (iy + 12)
+	add	hl, de
+	ld	bc, (iy + 18)
+	or	a, a
+	sbc	hl, bc
+	ld	(ix - 3), hl
+	ld	hl, (iy + 9)
+	ld	de, (iy + 15)
+	or	a, a
+	sbc	hl, bc
+	add	hl, de
+	ld	iy, (ix + 6)
+	ld	de, (ix - 3)
+	ld	(iy), de
+	ld	(iy + 3), hl
+	lea	hl, iy
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite12get_viewportEPiS0_S0_S0_
+__ZN6Sprite12get_viewportEPiS0_S0_S0_:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 40)
+	push	hl
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB61_2
+	ld	hl, (ix + 9)
+	ld	bc, (ix + 12)
+	push	de
+	pop	iy
+	ld	de, (iy + 6)
+	ld	(hl), de
+	ld	hl, (iy + 9)
+	lea	de, iy
+	push	bc
+	pop	iy
+	ld	(iy), hl
+	push	de
+	pop	iy
+	ld	hl, (iy + 12)
+	ld	iy, (ix + 15)
+	ld	(iy), hl
+	push	de
+	pop	iy
+	ld	hl, (iy + 15)
+	ld	iy, (ix + 18)
+	ld	(iy), hl
+BB61_2:
+	ex	de, hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB61_4
+	ld	a, 0
+	jr	BB61_5
+BB61_4:
+	ld	a, -1
+BB61_5:
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite11add_bitmapsEiii
+__ZN6Sprite11add_bitmapsEiii:
+	ld	hl, -18
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	(ix - 6), hl
+	ld	bc, (ix + 9)
+	ld	hl, (ix + 12)
+	ld	(ix - 3), hl
+	ld	de, (ix + 15)
+	ld	iy, _.str.4
+	ld	(ix - 15), de
+	push	de
+	push	hl
+	ld	(ix - 9), bc
+	push	bc
+	push	iy
+	call	_printf
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	iy, (ix - 6)
+	ld	hl, (iy + 3)
+	push	hl
+	call	_vdp_select_sprite
+	pop	hl
+	ld	hl, _str.12
+	push	hl
+	call	_puts
+	pop	hl
+	ld	de, 1
+	ld	hl, (ix - 3)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	de, (ix - 3)
+	jp	p, BB62_2
+	ld	de, 0
+BB62_2:
+	ld	bc, _str.13
+	ld	hl, 28
+	ld	(ix - 12), hl
+BB62_3:
+	push	de
+	pop	hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB62_5
+	ld	hl, (ix - 9)
+	push	hl
+	inc	hl
+	ld	(ix - 9), hl
+	ld	(ix - 18), de
+	call	_vdp_add_sprite_bitmap
+	ld	bc, _str.13
+	ld	de, (ix - 18)
+	pop	hl
+	dec	de
+	jr	BB62_3
+BB62_5:
+	push	bc
+	call	_puts
+	pop	hl
+	ld	hl, (ix - 15)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB62_7
+	ld	hl, 31
+	ld	(ix - 12), hl
+BB62_7:
+	ld	iy, (ix - 6)
+	ld	de, (ix - 12)
+	add	iy, de
+	ld	hl, (iy)
+	ld	de, (ix - 3)
+	add	hl, de
+	ld	(iy), hl
+	ld	hl, _str.14
+	ld	(ix + 6), hl
+	ld	sp, ix
+	pop	ix
+	jp	_puts
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite4showEv
+__ZN6Sprite4showEv:
+	call	__frameset0
+	ld	hl, _str.15
+	push	hl
+	call	_puts
+	pop	hl
+	ld	iy, (ix + 6)
+	lea	hl, iy
+	bit	0, (iy + 27)
+	jr	nz, BB63_2
+	push	hl
+	pop	iy
+	ld	hl, (iy + 3)
+	push	hl
+	call	_vdp_select_sprite
+	pop	hl
+	call	_vdp_show_sprite
+	ld	iy, (ix + 6)
+	ld	(iy + 27), 1
+BB63_2:
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite4hideEv
+__ZN6Sprite4hideEv:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	bit	0, (iy + 27)
+	jr	z, BB64_2
+	ld	hl, (iy + 3)
+	push	hl
+	call	_vdp_select_sprite
+	pop	hl
+	call	_vdp_hide_sprite
+	ld	iy, (ix + 6)
+	ld	(iy + 27), 0
+BB64_2:
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite7move_toEii
+__ZN6Sprite7move_toEii:
+	ld	hl, -6
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	hl, (ix + 9)
+	ld	(ix - 3), hl
+	ld	de, (ix + 12)
+	ld	(ix - 6), de
+	ld	(iy + 6), hl
+	ld	(iy + 9), de
+	ld	hl, (iy + 3)
+	push	hl
+	call	_vdp_select_sprite
+	pop	hl
+	ld	hl, (ix - 3)
+	ld	(ix + 6), hl
+	ld	hl, (ix - 6)
+	ld	(ix + 9), hl
+	ld	sp, ix
+	pop	ix
+	jp	_vdp_move_sprite_to
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite7move_byEii
+__ZN6Sprite7move_byEii:
+	ld	hl, -12
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	bc, (ix + 9)
+	ld	hl, (ix + 12)
+	ld	(ix - 6), hl
+	ld	hl, (iy + 6)
+	add	hl, bc
+	ex	de, hl
+	ld	(iy + 6), de
+	ld	hl, (iy + 40)
+	ld	(ix - 12), hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	ld	(ix - 3), iy
+	ld	(ix - 9), bc
+	jr	nz, BB66_2
+	ld	iy, 0
+	jr	BB66_7
+BB66_2:
+	ld	hl, (iy + 12)
+	add	hl, de
+	ld	iy, (ix - 12)
+	ld	bc, (iy + 12)
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB66_5
+	ld	bc, (iy + 6)
+	ex	de, hl
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB66_7
+	ld	hl, 2
+	jr	BB66_6
+BB66_5:
+	ld	hl, 3
+BB66_6:
+	ld	iy, (ix - 3)
+	ld	iy, (iy)
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (iy)
+	ld	de, (ix - 3)
+	push	de
+	call	__indcallhl
+	pop	hl
+	ld	iy, (ix - 3)
+	ld	iy, (iy + 40)
+BB66_7:
+	lea	bc, iy
+	ld	iy, (ix - 3)
+	ld	hl, (iy + 9)
+	ld	de, (ix - 6)
+	add	hl, de
+	ex	de, hl
+	ld	(iy + 9), de
+	push	bc
+	pop	hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB66_13
+	ld	iy, (ix - 3)
+	ld	hl, (iy + 15)
+	push	bc
+	pop	iy
+	add	hl, de
+	ld	bc, (iy + 15)
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB66_11
+	ld	bc, (iy + 9)
+	ex	de, hl
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB66_13
+	ld	de, 4
+	jr	BB66_12
+BB66_11:
+	ld	de, 5
+BB66_12:
+	ld	hl, (ix - 3)
+	ld	iy, (hl)
+	ld	bc, 3
+	ex	de, hl
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (iy)
+	ld	de, (ix - 3)
+	push	de
+	call	__indcallhl
+	pop	hl
+BB66_13:
+	ld	iy, (ix - 3)
+	ld	hl, (iy + 3)
+	push	hl
+	call	_vdp_select_sprite
+	pop	hl
+	ld	hl, (ix - 9)
+	ld	(ix + 6), hl
+	ld	hl, (ix - 6)
+	ld	(ix + 9), hl
+	ld	sp, ix
+	pop	ix
+	jp	_vdp_move_sprite_by
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite10next_frameEv
+__ZN6Sprite10next_frameEv:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 3)
+	push	hl
+	call	_vdp_select_sprite
+	ld	iy, (ix + 6)
+	pop	hl
+	ld	hl, (iy + 37)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB67_4
+	ld	de, (iy + 34)
+	inc	de
+	ld	bc, (iy + 28)
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB67_3
+	ld	de, 0
+BB67_3:
+	ld	(iy + 34), de
+	jr	BB67_6
+BB67_4:
+	ld	de, 1
+	or	a, a
+	sbc	hl, de
+	jr	nz, BB67_8
+	ld	de, (iy + 34)
+	inc	de
+	ld	(iy + 34), de
+	ld	bc, (iy + 28)
+	ld	hl, (iy + 31)
+	add	hl, bc
+	push	hl
+	pop	bc
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB67_9
+BB67_6:
+	push	de
+	call	_vdp_nth_sprite_frame
+BB67_7:
+	pop	hl
+BB67_8:
+	pop	ix
+	ret
+BB67_9:
+	lea	hl, iy
+	ld	iy, (hl)
+	ex	de, hl
+	ld	hl, (iy + 21)
+	push	de
+	call	__indcallhl
+	jr	BB67_7
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite10prev_frameEv
+__ZN6Sprite10prev_frameEv:
+	ld	hl, -3
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	(ix - 3), iy
+	ld	hl, (iy + 3)
+	push	hl
+	call	_vdp_select_sprite
+	ld	iy, (ix - 3)
+	pop	hl
+	ld	hl, (iy + 34)
+	push	hl
+	pop	de
+	dec	de
+	ld	(iy + 34), de
+	ld	bc, 1
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB68_2
+	ld	de, (iy + 28)
+	dec	de
+	ld	(iy + 34), de
+BB68_2:
+	ld	(ix + 6), de
+	pop	hl
+	pop	ix
+	jp	_vdp_nth_sprite_frame
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite9set_frameEi
+__ZN6Sprite9set_frameEi:
+	ld	hl, -6
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	(ix - 6), iy
+	ld	hl, (ix + 9)
+	ld	(ix - 3), hl
+	ld	hl, (iy + 3)
+	push	hl
+	call	_vdp_select_sprite
+	pop	hl
+	ld	hl, (ix - 3)
+	ld	iy, (ix - 6)
+	ld	(iy + 34), hl
+	ld	(ix + 6), hl
+	ld	sp, ix
+	pop	ix
+	jp	_vdp_nth_sprite_frame
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite9next_iterEv
+__ZN6Sprite9next_iterEv:
+	ld	hl, -3
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	(ix - 3), hl
+	push	hl
+	call	__ZN6Sprite9next_stepEv
+	pop	hl
+	ld	hl, (ix - 3)
+	ld	(ix + 6), hl
+	pop	hl
+	pop	ix
+	jp	__ZN6Sprite10next_frameEv
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	weak	__ZN6Sprite9next_stepEv
+__ZN6Sprite9next_stepEv:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 21)
+	ld	de, (iy + 24)
+	push	de
+	push	hl
+	push	iy
+	call	__ZN6Sprite7move_byEii
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite9prev_iterEv
+__ZN6Sprite9prev_iterEv:
+	ld	hl, -3
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	(ix - 3), hl
+	push	hl
+	call	__ZN6Sprite9prev_stepEv
+	pop	hl
+	ld	hl, (ix - 3)
+	ld	(ix + 6), hl
+	pop	hl
+	pop	ix
+	jp	__ZN6Sprite10prev_frameEv
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	weak	__ZN6Sprite9prev_stepEv
+__ZN6Sprite9prev_stepEv:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 21)
+	call	__ineg
+	push	hl
+	pop	de
+	ld	hl, (iy + 24)
+	call	__ineg
+	push	hl
+	push	de
+	push	iy
+	call	__ZN6Sprite7move_byEii
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite7collideEPS_
+__ZN6Sprite7collideEPS_:
+	ld	hl, -30
+	call	__frameset
+	ld	iy, (ix + 9)
+	ld	de, 0
+	ld	hl, (iy + 37)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jp	nz, BB74_11
+	ld	(ix - 3), de
+	ld	iy, (ix + 6)
+	ld	de, (iy + 6)
+	ld	bc, (iy + 18)
+	ld	hl, (iy + 9)
+	ld	(ix - 6), hl
+	ld	(ix - 27), bc
+	add	hl, bc
+	ld	(ix - 9), hl
+	ld	iy, (iy + 12)
+	ld	(ix - 24), de
+	ex	de, hl
+	or	a, a
+	sbc	hl, bc
+	lea	de, iy
+	add	hl, de
+	ld	(ix - 15), hl
+	ld	iy, (ix + 6)
+	ld	de, (iy + 15)
+	ld	hl, (ix - 6)
+	or	a, a
+	sbc	hl, bc
+	add	hl, de
+	ld	(ix - 12), hl
+	ld	iy, (ix + 9)
+	ld	de, (iy + 6)
+	ld	bc, (iy + 18)
+	push	bc
+	pop	hl
+	ld	(ix - 30), de
+	add	hl, de
+	ld	(ix - 18), hl
+	lea	hl, iy
+	ld	de, (iy + 9)
+	ld	(ix - 21), de
+	ex	de, hl
+	add	hl, bc
+	ld	(ix - 6), hl
+	ld	de, (iy + 15)
+	ld	hl, (ix - 21)
+	or	a, a
+	sbc	hl, bc
+	push	hl
+	pop	iy
+	add	iy, de
+	ld	hl, (ix - 18)
+	ld	de, (ix - 15)
+	or	a, a
+	sbc	hl, de
+	ld	hl, (ix - 6)
+	call	pe, __setflag
+	jp	p, BB74_6
+	ld	(ix - 15), iy
+	ld	iy, (ix + 9)
+	ld	de, (iy + 12)
+	ld	hl, (ix - 30)
+	or	a, a
+	sbc	hl, bc
+	add	hl, de
+	ex	de, hl
+	ld	bc, (ix - 24)
+	ld	hl, (ix - 27)
+	add	hl, bc
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	m, BB74_4
+	ld	hl, 0
+	jr	BB74_5
+BB74_4:
+	ld	hl, 1
+BB74_5:
+	ld	(ix - 3), hl
+	ld	hl, (ix - 6)
+	ld	iy, (ix - 15)
+BB74_6:
+	ld	de, (ix - 12)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	c, -1
+	ld	b, 0
+	ld	a, c
+	jp	m, BB74_8
+	ld	a, b
+BB74_8:
+	ld	hl, (ix - 9)
+	lea	de, iy
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ld	de, (ix - 3)
+	jp	m, BB74_10
+	ld	c, b
+BB74_10:
+	and	a, c
+	ld	l, a
+	ld	bc, 1
+	call	__iand
+	push	hl
+	pop	bc
+	ex	de, hl
+	call	__iand
+	push	hl
+	pop	de
+BB74_11:
+	ex	de, hl
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite3hitEPS_
+__ZN6Sprite3hitEPS_:
+	ld	hl, -3
+	call	__frameset
+	ld	de, (ix + 6)
+	ld	bc, (ix + 9)
+	or	a, a
+	sbc	hl, hl
+	ld	(ix - 3), hl
+	push	bc
+	push	de
+	call	__ZN6Sprite7collideEPS_
+	pop	de
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB75_2
+	ld	hl, 1
+	ld	(ix - 3), hl
+	ld	hl, (ix + 9)
+	ld	iy, (hl)
+	push	hl
+	pop	bc
+	ld	hl, (iy + 24)
+	ld	de, (ix + 6)
+	push	de
+	push	bc
+	call	__indcallhl
+	pop	hl
+	pop	hl
+	ld	de, (ix + 6)
+	push	de
+	pop	hl
+	ld	iy, (hl)
+	ld	hl, (iy + 27)
+	ld	bc, (ix + 9)
+	push	bc
+	push	de
+	call	__indcallhl
+	pop	hl
+	pop	hl
+BB75_2:
+	ld	hl, (ix - 3)
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite3hitEP11SpriteGroup
+__ZN6Sprite3hitEP11SpriteGroup:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	de, (ix + 9)
+	ld	(ix + 6), de
+	ld	(ix + 9), hl
+	pop	ix
+	jp	__ZN11SpriteGroup6is_hitEP6Sprite
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite6is_hitEPS_
+__ZN6Sprite6is_hitEPS_:
+	ld	hl, -3
+	call	__frameset
+	ld	de, (ix + 6)
+	ld	bc, (ix + 9)
+	or	a, a
+	sbc	hl, hl
+	ld	(ix - 3), hl
+	push	bc
+	push	de
+	call	__ZN6Sprite7collideEPS_
+	pop	de
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB77_2
+	ld	hl, 1
+	ld	(ix - 3), hl
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	push	hl
+	pop	bc
+	ld	hl, (iy + 24)
+	ld	de, (ix + 9)
+	push	de
+	push	bc
+	call	__indcallhl
+	pop	hl
+	pop	hl
+	ld	de, (ix + 9)
+	push	de
+	pop	hl
+	ld	iy, (hl)
+	ld	hl, (iy + 27)
+	ld	bc, (ix + 6)
+	push	bc
+	push	de
+	call	__indcallhl
+	pop	hl
+	pop	hl
+BB77_2:
+	ld	hl, (ix - 3)
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite4dumpEv
+__ZN6Sprite4dumpEv:
+	ld	hl, -12
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 6)
+	ld	(ix - 3), hl
+	ld	hl, (iy + 9)
+	ld	(ix - 6), hl
+	ld	hl, (iy + 12)
+	ld	(ix - 9), hl
+	ld	hl, (iy + 15)
+	ld	(ix - 12), hl
+	ld	bc, (iy + 18)
+	ld	de, (iy + 21)
+	ld	hl, (iy + 24)
+	push	hl
+	push	de
+	push	bc
+	ld	hl, (ix - 12)
+	push	hl
+	ld	hl, (ix - 9)
+	push	hl
+	ld	hl, (ix - 6)
+	push	hl
+	ld	hl, (ix - 3)
+	push	hl
+	ld	hl, _.str.9
+	push	hl
+	call	_printf
+	ld	hl, 24
+	add	hl, sp
+	ld	sp, hl
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 28)
+	ld	(ix - 3), hl
+	ld	de, (iy + 31)
+	ld	bc, (iy + 34)
+	ld	hl, (iy + 37)
+	push	hl
+	push	bc
+	push	de
+	ld	hl, (ix - 3)
+	push	hl
+	ld	hl, _.str.10
+	push	hl
+	call	_printf
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN6Sprite5debugEv
+__ZN6Sprite5debugEv:
+	ld	hl, _.str.11
+	ld	de, (__ZN6Sprite11sprites_numE)
+	push	de
+	push	hl
+	call	_printf
+	pop	hl
+	pop	hl
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteArray6removeEP6Sprite
+__ZN11SpriteArray6removeEP6Sprite:
+	ld	hl, -21
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 18)
+	ld	(ix - 6), hl
+	ld	hl, (iy + 21)
+	ld	(ix - 3), hl
+	ld	de, (iy + 24)
+	ld	bc, 1
+	push	de
+	pop	hl
+	push	bc
+	pop	iy
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB80_2
+	ld	de, 0
+BB80_2:
+	ld	(ix - 9), de
+	ex	de, hl
+	ld	bc, 3
+	call	__imulu
+	ld	(ix - 12), hl
+	ld	hl, (ix - 3)
+	lea	de, iy
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB80_4
+	or	a, a
+	sbc	hl, hl
+	ld	(ix - 3), hl
+BB80_4:
+	ld	bc, 0
+	ld	iy, (ix - 6)
+BB80_5:
+	push	bc
+	pop	hl
+	ld	de, (ix - 3)
+	or	a, a
+	sbc	hl, de
+	jr	z, BB80_11
+	ld	(ix - 15), bc
+	ld	(ix - 6), iy
+	ld	de, (ix - 12)
+	add	iy, de
+	or	a, a
+	sbc	hl, hl
+	ex	de, hl
+	ld	hl, (ix - 9)
+BB80_7:
+	push	hl
+	pop	bc
+	or	a, a
+	sbc	hl, de
+	jr	z, BB80_10
+	ld	(ix - 21), iy
+	ld	(ix - 18), de
+	ld	iy, (ix - 6)
+	ld	hl, (iy)
+	ld	de, (ix + 9)
+	or	a, a
+	sbc	hl, de
+	jr	z, BB80_12
+	ld	de, (ix - 18)
+	inc	de
+	lea	iy, iy + 3
+	ld	(ix - 6), iy
+	ld	iy, (ix - 21)
+	push	bc
+	pop	hl
+	jr	BB80_7
+BB80_10:
+	ld	bc, (ix - 15)
+	inc	bc
+	jr	BB80_5
+BB80_11:
+	ld	hl, 0
+	jr	BB80_13
+BB80_12:
+	ld	hl, 0
+	ld	(iy), hl
+	ld	hl, (ix + 6)
+	push	hl
+	pop	iy
+	ld	hl, (iy + 3)
+	dec	hl
+	ld	(iy + 3), hl
+	ld	hl, (ix - 15)
+	push	hl
+	push	iy
+	call	__ZN11SpriteArray18update_min_max_colEi
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 18)
+	push	hl
+	ld	hl, (ix + 6)
+	push	hl
+	call	__ZN11SpriteArray18update_min_max_rowEi
+	pop	hl
+	pop	hl
+	ld	hl, (ix + 9)
+BB80_13:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteArray5beginEv
+__ZN11SpriteArray5beginEv:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	bc, 0
+	ld	hl, (iy + 18)
+	ld	(iy + 30), hl
+	push	hl
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB81_2
+	push	bc
+	pop	hl
+	jr	BB81_7
+BB81_2:
+	ld	hl, (iy + 27)
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	bc
+	push	de
+	pop	hl
+	add	hl, bc
+	push	hl
+	pop	bc
+	push	de
+	pop	iy
+BB81_3:
+	lea	hl, iy
+	or	a, a
+	sbc	hl, bc
+	jr	nc, BB81_6
+	ld	hl, (iy)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB81_7
+	lea	hl, iy + 3
+	ld	iy, (ix + 6)
+	ld	(iy + 30), hl
+	push	hl
+	pop	iy
+	jr	BB81_3
+BB81_6:
+	ld	hl, 0
+BB81_7:
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteArray4nextEv
+__ZN11SpriteArray4nextEv:
+	ld	hl, -3
+	call	__frameset
+	ld	hl, (ix + 6)
+	ex	de, hl
+	push	de
+	pop	iy
+	ld	hl, (iy + 18)
+	ld	(ix - 3), hl
+	ld	hl, (iy + 27)
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	hl, (ix - 3)
+	add	hl, bc
+	push	hl
+	pop	bc
+	ld	iy, (iy + 30)
+	lea	iy, iy + 3
+BB82_1:
+	ld	(ix - 3), iy
+	lea	hl, iy
+	push	de
+	pop	iy
+	ld	(iy + 30), hl
+	ld	iy, (ix - 3)
+	lea	hl, iy
+	or	a, a
+	sbc	hl, bc
+	jr	nc, BB82_3
+	ld	hl, (iy)
+	lea	iy, iy + 3
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	ld	de, (ix + 6)
+	jr	z, BB82_1
+	jr	BB82_4
+BB82_3:
+	ld	hl, 0
+BB82_4:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteArray7at_leftEv
+__ZN11SpriteArray7at_leftEv:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 39)
+	call	__ineg
+	ld	(iy + 39), hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteArray8at_rightEv
+__ZN11SpriteArray8at_rightEv:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 39)
+	call	__ineg
+	ld	(iy + 39), hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteArray18update_min_max_colEi
+__ZN11SpriteArray18update_min_max_colEi:
+	ld	hl, -6
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	hl, (ix + 9)
+	ld	iy, (iy + 51)
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	de
+	ld	(ix - 3), iy
+	add	iy, de
+	ld	hl, (iy)
+	dec	hl
+	ld	(iy), hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jp	nz, BB85_9
+	ld	bc, 3
+	ld	hl, (ix + 6)
+	push	hl
+	pop	iy
+	ld	hl, (iy + 54)
+	ld	iy, (iy + 57)
+	ld	(ix - 6), hl
+	ld	de, (ix + 9)
+	or	a, a
+	sbc	hl, de
+	jr	nz, BB85_5
+	ld	(ix - 6), iy
+	ld	hl, (ix + 9)
+	push	hl
+	pop	de
+	inc	de
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	iy, (ix - 3)
+	add	iy, bc
+	lea	iy, iy + 3
+BB85_3:
+	lea	hl, iy
+	ld	iy, (ix + 6)
+	ld	(iy + 54), de
+	push	hl
+	pop	iy
+	ld	hl, (iy)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB85_9
+	push	de
+	pop	bc
+	inc	bc
+	lea	iy, iy + 3
+	ex	de, hl
+	ld	de, (ix - 6)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	push	bc
+	pop	de
+	jp	m, BB85_3
+	jr	BB85_9
+BB85_5:
+	lea	hl, iy
+	ld	de, (ix + 9)
+	or	a, a
+	sbc	hl, de
+	jr	nz, BB85_9
+	ld	hl, (ix + 9)
+	push	hl
+	pop	de
+	dec	de
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	iy, (ix - 3)
+	add	iy, bc
+	lea	iy, iy - 3
+BB85_7:
+	lea	hl, iy
+	ld	iy, (ix + 6)
+	ld	(iy + 57), de
+	push	hl
+	pop	iy
+	ld	hl, (iy)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB85_9
+	lea	iy, iy - 3
+	ld	hl, (ix - 6)
+	or	a, a
+	sbc	hl, de
+	dec	de
+	call	pe, __setflag
+	jp	m, BB85_7
+BB85_9:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteArray18update_min_max_rowEi
+__ZN11SpriteArray18update_min_max_rowEi:
+	ld	hl, -6
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	hl, (ix + 9)
+	ld	iy, (iy + 60)
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	de
+	ld	(ix - 3), iy
+	add	iy, de
+	ld	hl, (iy)
+	dec	hl
+	ld	(iy), hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jp	nz, BB86_9
+	ld	bc, 3
+	ld	hl, (ix + 6)
+	push	hl
+	pop	iy
+	ld	hl, (iy + 63)
+	ld	iy, (iy + 66)
+	ld	(ix - 6), hl
+	ld	de, (ix + 9)
+	or	a, a
+	sbc	hl, de
+	jr	nz, BB86_5
+	ld	(ix - 6), iy
+	ld	hl, (ix + 9)
+	push	hl
+	pop	de
+	inc	de
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	iy, (ix - 3)
+	add	iy, bc
+	lea	iy, iy + 3
+BB86_3:
+	lea	hl, iy
+	ld	iy, (ix + 6)
+	ld	(iy + 63), de
+	push	hl
+	pop	iy
+	ld	hl, (iy)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB86_9
+	push	de
+	pop	bc
+	inc	bc
+	lea	iy, iy + 3
+	ex	de, hl
+	ld	de, (ix - 6)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	push	bc
+	pop	de
+	jp	m, BB86_3
+	jr	BB86_9
+BB86_5:
+	lea	hl, iy
+	ld	de, (ix + 9)
+	or	a, a
+	sbc	hl, de
+	jr	nz, BB86_9
+	ld	hl, (ix + 9)
+	push	hl
+	pop	de
+	dec	de
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	iy, (ix - 3)
+	add	iy, bc
+	lea	iy, iy - 3
+BB86_7:
+	lea	hl, iy
+	ld	iy, (ix + 6)
+	ld	(iy + 66), de
+	push	hl
+	pop	iy
+	ld	hl, (iy)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB86_9
+	lea	iy, iy - 3
+	ld	hl, (ix - 6)
+	or	a, a
+	sbc	hl, de
+	dec	de
+	call	pe, __setflag
+	jp	m, BB86_7
+BB86_9:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteArrayC2Eiiiiiiiiiiii
+__ZN11SpriteArrayC2Eiiiiiiiiiiii:
+	ld	hl, -3
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	hl, (ix + 12)
+	ld	de, 0
+	ld	bc, __ZTV11SpriteArray+6
+	ld	(iy + 3), de
+	ld	de, (ix + 33)
+	ld	(iy + 6), de
+	ld	de, (ix + 36)
+	ld	(iy + 9), de
+	ld	de, (ix + 39)
+	ld	(iy + 12), de
+	ld	de, (ix + 42)
+	ld	(iy + 15), de
+	ld	(iy), bc
+	lea	de, iy + 18
+	ld	bc, (ix + 9)
+	call	__imulu
+	ld	(ix - 3), hl
+	ld	(iy + 18), 0
+	push	de
+	pop	hl
+	inc	de
+	ld	bc, 14
+	ldir
+	ld	de, (ix - 3)
+	ld	(iy + 27), de
+	ld	hl, (ix + 9)
+	ld	(iy + 21), hl
+	ld	hl, (ix + 12)
+	ld	(iy + 24), hl
+	ld	hl, (ix + 15)
+	ld	(iy + 45), hl
+	ld	hl, (ix + 18)
+	ld	(iy + 48), hl
+	push	de
+	pop	hl
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	iy
+	ld	bc, 5592406
+	ex	de, hl
+	or	a, a
+	sbc	hl, bc
+	ld	hl, -1
+	ld	(ix - 3), hl
+	jr	nc, BB87_2
+	lea	hl, iy
+BB87_2:
+	push	hl
+	call	__Znaj
+	pop	de
+	ld	iy, (ix + 6)
+	ld	(iy + 18), hl
+	ld	hl, (ix + 21)
+	ld	(iy + 33), hl
+	ld	hl, (ix + 24)
+	ld	(iy + 36), hl
+	ld	hl, (ix + 27)
+	ld	(iy + 39), hl
+	ld	hl, (ix + 30)
+	ld	(iy + 42), hl
+	ld	de, (ix + 9)
+	push	de
+	pop	hl
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	bc
+	ex	de, hl
+	ld	de, 5592406
+	or	a, a
+	sbc	hl, de
+	ld	hl, -1
+	jr	nc, BB87_4
+	push	bc
+	pop	hl
+BB87_4:
+	push	hl
+	call	__Znaj
+	push	hl
+	pop	de
+	pop	hl
+	ld	iy, (ix + 6)
+	ld	(iy + 51), de
+	ld	iy, (ix + 9)
+	lea	hl, iy
+	ld	bc, 1
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	lea	hl, iy
+	jp	p, BB87_6
+	or	a, a
+	sbc	hl, hl
+BB87_6:
+	push	de
+	pop	iy
+BB87_7:
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB87_9
+	ld	de, (ix + 12)
+	ld	(iy), de
+	lea	iy, iy + 3
+	dec	hl
+	jr	BB87_7
+BB87_9:
+	ld	iy, (ix + 6)
+	or	a, a
+	sbc	hl, hl
+	ld	(iy + 54), hl
+	ld	hl, (ix + 9)
+	dec	hl
+	ld	(iy + 57), hl
+	ld	de, (ix + 12)
+	push	de
+	pop	hl
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	bc
+	ex	de, hl
+	ld	de, 5592406
+	or	a, a
+	sbc	hl, de
+	jr	nc, BB87_11
+	ld	(ix - 3), bc
+BB87_11:
+	ld	hl, (ix - 3)
+	push	hl
+	call	__Znaj
+	push	hl
+	pop	de
+	pop	hl
+	ld	iy, (ix + 6)
+	ld	(iy + 60), de
+	ld	iy, (ix + 12)
+	lea	hl, iy
+	ld	bc, 1
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	lea	hl, iy
+	jp	p, BB87_13
+	or	a, a
+	sbc	hl, hl
+BB87_13:
+	push	de
+	pop	iy
+BB87_14:
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB87_16
+	ld	de, (ix + 9)
+	ld	(iy), de
+	lea	iy, iy + 3
+	dec	hl
+	jr	BB87_14
+BB87_16:
+	ld	hl, (ix + 6)
+	push	hl
+	pop	iy
+	or	a, a
+	sbc	hl, hl
+	ld	(iy + 63), hl
+	ld	hl, (ix + 12)
+	dec	hl
+	ld	(iy + 66), hl
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteArray4elemEii
+__ZN11SpriteArray4elemEii:
+	ld	hl, -3
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	bc, (ix + 9)
+	push	hl
+	pop	iy
+	ld	de, (iy + 18)
+	ld	(ix - 3), de
+	ld	hl, (iy + 24)
+	call	__imulu
+	ld	de, (ix + 12)
+	add	hl, de
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	de
+	ld	hl, (ix - 3)
+	add	hl, de
+	ld	hl, (hl)
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteArray8set_elemEiiP6Sprite
+__ZN11SpriteArray8set_elemEiiP6Sprite:
+	ld	hl, -3
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	bc, (ix + 9)
+	push	hl
+	pop	iy
+	ld	de, (iy + 18)
+	ld	(ix - 3), de
+	ld	hl, (iy + 24)
+	call	__imulu
+	ld	de, (ix + 12)
+	add	hl, de
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	de
+	ld	hl, (ix - 3)
+	add	hl, de
+	ld	iy, (ix + 15)
+	ld	(hl), iy
+	ld	bc, (ix + 6)
+	push	bc
+	pop	hl
+	ld	(iy + 40), hl
+	push	bc
+	pop	iy
+	ld	hl, (iy + 3)
+	inc	hl
+	ld	(iy + 3), hl
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteArray9next_iterEv
+__ZN11SpriteArray9next_iterEv:
+	ld	hl, -3
+	call	__frameset
+	ld	hl, (ix + 6)
+	ld	(ix - 3), hl
+	push	hl
+	call	__ZN11SpriteArray9next_stepEv
+	pop	hl
+	ld	hl, (ix - 3)
+	ld	(ix + 6), hl
+	pop	hl
+	pop	ix
+	jp	__ZN11SpriteGroup10next_frameEv
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteArray9next_stepEv
+__ZN11SpriteArray9next_stepEv:
+	ld	hl, -6
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	de, (iy + 33)
+	ld	(ix - 6), de
+	ld	bc, (iy + 54)
+	ld	hl, (iy + 45)
+	ld	(ix - 3), hl
+	call	__imulu
+	add	hl, de
+	ld	de, (iy + 39)
+	add	hl, de
+	ld	bc, (iy + 6)
+	or	a, a
+	sbc	hl, bc
+	ld	bc, (ix - 3)
+	call	pe, __setflag
+	ld	hl, (ix - 6)
+	jp	p, BB91_2
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	ex	de, hl
+	ld	hl, (iy + 9)
+	push	de
+	call	__indcallhl
+	pop	hl
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 33)
+	ld	bc, (iy + 45)
+	ld	de, (iy + 39)
+BB91_2:
+	ld	(ix - 3), hl
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 57)
+	inc	hl
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	hl, (ix - 3)
+	add	hl, de
+	add	hl, bc
+	ld	iy, (ix + 6)
+	ld	de, (iy + 12)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	m, BB91_4
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	ex	de, hl
+	ld	hl, (iy + 12)
+	push	de
+	call	__indcallhl
+	pop	hl
+BB91_4:
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	ex	de, hl
+	ld	hl, (iy + 3)
+BB91_5:
+	push	de
+	call	__indcallhl
+	pop	de
+	ld	iy, (ix + 6)
+	ld	de, (iy + 39)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB91_7
+	push	hl
+	pop	bc
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 42)
+	push	bc
+	pop	iy
+	ld	(iy + 21), de
+	ld	(iy + 24), hl
+	push	iy
+	call	__ZN6Sprite9next_stepEv
+	pop	hl
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	ld	hl, (iy + 6)
+	ld	de, (ix + 6)
+	jr	BB91_5
+BB91_7:
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 33)
+	add	hl, de
+	ld	(iy + 33), hl
+	ld	de, (iy + 42)
+	ld	hl, (iy + 36)
+	add	hl, de
+	ld	(iy + 36), hl
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteArray4dumpEv
+__ZN11SpriteArray4dumpEv:
+	ld	hl, -12
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	hl, _.str.70
+	ld	de, (iy + 54)
+	ld	(ix - 3), iy
+	ld	bc, (iy + 57)
+	push	bc
+	push	de
+	push	hl
+	call	_printf
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	bc, 0
+	push	bc
+	pop	de
+	ld	(ix - 6), bc
+BB92_1:
+	ld	iy, (ix - 3)
+	ld	hl, (iy + 57)
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB92_3
+	ld	iy, (ix - 3)
+	ld	hl, (iy + 51)
+	ld	(ix - 12), de
+	add	hl, de
+	ld	hl, (hl)
+	push	hl
+	ld	hl, _.str.1.72
+	push	hl
+	ld	(ix - 9), bc
+	call	_printf
+	ld	bc, (ix - 9)
+	pop	hl
+	pop	hl
+	inc	bc
+	ld	de, 3
+	ld	hl, (ix - 12)
+	add	hl, de
+	ex	de, hl
+	jr	BB92_1
+BB92_3:
+	ld	iy, (ix - 3)
+	ld	hl, (iy + 63)
+	ld	de, (iy + 66)
+	push	de
+	push	hl
+	ld	hl, _.str.2.71
+	push	hl
+	call	_printf
+	pop	hl
+	pop	hl
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	pop	bc
+BB92_4:
+	ld	iy, (ix - 3)
+	ld	hl, (iy + 66)
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB92_6
+	ld	iy, (ix - 3)
+	ld	hl, (iy + 60)
+	ld	de, (ix - 6)
+	add	hl, de
+	ld	hl, (hl)
+	push	hl
+	ld	hl, _.str.1.72
+	push	hl
+	ld	(ix - 9), bc
+	call	_printf
+	ld	bc, (ix - 9)
+	pop	hl
+	pop	hl
+	inc	bc
+	ld	de, 3
+	ld	hl, (ix - 6)
+	add	hl, de
+	ld	(ix - 6), hl
+	jr	BB92_4
+BB92_6:
+	ld	hl, 10
+	ld	(ix + 6), hl
+	ld	sp, ix
+	pop	ix
+	jp	_putchar
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteGroupC2Eiiii
+__ZN11SpriteGroupC2Eiiii:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	bc, (ix + 15)
+	ld	hl, __ZTV11SpriteGroup+6
+	ld	de, 0
+	ld	(iy), hl
+	ld	(iy + 3), de
+	ld	hl, (ix + 9)
+	ld	(iy + 6), hl
+	ld	hl, (ix + 12)
+	ld	(iy + 9), hl
+	ld	(iy + 12), bc
+	ld	hl, (ix + 18)
+	ld	(iy + 15), hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteGroup7move_byEii
+__ZN11SpriteGroup7move_byEii:
+	ld	hl, -3
+	call	__frameset
+	ld	de, (ix + 6)
+	ld	hl, 1
+	ld	(ix - 3), hl
+BB94_1:
+	ld	bc, 3
+	ex	de, hl
+	ld	iy, (hl)
+	ld	hl, (ix - 3)
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (iy)
+	ld	de, (ix + 6)
+	push	de
+	call	__indcallhl
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB94_3
+	ld	de, (ix + 12)
+	push	de
+	ld	de, (ix + 9)
+	push	de
+	push	hl
+	call	__ZN6Sprite7move_byEii
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 2
+	ld	(ix - 3), hl
+	ld	de, (ix + 6)
+	jr	BB94_1
+BB94_3:
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteGroup10next_frameEv
+__ZN11SpriteGroup10next_frameEv:
+	ld	hl, -3
+	call	__frameset
+	ld	de, (ix + 6)
+	ld	hl, 1
+	ld	(ix - 3), hl
+BB95_1:
+	ld	bc, 3
+	ex	de, hl
+	ld	iy, (hl)
+	ld	hl, (ix - 3)
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (iy)
+	ld	de, (ix + 6)
+	push	de
+	call	__indcallhl
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB95_3
+	push	hl
+	call	__ZN6Sprite10next_frameEv
+	pop	hl
+	ld	hl, 2
+	ld	(ix - 3), hl
+	ld	de, (ix + 6)
+	jr	BB95_1
+BB95_3:
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteGroup10prev_frameEv
+__ZN11SpriteGroup10prev_frameEv:
+	ld	hl, -3
+	call	__frameset
+	ld	de, (ix + 6)
+	ld	hl, 1
+	ld	(ix - 3), hl
+BB96_1:
+	ld	bc, 3
+	ex	de, hl
+	ld	iy, (hl)
+	ld	hl, (ix - 3)
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (iy)
+	ld	de, (ix + 6)
+	push	de
+	call	__indcallhl
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB96_3
+	push	hl
+	call	__ZN6Sprite10prev_frameEv
+	pop	hl
+	ld	hl, 2
+	ld	(ix - 3), hl
+	ld	de, (ix + 6)
+	jr	BB96_1
+BB96_3:
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteGroup9next_stepEv
+__ZN11SpriteGroup9next_stepEv:
+	ld	hl, -3
+	call	__frameset
+	ld	de, (ix + 6)
+	ld	hl, 1
+	ld	(ix - 3), hl
+BB97_1:
+	ld	bc, 3
+	ex	de, hl
+	ld	iy, (hl)
+	ld	hl, (ix - 3)
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (iy)
+	ld	de, (ix + 6)
+	push	de
+	call	__indcallhl
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB97_3
+	push	hl
+	call	__ZN6Sprite9next_stepEv
+	pop	hl
+	ld	hl, 2
+	ld	(ix - 3), hl
+	ld	de, (ix + 6)
+	jr	BB97_1
+BB97_3:
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteGroup9prev_stepEv
+__ZN11SpriteGroup9prev_stepEv:
+	ld	hl, -3
+	call	__frameset
+	ld	de, (ix + 6)
+	ld	hl, 1
+	ld	(ix - 3), hl
+BB98_1:
+	ld	bc, 3
+	ex	de, hl
+	ld	iy, (hl)
+	ld	hl, (ix - 3)
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (iy)
+	ld	de, (ix + 6)
+	push	de
+	call	__indcallhl
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB98_3
+	push	hl
+	call	__ZN6Sprite9prev_stepEv
+	pop	hl
+	ld	hl, 2
+	ld	(ix - 3), hl
+	ld	de, (ix + 6)
+	jr	BB98_1
+BB98_3:
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteGroup9next_iterEv
+__ZN11SpriteGroup9next_iterEv:
+	ld	hl, -3
+	call	__frameset
+	ld	de, (ix + 6)
+	ld	hl, 1
+	ld	(ix - 3), hl
+BB99_1:
+	ld	bc, 3
+	ex	de, hl
+	ld	iy, (hl)
+	ld	hl, (ix - 3)
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (iy)
+	ld	de, (ix + 6)
+	push	de
+	call	__indcallhl
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB99_3
+	push	hl
+	call	__ZN6Sprite9next_iterEv
+	pop	hl
+	ld	hl, 2
+	ld	(ix - 3), hl
+	ld	de, (ix + 6)
+	jr	BB99_1
+BB99_3:
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteGroup9prev_iterEv
+__ZN11SpriteGroup9prev_iterEv:
+	ld	hl, -3
+	call	__frameset
+	ld	de, (ix + 6)
+	ld	hl, 1
+	ld	(ix - 3), hl
+BB100_1:
+	ld	bc, 3
+	ex	de, hl
+	ld	iy, (hl)
+	ld	hl, (ix - 3)
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (iy)
+	ld	de, (ix + 6)
+	push	de
+	call	__indcallhl
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB100_3
+	push	hl
+	call	__ZN6Sprite9prev_iterEv
+	pop	hl
+	ld	hl, 2
+	ld	(ix - 3), hl
+	ld	de, (ix + 6)
+	jr	BB100_1
+BB100_3:
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteGroup4hideEv
+__ZN11SpriteGroup4hideEv:
+	ld	hl, -3
+	call	__frameset
+	ld	de, (ix + 6)
+	ld	hl, 1
+	ld	(ix - 3), hl
+BB101_1:
+	ld	bc, 3
+	ex	de, hl
+	ld	iy, (hl)
+	ld	hl, (ix - 3)
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (iy)
+	ld	de, (ix + 6)
+	push	de
+	call	__indcallhl
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB101_3
+	push	hl
+	call	__ZN6Sprite4hideEv
+	pop	hl
+	ld	hl, 2
+	ld	(ix - 3), hl
+	ld	de, (ix + 6)
+	jr	BB101_1
+BB101_3:
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteGroup4showEv
+__ZN11SpriteGroup4showEv:
+	ld	hl, -3
+	call	__frameset
+	ld	de, (ix + 6)
+	ld	hl, 1
+	ld	(ix - 3), hl
+BB102_1:
+	ld	bc, 3
+	ex	de, hl
+	ld	iy, (hl)
+	ld	hl, (ix - 3)
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (iy)
+	ld	de, (ix + 6)
+	push	de
+	call	__indcallhl
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB102_3
+	push	hl
+	call	__ZN6Sprite4showEv
+	pop	hl
+	ld	hl, 2
+	ld	(ix - 3), hl
+	ld	de, (ix + 6)
+	jr	BB102_1
+BB102_3:
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteGroup6is_hitEP6Sprite
+__ZN11SpriteGroup6is_hitEP6Sprite:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	ex	de, hl
+	ld	hl, (iy + 3)
+	push	de
+	call	__indcallhl
+	push	hl
+	pop	de
+	pop	hl
+	ld	hl, (ix + 9)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB103_2
+BB103_1:
+	pop	ix
+	ret
+BB103_2:
+	push	de
+	pop	hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB103_1
+	push	de
+	ld	hl, (ix + 9)
+	push	hl
+	call	__ZN6Sprite3hitEPS_
+	pop	hl
+	pop	hl
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	ex	de, hl
+	ld	hl, (iy + 6)
+	push	de
+	call	__indcallhl
+	push	hl
+	pop	de
+	pop	hl
+	jr	BB103_2
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteGroup3hitEP6Sprite
+__ZN11SpriteGroup3hitEP6Sprite:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	ex	de, hl
+	ld	hl, (iy + 3)
+	push	de
+	call	__indcallhl
+	push	hl
+	pop	de
+	pop	hl
+	ld	hl, (ix + 9)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB104_2
+BB104_1:
+	pop	ix
+	ret
+BB104_2:
+	push	de
+	pop	hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB104_1
+	ld	hl, (ix + 9)
+	push	hl
+	push	de
+	call	__ZN6Sprite3hitEPS_
+	pop	hl
+	pop	hl
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	ex	de, hl
+	ld	hl, (iy + 6)
+	push	de
+	call	__indcallhl
+	push	hl
+	pop	de
+	pop	hl
+	jr	BB104_2
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteGroup3hitEPS_
+__ZN11SpriteGroup3hitEPS_:
+	ld	hl, -3
+	call	__frameset
+	ld	de, (ix + 6)
+	ld	hl, 1
+	ld	(ix - 3), hl
+BB105_1:
+	ld	bc, 3
+	ex	de, hl
+	ld	iy, (hl)
+	ld	hl, (ix - 3)
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (iy)
+	ld	de, (ix + 6)
+	push	de
+	call	__indcallhl
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB105_3
+	push	hl
+	ld	hl, (ix + 9)
+	push	hl
+	call	__ZN11SpriteGroup6is_hitEP6Sprite
+	pop	hl
+	pop	hl
+	ld	hl, 2
+	ld	(ix - 3), hl
+	ld	de, (ix + 6)
+	jr	BB105_1
+BB105_3:
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteGroup3hitEP9TileArray
+__ZN11SpriteGroup3hitEP9TileArray:
+	ld	hl, -3
+	call	__frameset
+	ld	de, (ix + 6)
+	ld	hl, 1
+	ld	(ix - 3), hl
+BB106_1:
+	ld	bc, 3
+	ex	de, hl
+	ld	iy, (hl)
+	ld	hl, (ix - 3)
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (iy)
+	ld	de, (ix + 6)
+	push	de
+	call	__indcallhl
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB106_3
+	push	hl
+	ld	hl, (ix + 9)
+	push	hl
+	call	__ZN9TileArray6is_hitEP6Sprite
+	pop	hl
+	pop	hl
+	ld	hl, 2
+	ld	(ix - 3), hl
+	ld	de, (ix + 6)
+	jr	BB106_1
+BB106_3:
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteGroup4dumpEv
+__ZN11SpriteGroup4dumpEv:
+	ld	hl, -3
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	hl, _.str.81
+	ld	de, (iy + 3)
+	push	de
+	push	hl
+	call	_printf
+	pop	hl
+	pop	hl
+	ld	de, (ix + 6)
+	push	de
+	pop	hl
+	ld	iy, (hl)
+	ld	hl, (iy + 3)
+	push	de
+	call	__indcallhl
+	ld	bc, 0
+	push	hl
+	pop	de
+	pop	hl
+BB107_1:
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 3)
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB107_3
+	push	de
+	push	bc
+	ld	hl, _.str.1.82
+	push	hl
+	ld	(ix - 3), bc
+	call	_printf
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix + 6)
+	ld	iy, (hl)
+	ex	de, hl
+	ld	hl, (iy + 6)
+	push	de
+	call	__indcallhl
+	ld	bc, (ix - 3)
+	push	hl
+	pop	de
+	pop	hl
+	inc	bc
+	jr	BB107_1
+BB107_3:
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN10SpriteList6removeEP6Sprite
+__ZN10SpriteList6removeEP6Sprite:
+	ld	hl, -9
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	bc, (ix + 9)
+	ld	de, 0
+	lea	hl, iy + 18
+	ld	(ix - 3), hl
+BB108_1:
+	ld	iy, (hl)
+	lea	hl, iy
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB108_4
+	ld	hl, (iy)
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB108_5
+	lea	hl, iy + 3
+	lea	de, iy
+	jr	BB108_1
+BB108_4:
+	ld	bc, 0
+	jr	BB108_10
+BB108_5:
+	ld	(ix - 6), iy
+	ld	iy, (iy + 3)
+	push	de
+	pop	hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB108_7
+	ld	(ix - 9), iy
+	push	de
+	pop	iy
+	lea	hl, iy + 3
+	ld	iy, (ix - 9)
+	ld	(ix - 3), hl
+BB108_7:
+	ld	(ix - 9), de
+	ld	hl, (ix - 3)
+	ld	(hl), iy
+	ld	iy, (ix + 6)
+	ld	de, (iy + 21)
+	ld	hl, (ix - 6)
+	or	a, a
+	sbc	hl, de
+	jr	nz, BB108_9
+	ld	iy, (ix + 6)
+	ld	hl, (ix - 9)
+	ld	(iy + 21), hl
+BB108_9:
+	ld	hl, (ix + 6)
+	push	hl
+	pop	iy
+	ld	hl, (iy + 3)
+	dec	hl
+	ld	(iy + 3), hl
+BB108_10:
+	push	bc
+	pop	hl
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN10SpriteList5beginEv
+__ZN10SpriteList5beginEv:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 18)
+	ld	(iy + 24), hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB109_2
+	ld	hl, 0
+	jr	BB109_3
+BB109_2:
+	ld	hl, (hl)
+BB109_3:
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN10SpriteList4nextEv
+__ZN10SpriteList4nextEv:
+	call	__frameset0
+	ld	de, (ix + 6)
+	push	de
+	pop	iy
+	ld	iy, (iy + 24)
+	ld	hl, (iy + 3)
+	push	de
+	pop	iy
+	ld	(iy + 24), hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB110_2
+	ld	hl, 0
+	jr	BB110_3
+BB110_2:
+	ld	hl, (hl)
+BB110_3:
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN10SpriteListC2Eiiii
+__ZN10SpriteListC2Eiiii:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	de, 0
+	ld	bc, __ZTV10SpriteList+6
+	ld	hl, 0
+	ld	(iy + 3), de
+	ld	de, (ix + 9)
+	ld	(iy + 6), de
+	ld	de, (ix + 12)
+	ld	(iy + 9), de
+	ld	de, (ix + 15)
+	ld	(iy + 12), de
+	ld	de, (ix + 18)
+	ld	(iy + 15), de
+	ld	(iy), bc
+	ld	(iy + 18), hl
+	ld	(iy + 21), hl
+	ld	(iy + 24), hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN10SpriteList3addEP6Sprite
+__ZN10SpriteList3addEP6Sprite:
+	call	__frameset0
+	ld	hl, 6
+	push	hl
+	call	__Znwj
+	ld	de, (ix + 6)
+	push	hl
+	pop	bc
+	pop	hl
+	push	bc
+	pop	iy
+	ld	hl, 0
+	ld	(iy + 3), hl
+	ld	hl, (ix + 9)
+	ld	(iy), hl
+	push	de
+	pop	iy
+	ld	hl, (iy + 18)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB112_2
+	ld	(iy + 18), bc
+	jr	BB112_3
+BB112_2:
+	ld	iy, (iy + 21)
+	ld	(iy + 3), bc
+BB112_3:
+	push	de
+	pop	iy
+	ld	(iy + 21), bc
+	ld	hl, (iy + 3)
+	inc	hl
+	ld	(iy + 3), hl
+	ld	iy, (ix + 9)
+	ld	(iy + 40), de
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN4Tile6hit_byEiP6Sprite
+__ZN4Tile6hit_byEiP6Sprite:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	ld	de, (ix + 9)
+	ld	(ix + 6), hl
+	ld	(ix + 9), de
+	pop	ix
+	jp	__ZN4Tile5blankEi
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN4Tile5blankEi
+__ZN4Tile5blankEi:
+	ld	hl, -3
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	(ix - 3), iy
+	ld	hl, (ix + 9)
+	ld	de, -1
+	ld	(iy + 15), de
+	push	hl
+	call	_vdp_select_bitmap
+	pop	hl
+	ld	iy, (ix - 3)
+	ld	hl, (iy + 3)
+	ld	de, (iy + 6)
+	ld	(ix + 6), hl
+	ld	(ix + 9), de
+	pop	hl
+	pop	ix
+	jp	_vdp_draw_bitmap
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN4TileC2Eiiiii
+__ZN4TileC2Eiiiii:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	de, (ix + 12)
+	ld	bc, (ix + 15)
+	ld	hl, __ZTV4Tile+6
+	ld	(iy), hl
+	ld	hl, (ix + 9)
+	ld	(iy + 3), hl
+	ld	(iy + 6), de
+	ld	(iy + 9), bc
+	ld	hl, (ix + 18)
+	ld	(iy + 12), hl
+	ld	hl, (ix + 21)
+	ld	(iy + 15), hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN4Tile10set_bitmapEi
+__ZN4Tile10set_bitmapEi:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	hl, (ix + 9)
+	ld	(iy + 15), hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN4Tile4drawEv
+__ZN4Tile4drawEv:
+	call	__frameset0
+	ld	iy, (ix + 6)
+	ld	de, (iy + 15)
+	ld	bc, 1
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB117_2
+	push	de
+	call	_vdp_select_bitmap
+	pop	hl
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 3)
+	ld	de, (iy + 6)
+	push	de
+	push	hl
+	call	_vdp_draw_bitmap
+	pop	hl
+	pop	hl
+BB117_2:
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN9TileArrayC2Eiiiiiiii
+__ZN9TileArrayC2Eiiiiiiii:
+	ld	hl, -18
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	bc, (ix + 9)
+	ld	hl, (ix + 12)
+	ld	de, (ix + 15)
+	ld	(iy), hl
+	ld	(iy + 3), bc
+	ld	(ix - 6), de
+	ld	(iy + 6), de
+	ld	de, (ix + 18)
+	ld	(iy + 9), de
+	ld	de, (ix + 21)
+	ld	(iy + 12), de
+	ld	de, (ix + 24)
+	ld	(iy + 15), de
+	ld	de, (ix + 30)
+	ld	(iy + 18), de
+	call	__imulu
+	push	hl
+	pop	de
+	ld	bc, 18
+	call	__imulu
+	push	hl
+	pop	bc
+	ld	iy, 932068
+	ld	(ix - 3), de
+	ex	de, hl
+	lea	de, iy
+	or	a, a
+	sbc	hl, de
+	ld	hl, -1
+	jr	nc, BB118_2
+	push	bc
+	pop	hl
+BB118_2:
+	push	hl
+	call	__Znaj
+	push	hl
+	pop	bc
+	pop	hl
+	ld	hl, (ix - 3)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	ld	(ix - 3), bc
+	jr	z, BB118_5
+	ld	hl, (ix + 12)
+	ld	bc, (ix + 9)
+	call	__imulu
+	ld	bc, 18
+	call	__imulu
+	ld	bc, (ix - 3)
+	push	bc
+	pop	iy
+BB118_4:
+	ld	de, __ZTV4Tile+6
+	ld	(iy), de
+	lea	iy, iy + 18
+	ld	de, -18
+	add	hl, de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB118_4
+BB118_5:
+	ld	iy, (ix + 6)
+	ld	(iy + 21), bc
+	ld	de, (iy + 3)
+	ld	hl, (iy + 9)
+	ld	(ix - 12), hl
+	ld	hl, (iy)
+	ld	bc, 1
+	ld	(ix - 9), hl
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	dec	bc
+	jp	p, BB118_7
+	ld	(ix - 9), bc
+BB118_7:
+	push	de
+	pop	hl
+	push	de
+	pop	iy
+	ld	de, 1
+	or	a, a
+	sbc	hl, de
+	lea	de, iy
+	call	pe, __setflag
+	jp	p, BB118_9
+	push	bc
+	pop	de
+BB118_9:
+	ld	iy, (ix - 3)
+BB118_10:
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	jr	z, BB118_15
+	ld	(ix - 18), de
+	ld	(ix - 15), bc
+	ld	hl, (ix - 9)
+	ld	de, (ix - 12)
+BB118_12:
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB118_14
+	ld	bc, (ix - 6)
+	ld	(iy + 3), bc
+	ld	(ix - 3), iy
+	ld	iy, (ix - 3)
+	ld	(iy + 6), de
+	ld	bc, (ix + 21)
+	ld	iy, (ix - 3)
+	ld	(iy + 9), bc
+	ld	bc, (ix + 24)
+	ld	iy, (ix - 3)
+	ld	(iy + 12), bc
+	ld	bc, (ix + 27)
+	ld	iy, (ix - 3)
+	ld	(iy + 15), bc
+	push	de
+	pop	iy
+	ld	de, (ix + 24)
+	add	iy, de
+	lea	de, iy
+	ld	iy, (ix - 3)
+	lea	iy, iy + 18
+	dec	hl
+	jr	BB118_12
+BB118_14:
+	ld	hl, (ix - 6)
+	ld	bc, (ix + 21)
+	add	hl, bc
+	ld	(ix - 6), hl
+	ld	bc, (ix - 15)
+	inc	bc
+	ld	de, (ix - 18)
+	jr	BB118_10
+BB118_15:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN9TileArray4elemEii
+__ZN9TileArray4elemEii:
+	call	__frameset0
+	ld	de, (ix + 6)
+	ld	hl, (ix + 12)
+	push	de
+	pop	iy
+	ld	iy, (iy + 21)
+	ld	bc, 18
+	call	__imulu
+	push	hl
+	pop	bc
+	add	iy, bc
+	ex	de, hl
+	ld	hl, (hl)
+	ld	bc, (ix + 9)
+	call	__imulu
+	ld	bc, 18
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	lea	hl, iy
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN9TileArray10set_bitmapEi
+__ZN9TileArray10set_bitmapEi:
+	ld	hl, -12
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	de, 0
+	ld	bc, (iy)
+	ld	hl, (iy + 3)
+	push	de
+	pop	iy
+	inc	de
+	ld	(ix - 9), hl
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB120_2
+	ld	(ix - 9), iy
+BB120_2:
+	push	bc
+	pop	hl
+	ld	de, 1
+	or	a, a
+	sbc	hl, de
+	lea	de, iy
+	call	pe, __setflag
+	push	bc
+	pop	hl
+	jp	p, BB120_4
+	push	de
+	pop	hl
+BB120_4:
+	ld	(ix - 6), hl
+	ld	hl, 15
+	ld	(ix - 3), hl
+	push	bc
+	pop	hl
+	ld	bc, 18
+	call	__imulu
+	ld	(ix - 12), hl
+BB120_5:
+	push	de
+	pop	hl
+	ld	bc, (ix - 6)
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB120_10
+	ld	iy, (ix + 6)
+	ld	iy, (iy + 21)
+	ld	bc, (ix - 3)
+	add	iy, bc
+	ld	hl, (ix - 9)
+BB120_7:
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB120_9
+	ld	bc, (ix + 9)
+	ld	(iy), bc
+	ld	bc, (ix - 12)
+	add	iy, bc
+	dec	hl
+	jr	BB120_7
+BB120_9:
+	inc	de
+	ld	bc, 18
+	ld	hl, (ix - 3)
+	add	hl, bc
+	ld	(ix - 3), hl
+	jr	BB120_5
+BB120_10:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN9TileArray5clearEiiii
+__ZN9TileArray5clearEiiii:
+	ld	hl, -21
+	call	__frameset
+	ld	bc, (ix + 15)
+	ld	hl, (ix + 18)
+	ld	(ix - 3), bc
+	call	__ior
+	ld	bc, 0
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB121_17
+	ld	iy, (ix + 6)
+	ld	de, (iy + 3)
+	ld	bc, (iy)
+	ld	hl, (ix + 18)
+	ld	(ix - 6), hl
+	ld	hl, (ix + 9)
+	push	hl
+	pop	iy
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB121_17
+	ld	hl, (ix + 12)
+	ld	(ix - 12), hl
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB121_17
+	ld	(ix - 15), bc
+	ld	bc, 1
+	lea	hl, iy
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB121_5
+	ld	iy, 0
+BB121_5:
+	ld	hl, (ix + 12)
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB121_7
+	or	a, a
+	sbc	hl, hl
+	ld	(ix - 12), hl
+BB121_7:
+	ld	hl, (ix + 15)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	m, BB121_9
+	dec	de
+	ld	(ix - 3), de
+BB121_9:
+	ld	hl, (ix + 18)
+	ld	de, (ix - 15)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	m, BB121_11
+	push	de
+	pop	hl
+	dec	hl
+	ld	(ix - 6), hl
+BB121_11:
+	ex	de, hl
+	ld	(ix - 9), iy
+	lea	bc, iy
+	call	__imulu
+	ld	bc, 18
+	call	__imulu
+	push	hl
+	pop	iy
+	ld	hl, (ix - 12)
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	de, 15
+	add	iy, de
+	ld	hl, (ix - 15)
+	call	__imulu
+	ld	(ix - 18), hl
+BB121_12:
+	ld	hl, (ix - 3)
+	push	hl
+	pop	bc
+	ld	de, (ix - 9)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	m, BB121_17
+	ld	(ix - 3), bc
+	lea	de, iy
+	ld	iy, (ix + 6)
+	ld	hl, (iy + 21)
+	push	de
+	pop	bc
+	ld	de, (ix - 6)
+	ld	(ix - 21), bc
+	add	hl, bc
+	ld	(ix - 15), hl
+	ld	bc, (ix - 12)
+BB121_14:
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB121_16
+	scf
+	sbc	hl, hl
+	ld	iy, (ix - 15)
+	ld	(iy), hl
+	inc	bc
+	lea	iy, iy + 18
+	ld	(ix - 15), iy
+	jr	BB121_14
+BB121_16:
+	ld	hl, (ix - 9)
+	inc	hl
+	ld	(ix - 9), hl
+	ld	bc, (ix - 18)
+	ld	iy, (ix - 21)
+	add	iy, bc
+	jr	BB121_12
+BB121_17:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN9TileArray4drawEv
+__ZN9TileArray4drawEv:
+	ld	hl, -6
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	bc, 0
+BB122_1:
+	ld	de, (iy)
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB122_6
+	or	a, a
+	sbc	hl, hl
+BB122_3:
+	ld	de, (iy + 3)
+	ld	(ix - 3), hl
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB122_5
+	ld	iy, (ix + 6)
+	ld	iy, (iy + 21)
+	push	bc
+	pop	hl
+	ld	de, 18
+	ld	(ix - 6), bc
+	push	de
+	pop	bc
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (ix + 6)
+	ld	hl, (hl)
+	ld	bc, (ix - 3)
+	call	__imulu
+	ld	bc, 18
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	push	iy
+	call	__ZN4Tile4drawEv
+	ld	bc, (ix - 6)
+	ld	iy, (ix + 6)
+	pop	hl
+	ld	hl, (ix - 3)
+	inc	hl
+	jr	BB122_3
+BB122_5:
+	inc	bc
+	jr	BB122_1
+BB122_6:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN9TileArray7collideEii
+__ZN9TileArray7collideEii:
+	ld	hl, -9
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	hl, (ix + 9)
+	ld	de, (iy + 6)
+	or	a, a
+	sbc	hl, de
+	push	hl
+	pop	de
+	ld	bc, (iy + 9)
+	ld	hl, (ix + 12)
+	or	a, a
+	sbc	hl, bc
+	ld	(ix - 3), hl
+	ld	bc, 0
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB123_5
+	ld	hl, (ix - 3)
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB123_5
+	ld	bc, (iy + 12)
+	ex	de, hl
+	call	__idivs
+	push	hl
+	pop	de
+	ld	bc, (iy + 15)
+	ld	hl, (ix - 3)
+	call	__idivs
+	ld	(ix - 6), hl
+	ld	bc, (iy + 3)
+	ld	hl, (iy)
+	ld	(ix - 3), hl
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB123_5
+	ld	(ix - 9), de
+	ld	bc, (ix - 6)
+	push	bc
+	pop	hl
+	ld	de, (ix - 3)
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB123_5
+	ld	iy, (iy + 21)
+	push	bc
+	pop	hl
+	ld	bc, 18
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (ix - 3)
+	ld	bc, (ix - 9)
+	call	__imulu
+	ld	bc, 18
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (iy + 15)
+	ld	de, 1
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB123_6
+BB123_5:
+	ld	iy, 0
+BB123_6:
+	lea	hl, iy
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN9TileArray6is_hitEP6Sprite
+__ZN9TileArray6is_hitEP6Sprite:
+	ld	hl, -33
+	call	__frameset
+	ld	iy, (ix + 9)
+	or	a, a
+	sbc	hl, hl
+	ld	(ix - 27), hl
+	ld	hl, (iy + 6)
+	ld	(ix - 15), hl
+	ld	hl, (iy + 18)
+	ld	(ix - 12), hl
+	ld	hl, (iy + 9)
+	ld	(ix - 18), hl
+	push	iy
+	pea	ix - 6
+	call	__ZN6Sprite16get_bottom_rightEv
+	pop	hl
+	pop	hl
+	ld	iy, (ix + 6)
+	ld	bc, (iy + 6)
+	ld	de, (iy + 9)
+	ld	hl, (ix - 6)
+	ld	(ix - 21), bc
+	or	a, a
+	sbc	hl, bc
+	push	hl
+	pop	bc
+	ld	hl, (ix - 3)
+	ld	(ix - 24), de
+	or	a, a
+	sbc	hl, de
+	ld	(ix - 9), hl
+	ld	de, 0
+	push	bc
+	pop	hl
+	push	de
+	pop	iy
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	m, BB124_22
+	ld	hl, (ix - 9)
+	lea	de, iy
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	m, BB124_22
+	ld	(ix - 30), bc
+	ld	iy, (ix - 12)
+	lea	bc, iy
+	ld	hl, (ix - 18)
+	add	hl, bc
+	ld	bc, (ix - 15)
+	add	iy, bc
+	ld	de, (ix - 24)
+	or	a, a
+	sbc	hl, de
+	ld	(ix - 12), hl
+	lea	hl, iy
+	ld	de, (ix - 21)
+	or	a, a
+	sbc	hl, de
+	ld	iy, (ix + 6)
+	ld	bc, (iy + 12)
+	ld	(ix - 18), bc
+	call	__idivs
+	push	hl
+	pop	de
+	ld	bc, (iy + 15)
+	ld	hl, (ix - 12)
+	ld	(ix - 21), bc
+	call	__idivs
+	ld	(ix - 12), hl
+	ld	bc, (iy + 3)
+	ld	iy, (iy)
+	ld	(ix - 15), de
+	ex	de, hl
+	push	bc
+	pop	de
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB124_22
+	ld	hl, (ix - 12)
+	lea	bc, iy
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB124_22
+	ld	(ix - 33), de
+	ld	(ix - 24), iy
+	ld	hl, (ix - 9)
+	ld	bc, (ix - 21)
+	call	__idivs
+	ld	(ix - 21), hl
+	ld	hl, (ix - 30)
+	ld	bc, (ix - 18)
+	call	__idivs
+	ld	(ix - 9), hl
+	ld	de, 1
+	ld	bc, (ix - 15)
+	push	bc
+	pop	hl
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB124_6
+	ld	bc, 0
+BB124_6:
+	ld	(ix - 15), bc
+	ld	hl, (ix - 12)
+	ld	de, 1
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB124_8
+	or	a, a
+	sbc	hl, hl
+	ld	(ix - 12), hl
+BB124_8:
+	ld	hl, (ix - 9)
+	ld	bc, (ix - 33)
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	ld	hl, (ix - 21)
+	ld	de, (ix - 24)
+	jp	m, BB124_10
+	dec	bc
+	ld	(ix - 9), bc
+BB124_10:
+	push	hl
+	pop	iy
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	ex	de, hl
+	ld	de, (ix - 12)
+	jp	m, BB124_12
+	dec	hl
+	push	hl
+	pop	iy
+BB124_12:
+	ld	hl, (ix - 15)
+	ld	bc, 18
+	call	__imulu
+	ld	(ix - 18), hl
+	push	de
+	pop	hl
+	call	__imulu
+	ld	bc, (ix - 15)
+	ld	(ix - 33), hl
+BB124_13:
+	ld	hl, (ix - 9)
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB124_20
+	ld	(ix - 15), bc
+	ld	hl, (ix - 33)
+	ld	(ix - 24), hl
+	push	de
+	pop	bc
+	ld	(ix - 12), de
+BB124_15:
+	lea	hl, iy
+	ld	(ix - 30), bc
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	m, BB124_19
+	ld	(ix - 21), iy
+	ld	hl, (ix + 6)
+	push	hl
+	pop	iy
+	ld	iy, (iy + 21)
+	ld	bc, (hl)
+	ld	hl, (ix - 18)
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	de, (ix - 24)
+	add	iy, de
+	lea	bc, iy
+	ld	hl, (iy + 15)
+	ld	de, 1
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	m, BB124_18
+	ld	iy, (ix + 6)
+	ld	de, (iy + 18)
+	push	bc
+	pop	iy
+	ld	hl, (iy)
+	ld	hl, (hl)
+	ld	bc, (ix + 9)
+	push	bc
+	push	de
+	push	iy
+	call	__indcallhl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 1
+	ld	(ix - 27), hl
+BB124_18:
+	ld	bc, (ix - 30)
+	inc	bc
+	ld	de, 18
+	ld	hl, (ix - 24)
+	add	hl, de
+	ld	(ix - 24), hl
+	ld	de, (ix - 12)
+	ld	iy, (ix - 21)
+	jr	BB124_15
+BB124_19:
+	ld	bc, (ix - 15)
+	inc	bc
+	ld	de, 18
+	ld	hl, (ix - 18)
+	add	hl, de
+	ld	de, (ix - 12)
+	ld	(ix - 18), hl
+	jp	BB124_13
+BB124_20:
+	ld	hl, (ix - 27)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB124_22
+	ld	hl, (ix + 9)
+	ld	iy, (hl)
+	push	hl
+	pop	bc
+	ld	hl, (iy + 30)
+	ld	de, (ix + 6)
+	push	de
+	push	bc
+	call	__indcallhl
+	pop	hl
+	pop	hl
+BB124_22:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__ZN9TileArray6is_hitEP11SpriteGroup
+__ZN9TileArray6is_hitEP11SpriteGroup:
+	ld	hl, -3
+	call	__frameset
+	ld	de, (ix + 9)
+	ld	hl, 1
+	ld	(ix - 3), hl
+BB125_1:
+	ld	bc, 3
+	ex	de, hl
+	ld	iy, (hl)
+	ld	hl, (ix - 3)
+	call	__imulu
+	push	hl
+	pop	de
+	add	iy, de
+	ld	hl, (iy)
+	ld	de, (ix + 9)
+	push	de
+	call	__indcallhl
+	pop	de
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	z, BB125_3
+	push	hl
+	ld	hl, (ix + 6)
+	push	hl
+	call	__ZN9TileArray6is_hitEP6Sprite
+	pop	hl
+	pop	hl
+	ld	hl, 2
+	ld	(ix - 3), hl
+	ld	de, (ix + 9)
+	jr	BB125_1
+BB125_3:
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__Z12barrier_initv
+__Z12barrier_initv:
+	ld	hl, -9
+	call	__frameset
+	ld	hl, 254
+	ld	de, _barrier
+	ld	(ix - 6), de
+	ld	de, 48
+	ld	(ix - 3), de
+	push	hl
+	call	_vdp_select_bitmap
+	pop	hl
+	ld	hl, 255
+	push	hl
+	push	hl
+	push	hl
+	push	hl
+	ld	hl, 1
+	push	hl
+	push	hl
+	call	_vdp_solid_bitmap
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 255
+	push	hl
+	call	_vdp_select_bitmap
+	pop	hl
+	ld	hl, 255
+	push	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	push	hl
+	push	hl
+	inc	hl
+	push	hl
+	push	hl
+	call	_vdp_solid_bitmap
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	de, 496
+BB126_1:
+	ld	hl, (ix - 3)
+	or	a, a
+	sbc	hl, de
+	jp	z, BB126_3
+	ld	hl, 24
+	push	hl
+	call	__Znwj
+	push	hl
+	pop	de
+	ld	(ix - 9), de
+	pop	hl
+	ld	hl, 255
+	push	hl
+	dec	hl
+	push	hl
+	ld	hl, 1
+	push	hl
+	push	hl
+	ld	hl, 240
+	push	hl
+	ld	hl, (ix - 3)
+	push	hl
+	ld	hl, 24
+	push	hl
+	ld	hl, 32
+	push	hl
+	push	de
+	call	__ZN9TileArrayC2Eiiiiiiii
+	ld	hl, 27
+	add	hl, sp
+	ld	sp, hl
+	ld	de, (ix - 9)
+	ld	hl, (ix - 6)
+	ld	(hl), de
+	ld	hl, 23
+	push	hl
+	push	hl
+	ld	hl, 12
+	push	hl
+	ld	hl, 8
+	push	hl
+	push	de
+	call	__ZN9TileArray5clearEiiii
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 6)
+	ld	hl, (hl)
+	push	hl
+	call	__ZN9TileArray4drawEv
+	pop	hl
+	ld	de, 64
+	ld	hl, (ix - 3)
+	add	hl, de
+	ld	(ix - 3), hl
+	ld	de, 496
+	ld	iy, (ix - 6)
+	lea	iy, iy + 3
+	ld	(ix - 6), iy
+	jp	BB126_1
+BB126_3:
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_main
+_main:
+	call	_vdp_vdu_init
+	ld	(__ZL2sv), hl
+	call	_vdp_key_init
+	ld	de, -1
+	or	a, a
+	sbc	hl, de
+	jp	z, BB127_3
+	ld	hl, 255
+	push	hl
+	call	__ZN6Sprite4initEi
+	pop	de
+	ld	de, 255
+	or	a, a
+	sbc	hl, de
+	jr	nz, BB127_3
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	call	_vdp_mode
+	pop	hl
+	call	_vdp_clear_screen
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	call	_vdp_logical_scr_dims
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	call	_vdp_cursor_enable
+	pop	hl
+	call	__Z12barrier_initv
+	ld	hl, _str.89
+	push	hl
+	call	_puts
+	pop	hl
+	call	__Z10alien_initv
+	ld	hl, _str.28
+	push	hl
+	call	_puts
+	pop	hl
+	call	__Z9ship_initv
+	ld	hl, _str.29
+	push	hl
+	call	_puts
+	pop	hl
+	call	__Z11bullet_initv
+	ld	hl, _str.30
+	push	hl
+	call	_puts
+	pop	hl
+	call	__Z9bomb_initv
+	ld	hl, _str.31
+	push	hl
+	call	_puts
+	pop	hl
+	ld	hl, __Z17key_event_handler9KEY_EVENT
+	push	hl
+	call	_vdp_set_key_event_handler
+	pop	hl
+	call	_vdp_clear_screen
+	call	_getchar
+	call	__Z9game_loopv
+BB127_3:
+	ld	hl, 1
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__Z17key_event_handler9KEY_EVENT
+__Z17key_event_handler9KEY_EVENT:
+	ld	hl, -21
+	call	__frameset
+	ld	iy, (ix + 6)
+	ld	e, (ix + 9)
+	ld	bc, (__ZL14prev_key_event.0)
+	ld	a, (__ZL14prev_key_event.0+3)
+	lea	hl, iy
+	call	__lcmpu
+	jr	z, BB128_2
+	ld	h, 0
+	jr	BB128_3
+BB128_2:
+	ld	h, 1
+BB128_3:
+	ld	l, 16
+	lea	bc, iy
+	ld	a, e
+	call	__lshru
+	bit	0, h
+	jp	nz, BB128_23
+	ld	hl, 1
+	ld	(__ZL14prev_key_event.0), iy
+	ld	a, e
+	ld	(__ZL14prev_key_event.0+3), a
+	ld	a, c
+	cp	a, 125
+	jr	nz, BB128_6
+	push	hl
+	call	_vdp_cursor_enable
+	pop	hl
+	ld	hl, 1
+	push	hl
+	call	_exit
+	pop	hl
+BB128_6:
+	ld	a, 1
+	lea	hl, iy
+	push	bc
+	pop	iy
+	ld	bc, 0
+	call	__lcmpu
+	lea	hl, iy
+	jp	c, BB128_23
+	ld	a, l
+	cp	a, 1
+	jp	nz, BB128_9
+	ld	iy, (_ship)
+	ld	(ix - 9), iy
+	ld	de, (iy + 43)
+	ld	hl, (iy + 46)
+	ld	bc, 12
+	call	__imulu
+	push	hl
+	pop	bc
+	ex	de, hl
+	add	hl, bc
+	ex	de, hl
+	push	de
+	pop	iy
+	ld	hl, (iy + 3)
+	ld	(ix - 3), hl
+	ld	hl, (iy + 6)
+	ld	(ix - 6), hl
+	ld	iy, (ix - 9)
+	ld	hl, (iy + 6)
+	ld	(ix - 12), hl
+	ld	hl, (iy + 12)
+	ld	bc, 2
+	call	__idivs
+	ld	(ix - 18), hl
+	ld	hl, (iy + 9)
+	ld	(ix - 15), hl
+	ld	hl, (iy + 15)
+	call	__idivs
+	ld	(ix - 21), hl
+	ld	hl, 43
+	push	hl
+	call	__Znwj
+	ld	(ix - 9), hl
+	pop	hl
+	ld	hl, (ix - 3)
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	de
+	ld	iy, (ix - 12)
+	add	iy, de
+	ld	de, (ix - 18)
+	add	iy, de
+	ld	hl, (ix - 6)
+	call	__imulu
+	push	hl
+	pop	de
+	ld	hl, (ix - 15)
+	add	hl, de
+	ld	de, (ix - 21)
+	add	hl, de
+	ex	de, hl
+	ld	hl, 253
+	push	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	ld	hl, 4
+	push	hl
+	ld	hl, 2
+	push	hl
+	ld	hl, (ix - 6)
+	push	hl
+	ld	hl, (ix - 3)
+	push	hl
+	push	de
+	push	iy
+	ld	hl, (ix - 9)
+	push	hl
+	call	__ZN6BulletC2Eiiiiiiii
+	ld	hl, 27
+	add	hl, sp
+	ld	sp, hl
+	ld	hl, (_bullets)
+	ld	de, (ix - 9)
+	push	de
+	push	hl
+	call	__ZN10SpriteList3addEP6Sprite
+	pop	hl
+	jr	BB128_22
+BB128_9:
+	ld	a, l
+	cp	a, 25
+	jr	nz, BB128_11
+	ld	hl, (_aliens)
+	push	hl
+	call	__ZN11SpriteArray4dumpEv
+	jr	BB128_22
+BB128_11:
+	ld	a, l
+	cp	a, 29
+	jr	nz, BB128_14
+	ld	iy, (_ship)
+	bit	0, (iy + 27)
+	jr	nz, BB128_16
+	push	iy
+	call	__ZN6Sprite4showEv
+	jr	BB128_17
+BB128_14:
+	ld	a, l
+	cp	a, 45
+	jr	nz, BB128_19
+	ld	hl, (_ship)
+	ld	iy, (hl)
+	ld	iy, (iy + 33)
+	jr	BB128_21
+BB128_16:
+	push	iy
+	call	__ZN6Sprite4hideEv
+BB128_17:
+	pop	hl
+	ld	hl, (__ZL15bullets_visible)
+	ld	de, (_bullets)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB128_24
+	push	de
+	call	__ZN11SpriteGroup4showEv
+	pop	hl
+	ld	hl, (_aliens)
+	push	hl
+	call	__ZN11SpriteGroup4showEv
+	jr	BB128_25
+BB128_19:
+	ld	a, l
+	cp	a, 47
+	jr	nz, BB128_23
+	ld	hl, (_ship)
+	ld	iy, (hl)
+	ld	iy, (iy + 36)
+BB128_21:
+	push	hl
+	call	__indcall
+BB128_22:
+	pop	hl
+BB128_23:
+	ld	sp, ix
+	pop	ix
+	ret
+BB128_24:
+	push	de
+	call	__ZN11SpriteGroup4hideEv
+	pop	hl
+	ld	hl, (_aliens)
+	push	hl
+	call	__ZN11SpriteGroup4hideEv
+BB128_25:
+	pop	hl
+	ld	de, (__ZL15bullets_visible)
+	ld	hl, 1
+	or	a, a
+	sbc	hl, de
+	ld	(__ZL15bullets_visible), hl
+	jr	BB128_23
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__Z9game_loopv
+__Z9game_loopv:
+	ld	hl, -27
+	call	__frameset
+	ld	hl, _.str.5
+	push	hl
+	call	_printf
+	pop	hl
+	call	_getchar
+	or	a, a
+	sbc	hl, hl
+BB129_1:
+	inc	hl
+	ld	(ix - 18), hl
+	push	hl
+	ld	hl, _.str.6
+	push	hl
+	call	_printf
+	pop	hl
+	pop	hl
+	ld	hl, (_score)
+	push	hl
+	ld	hl, _.str.7.90
+	push	hl
+	call	_printf
+	pop	hl
+	pop	hl
+	call	_getchar
+	ld	hl, (_aliens)
+	push	hl
+	call	__ZN11SpriteArray9next_iterEv
+	pop	hl
+	ld	hl, _str.32
+	push	hl
+	call	_puts
+	pop	hl
+	call	_getchar
+	ld	hl, (_ship)
+	push	hl
+	call	__ZN9RotSprite10next_frameEv
+	pop	hl
+	ld	hl, _str.33
+	push	hl
+	call	_puts
+	pop	hl
+	call	_getchar
+	ld	bc, 0
+BB129_2:
+	push	bc
+	pop	hl
+	ld	de, 4
+	or	a, a
+	sbc	hl, de
+	jp	z, BB129_30
+	ld	(ix - 12), bc
+	push	bc
+	ld	hl, _.str.10.91
+	push	hl
+	call	_printf
+	pop	hl
+	pop	hl
+	ld	hl, -100
+	push	hl
+	call	_vdp_check_key_press
+	pop	hl
+	bit	0, a
+	ld	hl, 3
+	jr	nz, BB129_5
+	or	a, a
+	sbc	hl, hl
+BB129_5:
+	ld	(ix - 15), hl
+	ld	hl, -102
+	push	hl
+	call	_vdp_check_key_press
+	ld	de, (ix - 15)
+	pop	hl
+	push	de
+	pop	iy
+	ld	hl, -3
+	push	hl
+	pop	bc
+	add	iy, bc
+	ld	(ix - 9), iy
+	bit	0, a
+	jr	nz, BB129_7
+	ld	(ix - 9), de
+BB129_7:
+	ld	hl, -106
+	push	hl
+	call	_vdp_check_key_press
+	pop	hl
+	bit	0, a
+	ld	hl, -3
+	jr	nz, BB129_9
+	or	a, a
+	sbc	hl, hl
+BB129_9:
+	ld	(ix - 15), hl
+	ld	hl, -104
+	push	hl
+	call	_vdp_check_key_press
+	pop	hl
+	ld	bc, (ix - 15)
+	push	bc
+	pop	hl
+	ld	de, 3
+	add	hl, de
+	bit	0, a
+	jr	nz, BB129_11
+	push	bc
+	pop	hl
+BB129_11:
+	ld	(ix - 15), hl
+	ld	de, (_ship)
+	push	hl
+	ld	bc, (ix - 9)
+	push	bc
+	push	de
+	call	__ZN4Ship7move_byEii
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 15)
+	push	hl
+	ld	hl, (ix - 9)
+	push	hl
+	ld	hl, _.str.11.92
+	push	hl
+	call	_printf
+	pop	hl
+	pop	hl
+	pop	hl
+	call	_getchar
+	ld	hl, (_bullets)
+	ld	de, (_aliens)
+	push	de
+	push	hl
+	call	__ZN11SpriteGroup3hitEPS_
+	pop	hl
+	pop	hl
+	ld	hl, _str.35
+	push	hl
+	call	_puts
+	pop	hl
+	call	_getchar
+	ld	hl, (_bullets)
+	ld	de, (_ship)
+	push	de
+	push	hl
+	call	__ZN11SpriteGroup3hitEP6Sprite
+	pop	hl
+	pop	hl
+	ld	hl, _str.36
+	push	hl
+	call	_puts
+	pop	hl
+	call	_getchar
+	ld	hl, (_aliens)
+	ld	de, (_ship)
+	push	de
+	push	hl
+	call	__ZN11SpriteGroup3hitEP6Sprite
+	pop	hl
+	pop	hl
+	ld	hl, _str.37
+	push	hl
+	call	_puts
+	pop	hl
+	call	_getchar
+	ld	hl, (_bombs)
+	ld	de, (_ship)
+	push	de
+	push	hl
+	call	__ZN11SpriteGroup3hitEP6Sprite
+	pop	hl
+	pop	hl
+	ld	hl, _str.38
+	push	hl
+	call	_puts
+	pop	hl
+	call	_getchar
+	ld	hl, _barrier
+	ld	(ix - 9), hl
+	ld	bc, 0
+BB129_12:
+	push	bc
+	pop	hl
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	jr	z, BB129_14
+	push	bc
+	ld	hl, _.str.16.93
+	push	hl
+	ld	(ix - 15), bc
+	call	_printf
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 9)
+	ld	bc, (hl)
+	ld	de, (_aliens)
+	push	de
+	push	bc
+	call	__ZN9TileArray6is_hitEP11SpriteGroup
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 15)
+	push	hl
+	ld	hl, _.str.17
+	push	hl
+	call	_printf
+	pop	hl
+	pop	hl
+	call	_getchar
+	ld	hl, (ix - 9)
+	ld	hl, (hl)
+	ld	de, (_ship)
+	push	de
+	push	hl
+	call	__ZN9TileArray6is_hitEP6Sprite
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 15)
+	push	hl
+	ld	hl, _.str.18
+	push	hl
+	call	_printf
+	pop	hl
+	pop	hl
+	call	_getchar
+	ld	bc, (ix - 15)
+	inc	bc
+	ld	iy, (ix - 9)
+	lea	iy, iy + 3
+	ld	(ix - 9), iy
+	jr	BB129_12
+BB129_14:
+	ld	hl, _str.39
+	push	hl
+	call	_puts
+	pop	hl
+	ld	bc, 0
+	ld	(ix - 9), bc
+BB129_15:
+	push	bc
+	pop	hl
+	ld	de, 10
+	or	a, a
+	sbc	hl, de
+	jp	z, BB129_23
+	ld	(ix - 15), bc
+	ld	hl, (_aliens)
+	push	hl
+	pop	iy
+	ld	de, (iy + 18)
+	ld	(ix - 21), de
+	ld	hl, (iy + 24)
+	ld	bc, (ix - 9)
+	call	__imulu
+	push	hl
+	pop	de
+	ld	iy, (ix - 21)
+	add	iy, de
+	lea	iy, iy + 12
+	ld	bc, 4
+BB129_17:
+	push	bc
+	pop	hl
+	ld	de, 0
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	m, BB129_22
+	ld	hl, (iy)
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB129_20
+	dec	bc
+	lea	iy, iy - 3
+	jr	BB129_17
+BB129_20:
+	ld	(ix - 21), bc
+	call	_rand
+	ld	bc, (ix - 21)
+	ld	de, 419431
+	or	a, a
+	sbc	hl, de
+	call	pe, __setflag
+	jp	p, BB129_22
+	ld	hl, 43
+	push	hl
+	call	__Znwj
+	ld	(ix - 24), hl
+	pop	hl
+	ld	iy, (_aliens)
+	ld	hl, (iy + 18)
+	ld	(ix - 27), hl
+	ld	hl, (iy + 24)
+	ld	bc, (ix - 15)
+	call	__imulu
+	ld	de, (ix - 21)
+	add	hl, de
+	ld	bc, 3
+	call	__imulu
+	push	hl
+	pop	de
+	ld	hl, (ix - 27)
+	add	hl, de
+	ld	hl, (hl)
+	push	hl
+	pea	ix - 6
+	call	__ZN6Sprite17get_bottom_middleEv
+	pop	hl
+	pop	hl
+	ld	hl, (ix - 6)
+	ld	(ix - 21), hl
+	ld	hl, (ix - 3)
+	ld	(ix - 27), hl
+	ld	hl, __ZTV6Sprite+6
+	ld	iy, (ix - 24)
+	ld	(iy), hl
+	lea	hl, iy + 27
+	ld	(iy + 27), 0
+	push	hl
+	pop	de
+	inc	de
+	ld	bc, 12
+	ldir
+	ld	hl, 252
+	push	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	ld	de, 2
+	push	de
+	push	de
+	push	de
+	push	hl
+	ld	hl, (ix - 27)
+	push	hl
+	ld	hl, (ix - 21)
+	push	hl
+	push	iy
+	call	__ZN6Sprite11set_detailsEiiiiiiii
+	ld	hl, 27
+	add	hl, sp
+	ld	sp, hl
+	ld	hl, __ZTV4Bomb+6
+	ld	iy, (ix - 24)
+	ld	(iy), hl
+	ld	hl, (_bombs)
+	push	iy
+	push	hl
+	call	__ZN10SpriteList3addEP6Sprite
+	pop	hl
+	pop	hl
+BB129_22:
+	ld	bc, (ix - 15)
+	inc	bc
+	ld	de, 3
+	ld	hl, (ix - 9)
+	add	hl, de
+	ld	(ix - 9), hl
+	jp	BB129_15
+BB129_23:
+	ld	hl, _str.40
+	push	hl
+	call	_puts
+	pop	hl
+	ld	bc, 0
+BB129_24:
+	ld	iy, (ix - 12)
+	push	bc
+	pop	hl
+	ld	de, 2
+	or	a, a
+	sbc	hl, de
+	jp	z, BB129_29
+	ld	hl, (_bullets)
+	push	hl
+	ld	(ix - 15), bc
+	call	__ZN11SpriteGroup9next_stepEv
+	pop	hl
+	ld	hl, (_bombs)
+	push	hl
+	call	__ZN11SpriteGroup9next_stepEv
+	pop	hl
+	ld	hl, (ix - 15)
+	push	hl
+	ld	hl, _.str.21
+	push	hl
+	call	_printf
+	pop	hl
+	pop	hl
+	ld	hl, _barrier
+	ld	(ix - 9), hl
+	ld	bc, 0
+BB129_26:
+	push	bc
+	pop	hl
+	ld	de, 7
+	or	a, a
+	sbc	hl, de
+	jr	z, BB129_28
+	push	bc
+	ld	hl, _.str.22
+	push	hl
+	ld	(ix - 21), bc
+	call	_printf
+	pop	hl
+	pop	hl
+	ld	bc, (_bombs)
+	ld	hl, (ix - 9)
+	ld	de, (hl)
+	push	de
+	push	bc
+	call	__ZN11SpriteGroup3hitEP9TileArray
+	pop	hl
+	pop	hl
+	ld	hl, _.str.23
+	push	hl
+	call	_printf
+	pop	hl
+	ld	bc, (_bullets)
+	ld	hl, (ix - 9)
+	ld	de, (hl)
+	push	de
+	push	bc
+	call	__ZN11SpriteGroup3hitEP9TileArray
+	pop	hl
+	pop	hl
+	ld	hl, _str.42
+	push	hl
+	call	_puts
+	pop	hl
+	call	_getchar
+	ld	bc, (ix - 21)
+	inc	bc
+	ld	iy, (ix - 9)
+	lea	iy, iy + 3
+	ld	(ix - 9), iy
+	jr	BB129_26
+BB129_28:
+	ld	hl, 50
+	push	hl
+	call	__Z8wait_cnti
+	pop	hl
+	ld	hl, _str.41
+	push	hl
+	call	_puts
+	pop	hl
+	call	_getchar
+	ld	bc, (ix - 15)
+	inc	bc
+	jp	BB129_24
+BB129_29:
+	push	iy
+	ld	hl, _.str.26
+	push	hl
+	call	_printf
+	pop	hl
+	pop	hl
+	call	_getchar
+	ld	bc, (ix - 12)
+	inc	bc
+	jp	BB129_2
+BB129_30:
+	ld	hl, _str.34
+	push	hl
+	call	_puts
+	pop	hl
+	call	_getchar
+	ld	hl, (ix - 18)
+	jp	BB129_1
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__Z8wait_cnti
+__Z8wait_cnti:
+	ld	hl, -3
+	call	__frameset
+	ld	de, (ix + 6)
+	ld	iy, 0
+	ld	bc, 1
+	push	de
+	pop	hl
+	or	a, a
+	sbc	hl, bc
+	call	pe, __setflag
+	jp	p, BB130_3
+	lea	de, iy
+	jr	BB130_3
+BB130_2:
+	ld	(ix - 3), de
+	call	_vdp_update_key_state
+	ld	de, (ix - 3)
+	dec	de
+BB130_3:
+	push	de
+	pop	hl
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jr	nz, BB130_2
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	weak	__ZN6BulletC2Eiiiiiiii
+__ZN6BulletC2Eiiiiiiii:
+	call	__frameset0
+	ld	de, (ix + 6)
+	ld	iy, (ix + 24)
+	ld	bc, (ix + 27)
+	ld	hl, (ix + 30)
+	push	hl
+	push	bc
+	push	iy
+	ld	hl, (ix + 21)
+	push	hl
+	ld	hl, (ix + 18)
+	push	hl
+	ld	hl, (ix + 15)
+	push	hl
+	ld	hl, (ix + 12)
+	push	hl
+	ld	hl, (ix + 9)
+	push	hl
+	push	de
+	call	__ZN6SpriteC2Eiiiiiiii
+	ld	hl, 27
+	add	hl, sp
+	ld	sp, hl
+	ld	hl, __ZTV6Bullet+6
+	ld	iy, (ix + 6)
+	ld	(iy), hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	__Z9wait_tickv
+__Z9wait_tickv:
+	ld	hl, -3
+	call	__frameset
+	ld	iy, (__ZL2sv)
+	ld	hl, (iy)
+	ld	(ix - 3), hl
+	ld	a, (iy + 3)
+BB132_1:
+	call	_vdp_update_key_state
+	ld	iy, (__ZL2sv)
+	ld	hl, (iy)
+	ld	a, (iy + 3)
+	ld	a, l
+	ld	hl, (ix - 3)
+	xor	a, l
+	bit	1, a
+	jr	z, BB132_1
+	pop	hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.rodata,"a",@progbits
+	private	_.str
+_.str:
+	db	"bitmaps/gal-red", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.1
+_.str.1:
+	db	"%s%1d.rgba", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.2
+_.str.2:
+	db	"bitmaps/gal-explode", 0
+
+	section	.rodata,"a",@progbits
+	public	__ZTV5Alien
+__ZTV5Alien:
+	dl	0
+	dl	__ZTI5Alien
+	dl	__ZN6SpriteD2Ev
+	dl	__ZN5AlienD0Ev
+	dl	__ZN5Alien7at_leftEv
+	dl	__ZN5Alien8at_rightEv
+	dl	__ZN6Sprite6at_topEv
+	dl	__ZN6Sprite9at_bottomEv
+	dl	__ZN6Sprite3dieEv
+	dl	__ZN5Alien4deadEv
+	dl	__ZN5Alien6hit_byEP6Sprite
+	dl	__ZN6Sprite7hittingEPS_
+	dl	__ZN6Sprite7hittingEP9TileArray
+
+	section	.rodata,"a",@progbits
+	public	__ZTS5Alien
+__ZTS5Alien:
+	db	"5Alien", 0
+
+	section	.rodata,"a",@progbits
+	public	__ZTI5Alien
+__ZTI5Alien:
+	dl	__ZTVN10__cxxabiv120__si_class_type_infoE+6
+	dl	__ZTS5Alien
+	dl	__ZTI6Sprite
+
+	section	.rodata,"a",@progbits
+	public	__ZTV10AlienArray
+__ZTV10AlienArray:
+	dl	0
+	dl	__ZTI10AlienArray
+	dl	__ZN11SpriteArray6removeEP6Sprite
+	dl	__ZN11SpriteArray5beginEv
+	dl	__ZN11SpriteArray4nextEv
+	dl	__ZN10AlienArray7at_leftEv
+	dl	__ZN10AlienArray8at_rightEv
+
+	section	.rodata,"a",@progbits
+	public	__ZTS10AlienArray
+__ZTS10AlienArray:
+	db	"10AlienArray", 0
+
+	section	.rodata,"a",@progbits
+	public	__ZTI10AlienArray
+__ZTI10AlienArray:
+	dl	__ZTVN10__cxxabiv120__si_class_type_infoE+6
+	dl	__ZTS10AlienArray
+	dl	__ZTI11SpriteArray
+
+	section	.rodata,"a",@progbits
+	public	__ZTS4Bomb
+__ZTS4Bomb:
+	db	"4Bomb", 0
+
+	section	.rodata,"a",@progbits
+	public	__ZTI4Bomb
+__ZTI4Bomb:
+	dl	__ZTVN10__cxxabiv120__si_class_type_infoE+6
+	dl	__ZTS4Bomb
+	dl	__ZTI6Sprite
+
+	section	.rodata,"a",@progbits
+	public	__ZTS6Bullet
+__ZTS6Bullet:
+	db	"6Bullet", 0
+
+	section	.rodata,"a",@progbits
+	public	__ZTI6Bullet
+__ZTI6Bullet:
+	dl	__ZTVN10__cxxabiv120__si_class_type_infoE+6
+	dl	__ZTS6Bullet
+	dl	__ZTI6Sprite
+
+	section	.rodata,"a",@progbits
+	private	_str
+_str:
+	db	"bullet_init: vdp_select_bitmap done", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.2
+_str.2:
+	db	"bullet_init: vdp_solid_bitmap done", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.3
+_.str.3:
+	db	"bitmaps/ship", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.1.4
+_.str.1.4:
+	db	"%s%02d.rgba", 0
+
+	section	.data,"aw",@progbits
+	private	__ZL8rot_ship
+__ZL8rot_ship:
+	dl	0
+	dl	0
+	dl	16777212
+	dl	6
+	dl	15
+	dl	1
+	dl	16777212
+	dl	7
+	dl	30
+	dl	2
+	dl	16777212
+	dl	8
+	dl	45
+	dl	3
+	dl	16777213
+	dl	9
+	dl	60
+	dl	4
+	dl	16777214
+	dl	10
+	dl	75
+	dl	4
+	dl	16777215
+	dl	11
+	dl	90
+	dl	4
+	dl	0
+	dl	12
+	dl	105
+	dl	4
+	dl	1
+	dl	13
+	dl	120
+	dl	4
+	dl	2
+	dl	14
+	dl	135
+	dl	3
+	dl	3
+	dl	15
+	dl	150
+	dl	2
+	dl	4
+	dl	16
+	dl	165
+	dl	1
+	dl	4
+	dl	17
+	dl	180
+	dl	0
+	dl	4
+	dl	18
+	dl	195
+	dl	16777215
+	dl	4
+	dl	19
+	dl	210
+	dl	16777214
+	dl	4
+	dl	20
+	dl	225
+	dl	16777213
+	dl	3
+	dl	21
+	dl	240
+	dl	16777212
+	dl	2
+	dl	22
+	dl	255
+	dl	16777212
+	dl	1
+	dl	23
+	dl	270
+	dl	16777212
+	dl	0
+	dl	0
+	dl	285
+	dl	16777212
+	dl	16777215
+	dl	1
+	dl	300
+	dl	16777212
+	dl	16777214
+	dl	2
+	dl	315
+	dl	16777213
+	dl	16777213
+	dl	3
+	dl	330
+	dl	16777214
+	dl	16777212
+	dl	4
+	dl	345
+	dl	16777215
+	dl	16777212
+	dl	5
+
+	section	.bss,"aw",@nobits
+	private	__ZL8viewport
+__ZL8viewport:
+	rb	3
+
+	section	.rodata,"a",@progbits
+	private	_.str.7
+_.str.7:
+	db	10, 10, "Game over", 10, "Score: %04d", 10, 0
+
+	section	.rodata,"a",@progbits
+	public	__ZTV4Ship
+__ZTV4Ship:
+	dl	0
+	dl	__ZTI4Ship
+	dl	__ZN6SpriteD2Ev
+	dl	__ZN4ShipD0Ev
+	dl	__ZN6Sprite7at_leftEv
+	dl	__ZN6Sprite8at_rightEv
+	dl	__ZN6Sprite6at_topEv
+	dl	__ZN6Sprite9at_bottomEv
+	dl	__ZN6Sprite3dieEv
+	dl	__ZN4Ship4deadEv
+	dl	__ZN4Ship6hit_byEP6Sprite
+	dl	__ZN6Sprite7hittingEPS_
+	dl	__ZN6Sprite7hittingEP9TileArray
+	dl	__ZN9RotSprite10rot_c_wiseEv
+	dl	__ZN9RotSprite11rot_ac_wiseEv
+
+	section	.rodata,"a",@progbits
+	public	__ZTS4Ship
+__ZTS4Ship:
+	db	"4Ship", 0
+
+	section	.rodata,"a",@progbits
+	public	__ZTI4Ship
+__ZTI4Ship:
+	dl	__ZTVN10__cxxabiv120__si_class_type_infoE+6
+	dl	__ZTS4Ship
+	dl	__ZTI9RotSprite
+
+	section	.rodata,"a",@progbits
+	weak	__ZTV16DummySpriteGroup
+__ZTV16DummySpriteGroup:
+	dl	0
+	dl	__ZTI16DummySpriteGroup
+	dl	__ZN16DummySpriteGroup6removeEP6Sprite
+	dl	__ZN16DummySpriteGroup5beginEv
+	dl	__ZN16DummySpriteGroup4nextEv
+
+	section	.rodata,"a",@progbits
+	weak	__ZTS16DummySpriteGroup
+__ZTS16DummySpriteGroup:
+	db	"16DummySpriteGroup", 0
+
+	section	.rodata,"a",@progbits
+	weak	__ZTI16DummySpriteGroup
+__ZTI16DummySpriteGroup:
+	dl	__ZTVN10__cxxabiv120__si_class_type_infoE+6
+	dl	__ZTS16DummySpriteGroup
+	dl	__ZTI11SpriteGroup
+
+	section	.rodata,"a",@progbits
+	private	_str.5
+_str.5:
+	db	"ship_init: Added ship bitmaps", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.8
+_str.8:
+	db	"ship_init: Added ship rotations", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.9
+_str.9:
+	db	"!ship_init: showing ship", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.10
+_str.10:
+	db	"ship_init: DummySpriteGroup", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.11
+_str.11:
+	db	"ship_init: ship added to viewport", 0
+
+	section	.rodata,"a",@progbits
+	public	__ZTV9RotSprite
+__ZTV9RotSprite:
+	dl	0
+	dl	__ZTI9RotSprite
+	dl	__ZN6SpriteD2Ev
+	dl	__ZN9RotSpriteD0Ev
+	dl	__ZN6Sprite7at_leftEv
+	dl	__ZN6Sprite8at_rightEv
+	dl	__ZN6Sprite6at_topEv
+	dl	__ZN6Sprite9at_bottomEv
+	dl	__ZN6Sprite3dieEv
+	dl	__ZN6Sprite4deadEv
+	dl	__ZN6Sprite6hit_byEPS_
+	dl	__ZN6Sprite7hittingEPS_
+	dl	__ZN6Sprite7hittingEP9TileArray
+	dl	__ZN9RotSprite10rot_c_wiseEv
+	dl	__ZN9RotSprite11rot_ac_wiseEv
+
+	section	.rodata,"a",@progbits
+	private	_.str.16
+_.str.16:
+	db	"About to set rotation...", 0
+
+	section	.rodata,"a",@progbits
+	public	__ZTS9RotSprite
+__ZTS9RotSprite:
+	db	"9RotSprite", 0
+
+	section	.rodata,"a",@progbits
+	public	__ZTI9RotSprite
+__ZTI9RotSprite:
+	dl	__ZTVN10__cxxabiv120__si_class_type_infoE+6
+	dl	__ZTS9RotSprite
+	dl	__ZTI6Sprite
+
+	section	.bss,"aw",@nobits
+	public	__ZN6Sprite15sprites_max_numE
+__ZN6Sprite15sprites_max_numE:
+	rb	3
+
+	section	.bss,"aw",@nobits
+	public	__ZN6Sprite11sprites_numE
+__ZN6Sprite11sprites_numE:
+	rb	3
+
+	section	.bss,"aw",@nobits
+	public	__ZN6Sprite17sprites_next_freeE
+__ZN6Sprite17sprites_next_freeE:
+	rb	3
+
+	section	.bss,"aw",@nobits
+	public	__ZN6Sprite11sprites_vdpE
+__ZN6Sprite11sprites_vdpE:
+	rb	3
+
+	section	.rodata,"a",@progbits
+	public	__ZTV6Sprite
+__ZTV6Sprite:
+	dl	0
+	dl	__ZTI6Sprite
+	dl	__ZN6SpriteD2Ev
+	dl	__ZN6SpriteD0Ev
+	dl	__ZN6Sprite7at_leftEv
+	dl	__ZN6Sprite8at_rightEv
+	dl	__ZN6Sprite6at_topEv
+	dl	__ZN6Sprite9at_bottomEv
+	dl	__ZN6Sprite3dieEv
+	dl	__ZN6Sprite4deadEv
+	dl	__ZN6Sprite6hit_byEPS_
+	dl	__ZN6Sprite7hittingEPS_
+	dl	__ZN6Sprite7hittingEP9TileArray
+
+	section	.rodata,"a",@progbits
+	private	_.str.42
+_.str.42:
+	db	"Setting sprite details... ", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.2.44
+_.str.2.44:
+	db	"Too many sprites %d out of %d", 10, " used", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.3.45
+_.str.3.45:
+	db	"Failed to find free sprite id, %d", 10, 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.4
+_.str.4:
+	db	"add_bitmaps: begin. ID %d | num %d | die %d", 10, 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.9
+_.str.9:
+	db	"x %d, y %d, w %d, h %d, brd %d, dx %d, dy %d", 10, 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.10
+_.str.10:
+	db	"Sprite normal %d, die %d, current %d, state %d", 10, 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.11
+_.str.11:
+	db	"Number of sprites %d", 10, 0
+
+	section	.rodata,"a",@progbits
+	public	__ZTS6Sprite
+__ZTS6Sprite:
+	db	"6Sprite", 0
+
+	section	.rodata,"a",@progbits
+	public	__ZTI6Sprite
+__ZTI6Sprite:
+	dl	__ZTVN10__cxxabiv117__class_type_infoE+6
+	dl	__ZTS6Sprite
+
+	section	.rodata,"a",@progbits
+	private	_str.43
+_str.43:
+	db	"Done", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.12
+_str.12:
+	db	"add_bitmaps: sprite selected", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.13
+_str.13:
+	db	"add_bitmaps: vdp_add_sprite_bitmap done", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.14
+_str.14:
+	db	"add_bitmaps: frames increment done", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.15
+_str.15:
+	db	"#Showing sprite......", 0
+
+	section	.rodata,"a",@progbits
+	public	__ZTV11SpriteArray
+__ZTV11SpriteArray:
+	dl	0
+	dl	__ZTI11SpriteArray
+	dl	__ZN11SpriteArray6removeEP6Sprite
+	dl	__ZN11SpriteArray5beginEv
+	dl	__ZN11SpriteArray4nextEv
+	dl	__ZN11SpriteArray7at_leftEv
+	dl	__ZN11SpriteArray8at_rightEv
+
+	section	.rodata,"a",@progbits
+	private	_.str.70
+_.str.70:
+	db	"Alien columns [%d to %d]: ", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.1.72
+_.str.1.72:
+	db	" %d", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.2.71
+_.str.2.71:
+	db	10, "Alien rows [%d to %d]: ", 0
+
+	section	.rodata,"a",@progbits
+	public	__ZTS11SpriteArray
+__ZTS11SpriteArray:
+	db	"11SpriteArray", 0
+
+	section	.rodata,"a",@progbits
+	public	__ZTI11SpriteArray
+__ZTI11SpriteArray:
+	dl	__ZTVN10__cxxabiv120__si_class_type_infoE+6
+	dl	__ZTS11SpriteArray
+	dl	__ZTI11SpriteGroup
+
+	section	.rodata,"a",@progbits
+	weak	__ZTV11SpriteGroup
+__ZTV11SpriteGroup:
+	dl	0
+	dl	__ZTI11SpriteGroup
+	dl	___cxa_pure_virtual
+	dl	___cxa_pure_virtual
+	dl	___cxa_pure_virtual
+
+	section	.rodata,"a",@progbits
+	private	_.str.81
+_.str.81:
+	db	"SpriteGroup Elements: %d", 10, 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.1.82
+_.str.1.82:
+	db	"Sprite[%d] at %p", 10, 0
+
+	section	.rodata,"a",@progbits
+	public	__ZTV10SpriteList
+__ZTV10SpriteList:
+	dl	0
+	dl	__ZTI10SpriteList
+	dl	__ZN10SpriteList6removeEP6Sprite
+	dl	__ZN10SpriteList5beginEv
+	dl	__ZN10SpriteList4nextEv
+
+	section	.rodata,"a",@progbits
+	public	__ZTS10SpriteList
+__ZTS10SpriteList:
+	db	"10SpriteList", 0
+
+	section	.rodata,"a",@progbits
+	weak	__ZTS11SpriteGroup
+__ZTS11SpriteGroup:
+	db	"11SpriteGroup", 0
+
+	section	.rodata,"a",@progbits
+	weak	__ZTI11SpriteGroup
+__ZTI11SpriteGroup:
+	dl	__ZTVN10__cxxabiv117__class_type_infoE+6
+	dl	__ZTS11SpriteGroup
+
+	section	.rodata,"a",@progbits
+	public	__ZTI10SpriteList
+__ZTI10SpriteList:
+	dl	__ZTVN10__cxxabiv120__si_class_type_infoE+6
+	dl	__ZTS10SpriteList
+	dl	__ZTI11SpriteGroup
+
+	section	.rodata,"a",@progbits
+	public	__ZTV4Tile
+__ZTV4Tile:
+	dl	0
+	dl	__ZTI4Tile
+	dl	__ZN4Tile6hit_byEiP6Sprite
+
+	section	.rodata,"a",@progbits
+	public	__ZTS4Tile
+__ZTS4Tile:
+	db	"4Tile", 0
+
+	section	.rodata,"a",@progbits
+	public	__ZTI4Tile
+__ZTI4Tile:
+	dl	__ZTVN10__cxxabiv117__class_type_infoE+6
+	dl	__ZTS4Tile
+
+	section	.bss,"aw",@nobits
+	public	_score
+_score:
+	rb	3
+
+	section	.bss,"aw",@nobits
+	private	__ZL2sv
+__ZL2sv:
+	rb	3
+
+	section	.rodata,"a",@progbits
+	private	_.str.5
+_.str.5:
+	db	"About to enter while(true)", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.6
+_.str.6:
+	db	"====================ESTOY LOOPIN %d====================;", 10, 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.7.90
+_.str.7.90:
+	db	"SCORE: %d", 0
+
+	section	.bss,"aw",@nobits
+	public	_aliens
+_aliens:
+	rb	3
+
+	section	.bss,"aw",@nobits
+	public	_ship
+_ship:
+	rb	3
+
+	section	.rodata,"a",@progbits
+	private	_.str.10.91
+_.str.10.91:
+	db	"game_loop: s=%d", 10, 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.11.92
+_.str.11.92:
+	db	"ship->move_by(%d %d)", 10, 0
+
+	section	.bss,"aw",@nobits
+	public	_bullets
+_bullets:
+	rb	3
+
+	section	.bss,"aw",@nobits
+	public	_bombs
+_bombs:
+	rb	3
+
+	section	.rodata,"a",@progbits
+	private	_.str.16.93
+_.str.16.93:
+	db	"barrier initial loop [b=%d]", 10, 0
+
+	section	.bss,"aw",@nobits
+	public	_barrier
+_barrier:
+	rb	21
+
+	section	.rodata,"a",@progbits
+	private	_.str.17
+_.str.17:
+	db	"barrier[%d]->hit( aliens);", 10, 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.18
+_.str.18:
+	db	"barrier[%d]->hit( ship);", 10, 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.21
+_.str.21:
+	db	"    barrier collision loop [w=%d]", 10, 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.22
+_.str.22:
+	db	"        barrier %d: |", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.23
+_.str.23:
+	db	" bombs hit done |", 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.26
+_.str.26:
+	db	"game_loop: s=%d complete", 10, 0
+
+	section	.bss,"aw",@nobits
+	private	__ZL14prev_key_event.0
+__ZL14prev_key_event.0:
+	rb	4
+
+	section	.data,"aw",@progbits
+	private	__ZL15bullets_visible
+__ZL15bullets_visible:
+	dl	1
+
+	section	.rodata,"a",@progbits
+	public	__ZTV4Bomb
+__ZTV4Bomb:
+	dl	0
+	dl	__ZTI4Bomb
+	dl	__ZN6SpriteD2Ev
+	dl	__ZN4BombD0Ev
+	dl	__ZN6Sprite7at_leftEv
+	dl	__ZN6Sprite8at_rightEv
+	dl	__ZN6Sprite6at_topEv
+	dl	__ZN4Bomb9at_bottomEv
+	dl	__ZN6Sprite3dieEv
+	dl	__ZN6Sprite4deadEv
+	dl	__ZN6Sprite6hit_byEPS_
+	dl	__ZN4Bomb7hittingEP6Sprite
+	dl	__ZN4Bomb7hittingEP9TileArray
+
+	section	.rodata,"a",@progbits
+	public	__ZTV6Bullet
+__ZTV6Bullet:
+	dl	0
+	dl	__ZTI6Bullet
+	dl	__ZN6SpriteD2Ev
+	dl	__ZN6BulletD0Ev
+	dl	__ZN6Sprite7at_leftEv
+	dl	__ZN6Sprite8at_rightEv
+	dl	__ZN6Bullet6at_topEv
+	dl	__ZN6Sprite9at_bottomEv
+	dl	__ZN6Sprite3dieEv
+	dl	__ZN6Sprite4deadEv
+	dl	__ZN6Sprite6hit_byEPS_
+	dl	__ZN6Bullet7hittingEP6Sprite
+	dl	__ZN6Bullet7hittingEP9TileArray
+
+	section	.rodata,"a",@progbits
+	private	_str.89
+_str.89:
+	db	"barrier_init done", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.28
+_str.28:
+	db	"alien_init done", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.29
+_str.29:
+	db	"Ship_init done", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.30
+_str.30:
+	db	"bullet_init done", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.31
+_str.31:
+	db	"bomb_init done", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.32
+_str.32:
+	db	"game_loop: aliens->next_iter();", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.33
+_str.33:
+	db	"game_loop: ship->next_frame();", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.34
+_str.34:
+	db	"Time for next frame", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.35
+_str.35:
+	db	"bullets->hit( aliens );", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.36
+_str.36:
+	db	"bullets->hit( ship );", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.37
+_str.37:
+	db	"aliens->hit( ship );", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.38
+_str.38:
+	db	"bombs->hit( ship );", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.39
+_str.39:
+	db	"aliens bombing loop", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.40
+_str.40:
+	db	"advance projectiles loop", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.41
+_str.41:
+	db	"    finished that w", 0
+
+	section	.rodata,"a",@progbits
+	private	_str.42
+_str.42:
+	db	" bullets hit done ", 0
+
+	section	.text,"ax",@progbits
+	public	__ZN9RotSpriteC1Eiiiiiiii
+	label	__ZN9RotSpriteC1Eiiiiiiii at __ZN9RotSpriteC2Eiiiiiiii
+
+	section	.text,"ax",@progbits
+	public	__ZN9RotSpriteC1E6Coordsiiiiii
+	label	__ZN9RotSpriteC1E6Coordsiiiiii at __ZN9RotSpriteC2E6Coordsiiiiii
+
+	section	.text,"ax",@progbits
+	public	__ZN6SpriteC1Eiiiiiiii
+	label	__ZN6SpriteC1Eiiiiiiii at __ZN6SpriteC2Eiiiiiiii
+
+	section	.text,"ax",@progbits
+	public	__ZN6SpriteC1E6Coordsiiiiii
+	label	__ZN6SpriteC1E6Coordsiiiiii at __ZN6SpriteC2E6Coordsiiiiii
+
+	section	.text,"ax",@progbits
+	public	__ZN6SpriteD1Ev
+	label	__ZN6SpriteD1Ev at __ZN6SpriteD2Ev
+
+	section	.text,"ax",@progbits
+	public	__ZN11SpriteArrayC1Eiiiiiiiiiiii
+	label	__ZN11SpriteArrayC1Eiiiiiiiiiiii at __ZN11SpriteArrayC2Eiiiiiiiiiiii
+
+	section	.text,"ax",@progbits
+	public	__ZN10SpriteListC1Eiiii
+	label	__ZN10SpriteListC1Eiiii at __ZN10SpriteListC2Eiiii
+
+	section	.text,"ax",@progbits
+	public	__ZN4TileC1Eiiiii
+	label	__ZN4TileC1Eiiiii at __ZN4TileC2Eiiiii
+
+	section	.text,"ax",@progbits
+	public	__ZN9TileArrayC1Eiiiiiiii
+	label	__ZN9TileArrayC1Eiiiiiiii at __ZN9TileArrayC2Eiiiiiiii
+
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
+	extern	_getchar
+	extern	_vdp_load_sprite_bitmaps
+	extern	__Unwind_SjLj_Register
+	extern	_vdp_check_key_press
+	extern	_vdp_clear_screen
+	extern	__idivs
+	extern	_vdp_solid_bitmap
+	extern	_vdp_key_init
+	extern	_vdp_update_key_state
+	extern	__ineg
+	extern	__ZdlPv
+	extern	_putchar
+	extern	__ZTVN10__cxxabiv120__si_class_type_infoE
+	extern	_vdp_activate_sprites
+	extern	__indcallhl
+	extern	__ior
+	extern	__ZTVN10__cxxabiv117__class_type_infoE
+	extern	__Znwj
+	extern	__imulu
+	extern	_calloc
+	extern	_vdp_logical_scr_dims
+	extern	___cxa_pure_virtual
+	extern	__lcmpu
+	extern	_vdp_clear_sprite
+	extern	__frameset0
+	extern	_vdp_move_sprite_to
+	extern	__indcall
+	extern	_rand
+	extern	_waitvblank
+	extern	_vdp_select_sprite
+	extern	__setflag
+	extern	__Znaj
+	extern	_printf
+	extern	_vdp_draw_bitmap
+	extern	_exit
+	extern	__iand
+	extern	_vdp_cursor_enable
+	extern	__lshru
+	extern	_vdp_show_sprite
+	extern	_vdp_add_sprite_bitmap
+	extern	_vdp_vdu_init
+	extern	__frameset
+	extern	_puts
+	extern	_vdp_hide_sprite
+	extern	_vdp_select_bitmap
+	extern	_vdp_mode
+	extern	__Unwind_SjLj_Unregister
+	extern	_vdp_move_sprite_by
+	extern	_vdp_nth_sprite_frame
+	extern	_vdp_set_key_event_handler

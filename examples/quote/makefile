@@ -3,7 +3,7 @@
 # ----------------------------
 
 NAME = quote
-DESCRIPTION = "Ag C Toolchain Demo"
+DESCRIPTION = "Quote Demo"
 COMPRESSED = NO
 LDHAS_ARG_PROCESSING = 1
 

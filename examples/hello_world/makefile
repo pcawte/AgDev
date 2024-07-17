@@ -2,8 +2,8 @@
 # Makefile Options
 # ----------------------------
 
-NAME = DEMO
-DESCRIPTION = "Ag C Toolchain Demo"
+NAME = helloworld
+DESCRIPTION = "AgDev Hello World"
 COMPRESSED = NO
 
 CFLAGS = -Wall -Wextra -Oz

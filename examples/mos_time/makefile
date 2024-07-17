@@ -2,8 +2,8 @@
 # Makefile Options
 # ----------------------------
 
-NAME = time
-DESCRIPTION = "Ag C Toolchain Demo"
+NAME = mos_time
+DESCRIPTION = "Ag C Toolchain RTC Demo"
 COMPRESSED = NO
 
 CFLAGS = -Wall -Wextra -Oz

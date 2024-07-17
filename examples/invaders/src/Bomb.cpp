@@ -1,5 +1,5 @@
 #include "Bomb.hpp"
-#include <Sprite/SpriteList.hpp>
+#include "Sprite/SpriteList.hpp"
 #include "config.hpp"
 #include <agon/vdp_vdu.h>
 

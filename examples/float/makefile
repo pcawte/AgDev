@@ -3,7 +3,7 @@
 # ----------------------------
 
 NAME = float
-DESCRIPTION = "Ag C Toolchain Demo"
+DESCRIPTION = "Floats Demo"
 COMPRESSED = NO
 
 CFLAGS = -Wall -Wextra -Oz
