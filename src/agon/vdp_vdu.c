@@ -146,6 +146,7 @@ void vdp_graphics_origin( int x, int y )
 // VDU 23 commands
 
 static VDU_A_B_ui8x8 vdu_redefine_character = { 23, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+static VDU_A_B_CMD vdu_get_scr_dims = { 23, 0, 0x86 };
 static VDU_A_B_CMD_n vdu_set_logical_scr_dims = { 23, 0, 0xC0, 0 }; 
 static VDU_A_CMD_n vdu_cursor_enable = { 23, 1, 0 };
 static VDU_A_B_ui8x8 vdu_set_dotted_line_pattern = { 23, 6, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -234,6 +235,15 @@ void vdp_set_line_thickness( int pixels )
 {
 	vdu_set_line_thickness.CMD = pixels;
 	VDP_PUTS( vdu_set_line_thickness );
+}
+
+void vdp_get_scr_dims( bool wait )
+{
+	if ( !sys_vars ) vdp_vdu_init();
+	if ( wait ) sys_vars->vdp_pflags = 0;
+	VDP_PUTS( vdu_get_scr_dims );
+	// wait for results of mode change to be reflected in SYSVARs
+	if ( wait ) while ( !(sys_vars->vdp_pflags & vdp_pflag_mode) );
 }
 
 void vdp_logical_scr_dims( bool flag )
@@ -356,19 +366,19 @@ void vdp_set_cursor_end_column( int n )
 void vdp_request_text_cursor_position( bool wait )
 {
 	if ( !sys_vars ) vdp_vdu_init();
-	if ( wait ) sys_vars->vpd_pflags = 0;
+	if ( wait ) sys_vars->vdp_pflags = 0;
 
 	VDP_PUTS( vdu_get_text_cursor_position );
 	// wait for results to be reflected in SYSVARs
-	if ( wait ) while ( !(sys_vars->vpd_pflags & vdp_pflag_cursor) );
+	if ( wait ) while ( !(sys_vars->vdp_pflags & vdp_pflag_cursor) );
 }
 void vdp_return_text_cursor_position( uint8_t *return_x, uint8_t *return_y )
 {
 	if ( !sys_vars ) vdp_vdu_init();
-	sys_vars->vpd_pflags = 0;
+	sys_vars->vdp_pflags = 0;
 
 	VDP_PUTS( vdu_get_text_cursor_position );
-	while ( !(sys_vars->vpd_pflags & vdp_pflag_cursor) );
+	while ( !(sys_vars->vdp_pflags & vdp_pflag_cursor) );
 
 	if ( return_x) *return_x = getsysvar_cursorX();
 	if ( return_y) *return_y = getsysvar_cursorY();
@@ -377,24 +387,24 @@ void vdp_return_text_cursor_position( uint8_t *return_x, uint8_t *return_y )
 void vdp_request_ascii_code_at_position( int x, int y, bool wait )
 {
 	if ( !sys_vars ) vdp_vdu_init();
-	if ( wait ) sys_vars->vpd_pflags = 0;
+	if ( wait ) sys_vars->vdp_pflags = 0;
 	
 	vdu_get_ascii_code_at_position.x = x;
 	vdu_get_ascii_code_at_position.y = y;
 	VDP_PUTS( vdu_get_ascii_code_at_position );
-	if ( wait ) while ( !(sys_vars->vpd_pflags & vdp_pflag_scrchar) );
+	if ( wait ) while ( !(sys_vars->vdp_pflags & vdp_pflag_scrchar) );
 }
 uint8_t vdp_return_ascii_code_at_position( int x, int y )
 {
 	uint8_t code = 0;
 
 	if ( !sys_vars ) vdp_vdu_init();
-	sys_vars->vpd_pflags = 0;
+	sys_vars->vdp_pflags = 0;
 
 	vdu_get_ascii_code_at_position.x = x;
 	vdu_get_ascii_code_at_position.y = y;
 	VDP_PUTS( vdu_get_ascii_code_at_position );
-	while ( !(sys_vars->vpd_pflags & vdp_pflag_scrchar) );
+	while ( !(sys_vars->vdp_pflags & vdp_pflag_scrchar) );
 
 	code = getsysvar_scrchar();
 	return code;
@@ -402,24 +412,24 @@ uint8_t vdp_return_ascii_code_at_position( int x, int y )
 void vdp_request_ascii_code_at_graphics_position( int x, int y, bool wait )
 {
 	if ( !sys_vars ) vdp_vdu_init();
-	if ( wait ) sys_vars->vpd_pflags = 0;
+	if ( wait ) sys_vars->vdp_pflags = 0;
 
 	vdu_get_ascii_code_at_graphics_position.x = x;
 	vdu_get_ascii_code_at_graphics_position.y = y;
 	VDP_PUTS( vdu_get_ascii_code_at_graphics_position );
-	if ( wait ) while ( !(sys_vars->vpd_pflags & vdp_pflag_scrchar) );
+	if ( wait ) while ( !(sys_vars->vdp_pflags & vdp_pflag_scrchar) );
 }
 uint8_t vdp_return_ascii_code_at_graphics_position( int x, int y )
 {
 	uint8_t code = 0;
 
 	if ( !sys_vars ) vdp_vdu_init();
-	sys_vars->vpd_pflags = 0;
+	sys_vars->vdp_pflags = 0;
 
 	vdu_get_ascii_code_at_graphics_position.x = x;
 	vdu_get_ascii_code_at_graphics_position.y = y;
 	VDP_PUTS( vdu_get_ascii_code_at_graphics_position );
-	while ( !(sys_vars->vpd_pflags & vdp_pflag_scrchar) );
+	while ( !(sys_vars->vdp_pflags & vdp_pflag_scrchar) );
 
 	code = getsysvar_scrchar();
 	return code;
@@ -435,24 +445,24 @@ void vdp_move_cursor_relative( int x, int y )
 void vdp_request_pixel_colour( int x, int y, bool wait )
 {
 	if ( !sys_vars ) vdp_vdu_init();
-	if ( wait ) sys_vars->vpd_pflags = 0;
+	if ( wait ) sys_vars->vdp_pflags = 0;
 
 	vdu_get_pixel_colour.x = x;
 	vdu_get_pixel_colour.y = y;
 	VDP_PUTS( vdu_get_pixel_colour );
-	if ( wait ) while ( !(sys_vars->vpd_pflags & vdp_pflag_point) );
+	if ( wait ) while ( !(sys_vars->vdp_pflags & vdp_pflag_point) );
 }
 uint24_t vdp_return_pixel_colour( int x, int y )
 {
 	uint24_t pixel = 0;
 
 	if ( !sys_vars ) vdp_vdu_init();
-	sys_vars->vpd_pflags = 0;
+	sys_vars->vdp_pflags = 0;
 
 	vdu_get_pixel_colour.x = x;
 	vdu_get_pixel_colour.y = y;
 	VDP_PUTS( vdu_get_pixel_colour );
-	while ( !(sys_vars->vpd_pflags & vdp_pflag_point) );
+	while ( !(sys_vars->vdp_pflags & vdp_pflag_point) );
 
 	pixel = getsysvar_scrpixel();
 	return pixel;
@@ -460,23 +470,23 @@ uint24_t vdp_return_pixel_colour( int x, int y )
 void vdp_request_palette_entry( int n, bool wait )
 {
 	if ( !sys_vars ) vdp_vdu_init();
-	if ( wait ) sys_vars->vpd_pflags = 0;
+	if ( wait ) sys_vars->vdp_pflags = 0;
 
 	vdu_request_palette_entry.b0 = n;
 	VDP_PUTS( vdu_request_palette_entry );
 
-	if ( wait ) while ( !(sys_vars->vpd_pflags & vdp_pflag_point) );
+	if ( wait ) while ( !(sys_vars->vdp_pflags & vdp_pflag_point) );
 }
 uint24_t vdp_return_palette_entry_colour( int n )
 {
 	uint24_t pixel = 0;
 	if ( !sys_vars ) vdp_vdu_init();
-	sys_vars->vpd_pflags = 0;
+	sys_vars->vdp_pflags = 0;
 
 	vdu_request_palette_entry.b0 = n;
 	VDP_PUTS( vdu_request_palette_entry );
 
-	while ( !(sys_vars->vpd_pflags & vdp_pflag_point) );
+	while ( !(sys_vars->vdp_pflags & vdp_pflag_point) );
 	pixel = getsysvar_scrpixel();
 	return pixel;
 }
@@ -484,12 +494,12 @@ uint8_t vdp_return_palette_entry_index( int n )
 {
 	uint8_t index = 0;
 	if ( !sys_vars ) vdp_vdu_init();
-	sys_vars->vpd_pflags = 0;
+	sys_vars->vdp_pflags = 0;
 
 	vdu_request_palette_entry.b0 = n;
 	VDP_PUTS( vdu_request_palette_entry );
 
-	while ( !(sys_vars->vpd_pflags & vdp_pflag_point) );
+	while ( !(sys_vars->vdp_pflags & vdp_pflag_point) );
 	index = getsysvar_scrpixelIndex();
 	return index;
 }
@@ -509,9 +519,9 @@ void vdp_set_keyboard_locale( int locale )
 void vdp_request_rtc( bool wait )
 {
 	if ( !sys_vars ) vdp_vdu_init();
-	if ( wait ) sys_vars->vpd_pflags = 0;
+	if ( wait ) sys_vars->vdp_pflags = 0;
 	VDP_PUTS( vdu_get_rtc );
-	if ( wait ) while ( !(sys_vars->vpd_pflags & vdp_pflag_rtc) );
+	if ( wait ) while ( !(sys_vars->vdp_pflags & vdp_pflag_rtc) );
 }
 void vdp_set_rtc( int year, int month, int day, int hours, int minutes, int seconds )
 {

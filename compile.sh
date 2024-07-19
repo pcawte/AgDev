@@ -33,7 +33,6 @@ if [ ! -z "$1" ]; then
     cd $GITHUB
     cp -r $1/* $AGDEV_GIT;
 else
-    exit
     cd $GITHUB
     git clone https://github.com/pcawte/AgDev.git  AgDev_git;
 fi

@@ -137,9 +137,8 @@ uint24_t vdp_return_pixel_colour( int x, int y );
 
 // VDU 23, 0, &85, channel, command, <args>: Audio commands
 // -- see below --
-
-// VDU 23, 0, &86: Fetch the screen dimensions
-//     -- not implemented --
+// VDU 23, 0, &86: Fetch the screen dimensions (legacy)
+void vdp_get_scr_dims( bool );
 //    "Generally applications should not need to call this, as this information will
 //     be automatically sent to MOS when the screen mode is changed."
 //     The application should read the screen dimension using the getsysvar_scr*() calls
@@ -190,6 +189,7 @@ void vdp_move_graphics_origin_and_viewport( void );
 void vdp_logical_scr_dims( bool flag );
 // VDU 23, 0, &C1, n: Switch legacy modes on or off
 void vdp_legacy_modes( bool on );
+void vdp_get_scr_dims( bool );
 // VDU 23, 0, &C3: Swap the screen buffer and/or wait for VSYNC
 void vdp_swap( void );
 // VDU 23, 0, &C8, <command>, [<args>]: Context management API 
