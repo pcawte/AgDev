@@ -30,9 +30,9 @@ int Sprite::init( int num_sprites )
 
 Sprite::Sprite( int x, int y, int dx, int dy, int width, int height, int border, int bitmap )
 {
-	printf("Setting sprite details... ");
+	//printf("Setting sprite details... ");
 	set_details( x, y, dx, dy, width, height, border, bitmap );
-	printf("Done\n");
+	//printf("Done\n");
 }
 
 Sprite::Sprite( Coords coords, int dx, int dy, int width, int height, int border, int bitmap )
@@ -153,23 +153,23 @@ void Sprite::add_bitmap( int bitmap_id, int die )
 }
 
 void Sprite::add_bitmaps( int bitmap_id, int num, int die ) {
-	printf("add_bitmaps: begin. ID %d | num %d | die %d\n", bitmap_id, num, die);
+	//printf("add_bitmaps: begin. ID %d | num %d | die %d\n", bitmap_id, num, die);
 	vdp_select_sprite( s_vdp_id );
-	printf("add_bitmaps: sprite selected\n");
+	//printf("add_bitmaps: sprite selected\n");
 	for ( int i = 0; i < num; i++ ) {
 		vdp_add_sprite_bitmap( bitmap_id++ ); 
 	}
-	printf("add_bitmaps: vdp_add_sprite_bitmap done\n");
+	//printf("add_bitmaps: vdp_add_sprite_bitmap done\n");
 	if ( !die ) frames += num;
 	else die_frames += num;
-	printf("add_bitmaps: frames increment done\n");
+	//printf("add_bitmaps: frames increment done\n");
 }
 
 // Visibility
 
 void Sprite::show()
 {
-	printf("#Showing sprite......\n");
+	//printf("#Showing sprite......\n");
 	if ( !visible ) {
 		vdp_select_sprite( s_vdp_id );
 		vdp_show_sprite();

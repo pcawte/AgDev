@@ -34,8 +34,6 @@ static volatile SYSVAR *sv;
 
 int main()
 {
-	// Initialisation of vdp_vdu, vdp_key and Sprites
-
 	sv = vdp_vdu_init();
 	if ( vdp_key_init() == -1 ) return 1;
 
@@ -47,22 +45,22 @@ int main()
 	vdp_cursor_enable( false );
 
 	barrier_init();
-	printf("barrier_init done\n");
+	// printf("barrier_init done\n");
 	alien_init();					// Do this one first at ship borrows the same explosion bitmaps
-	printf("alien_init done\n");
+	// printf("alien_init done\n");
 	ship_init();
-	printf("Ship_init done\n");
+	// printf("Ship_init done\n");
 	bullet_init();
-	printf("bullet_init done\n");
+	// printf("bullet_init done\n");
 	bomb_init();
-	printf("bomb_init done\n");
+	// printf("bomb_init done\n");
 
 	// Get ready for game loop & enter game loop
 
 	vdp_set_key_event_handler( key_event_handler );
 
-	vdp_clear_screen();
-	getchar();
+	// vdp_clear_screen();
+	// getchar();
 	game_loop();									// Actually this never returns - exit via event handler
 
 	vdp_cursor_enable( true );
@@ -74,53 +72,53 @@ void game_loop()
 {
 	Bomb *bomb;
 	int loopcounter = 0;
-	printf("About to enter while(true)");
-		getchar();
+	// printf("About to enter while(true)");
+	// 	getchar();
 
 	while ( true ) {
 		loopcounter++;
-		printf("====================ESTOY LOOPIN %d====================;\n", loopcounter);
-		printf( "SCORE: %d", score );
-		getchar();
+		//printf("====================loop %d====================;\n", loopcounter);
+		//printf( "SCORE: %d", score );
+		//getchar();
 		aliens->next_iter();
-		printf("game_loop: aliens->next_iter();\n");
-		getchar();
+		//printf("game_loop: aliens->next_iter();\n");
+		//getchar();
 		ship->next_frame();
-		printf("game_loop: ship->next_frame();\n");
-		getchar();
+		//printf("game_loop: ship->next_frame();\n");
+		//getchar();
 		for ( int s = 0; s < 4; s++ ) {
-			printf("game_loop: s=%d\n", s);
+			//printf("game_loop: s=%d\n", s);
 			int dx = 0, dy = 0;
 			if ( vdp_check_key_press( 0x9c ) ) dx = 3;								// right
 			if ( vdp_check_key_press( 0x9a ) ) dx -= 3;								// left
 			if ( vdp_check_key_press( 0x96 ) ) dy = -3;								// up
 			if ( vdp_check_key_press( 0x98 ) ) dy += 3;				 				// down
 			ship->move_by( dx, dy );
-			printf("ship->move_by(%d %d)\n", dx, dy);
-			getchar();
+			//printf("ship->move_by(%d %d)\n", dx, dy);
+			//getchar();
 			bullets->hit( aliens );
-			printf("bullets->hit( aliens );\n");
-			getchar();
+			//printf("bullets->hit( aliens );\n");
+			//getchar();
 			bullets->hit( ship );
-			printf("bullets->hit( ship );\n");
-			getchar();
+			//printf("bullets->hit( ship );\n");
+			//getchar();
 			aliens->hit( ship );
-			printf("aliens->hit( ship );\n");
-			getchar();
+			//printf("aliens->hit( ship );\n");
+			//getchar();
 			bombs->hit( ship );
-			printf("bombs->hit( ship );\n");
-			getchar();
+			// printf("bombs->hit( ship );\n");
+			// getchar();
 
 			for ( int b = 0; b < BARRIER_NUM; b++ ) {
-			printf("barrier initial loop [b=%d]\n", b);
+			// printf("barrier initial loop [b=%d]\n", b);
 				barrier[b]->is_hit( aliens );
-				printf("barrier[%d]->hit( aliens);\n", b);
-				getchar();
+				// printf("barrier[%d]->hit( aliens);\n", b);
+				// getchar();
 				barrier[b]->is_hit( ship );
-				printf("barrier[%d]->hit( ship);\n", b);
-				getchar();
+				// printf("barrier[%d]->hit( ship);\n", b);
+				// getchar();
 			}
-			printf("aliens bombing loop\n");
+			// printf("aliens bombing loop\n");
 			for ( int c = 0; c < ALIEN_COLS; c++ )
 				for ( int r = ALIEN_ROWS-1; r >=0; r-- )
 					if ( aliens->elem(c,r) ) {
@@ -131,29 +129,29 @@ void game_loop()
 						}
 						break;
 					}
-			printf("advance projectiles loop\n");
+			// printf("advance projectiles loop\n");
 			for ( int w = 0; w < 2; w++ ) {
 				bullets->next_step();
 				bombs->next_step();
-				printf("    barrier collision loop [w=%d]\n", w);
+				// printf("    barrier collision loop [w=%d]\n", w);
 				for ( int b = 0; b < BARRIER_NUM; b++ ) {
-					printf("        barrier %d: |", b);
+					// printf("        barrier %d: |", b);
 					bombs->hit( barrier[b] );
-					printf(" bombs hit done |");
+					// printf(" bombs hit done |");
 					bullets->hit( barrier[b] );
-					printf(" bullets hit done \n");
-					getchar();
+					// printf(" bullets hit done \n");
+					// getchar();
 				}
 				wait_cnt( 50 );
-				printf("    finished that w\n");
-				getchar();
+				// printf("    finished that w\n");
+				// getchar();
 			}
-			printf("game_loop: s=%d complete\n", s);
-				getchar();
+			// printf("game_loop: s=%d complete\n", s);
+			// 	getchar();
 
 		}
-		printf("Time for next frame\n");
-				getchar();
+		// printf("Time for next frame\n");
+		// 		getchar();
 
 	}	
 }

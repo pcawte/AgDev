@@ -1411,7 +1411,7 @@ __ZN9RotSprite13add_rotationsEP9ROT_TABLEiib:
 	call	__ZN6Sprite9set_frameEi
 	pop	hl
 	pop	hl
-	ld	hl, _str.43
+	ld	hl, _str.17
 	push	hl
 	call	_puts
 	ld	sp, ix
@@ -1757,26 +1757,28 @@ BB48_3:
 __ZN6SpriteC2Eiiiiiiii:
 	ld	hl, -27
 	call	__frameset
-	ld	iy, (ix + 6)
-	ld	(ix - 24), iy
-	ld	hl, (ix + 9)
+	ld	hl, (ix + 6)
 	ld	(ix - 3), hl
-	ld	hl, (ix + 12)
+	ld	hl, (ix + 9)
 	ld	(ix - 6), hl
-	ld	hl, (ix + 15)
+	ld	hl, (ix + 12)
 	ld	(ix - 9), hl
-	ld	hl, (ix + 18)
+	ld	hl, (ix + 15)
 	ld	(ix - 12), hl
-	ld	hl, (ix + 21)
+	ld	hl, (ix + 18)
 	ld	(ix - 15), hl
-	ld	hl, (ix + 24)
+	ld	hl, (ix + 21)
 	ld	(ix - 18), hl
-	ld	hl, (ix + 27)
+	ld	hl, (ix + 24)
 	ld	(ix - 21), hl
+	ld	hl, (ix + 27)
+	ld	(ix - 24), hl
 	ld	hl, (ix + 30)
 	ld	(ix - 27), hl
 	ld	hl, __ZTV6Sprite+6
+	ld	iy, (ix - 3)
 	ld	(iy), hl
+	ld	iy, (ix - 3)
 	lea	hl, iy + 27
 	ld	(iy + 27), 0
 	push	hl
@@ -1784,37 +1786,27 @@ __ZN6SpriteC2Eiiiiiiii:
 	inc	de
 	ld	bc, 12
 	ldir
-	ld	hl, _.str.42
-	push	hl
-	call	_printf
-	pop	hl
-	ld	hl, (ix - 27)
-	push	hl
-	ld	hl, (ix - 21)
-	push	hl
-	ld	hl, (ix - 18)
-	push	hl
-	ld	hl, (ix - 15)
-	push	hl
-	ld	hl, (ix - 12)
-	push	hl
-	ld	hl, (ix - 9)
-	push	hl
-	ld	hl, (ix - 6)
-	push	hl
 	ld	hl, (ix - 3)
-	push	hl
-	ld	hl, (ix - 24)
-	push	hl
-	call	__ZN6Sprite11set_detailsEiiiiiiii
-	ld	hl, 27
-	add	hl, sp
-	ld	sp, hl
-	ld	hl, _str.43
 	ld	(ix + 6), hl
+	ld	hl, (ix - 6)
+	ld	(ix + 9), hl
+	ld	hl, (ix - 9)
+	ld	(ix + 12), hl
+	ld	hl, (ix - 12)
+	ld	(ix + 15), hl
+	ld	hl, (ix - 15)
+	ld	(ix + 18), hl
+	ld	hl, (ix - 18)
+	ld	(ix + 21), hl
+	ld	hl, (ix - 21)
+	ld	(ix + 24), hl
+	ld	hl, (ix - 24)
+	ld	(ix + 27), hl
+	ld	hl, (ix - 27)
+	ld	(ix + 30), hl
 	ld	sp, ix
 	pop	ix
-	jp	_puts
+	jp	__ZN6Sprite11set_detailsEiiiiiiii
 	section	.text,"ax",@progbits
 
 	section	.text,"ax",@progbits
@@ -1847,7 +1839,7 @@ __ZN6Sprite11set_detailsEiiiiiiii:
 	sbc	hl, bc
 	call	pe, __setflag
 	jp	p, BB50_2
-	ld	hl, _.str.2.44
+	ld	hl, _.str.42
 	push	de
 	push	bc
 	push	hl
@@ -1866,7 +1858,7 @@ BB50_2:
 	sbc	hl, bc
 	call	pe, __setflag
 	jp	p, BB50_5
-	ld	hl, _.str.3.45
+	ld	hl, _.str.1.43
 	push	de
 	push	hl
 	call	_printf
@@ -2331,105 +2323,72 @@ BB61_5:
 	section	.text,"ax",@progbits
 	public	__ZN6Sprite11add_bitmapsEiii
 __ZN6Sprite11add_bitmapsEiii:
-	ld	hl, -18
+	ld	hl, -6
 	call	__frameset
-	ld	hl, (ix + 6)
-	ld	(ix - 6), hl
-	ld	bc, (ix + 9)
-	ld	hl, (ix + 12)
-	ld	(ix - 3), hl
-	ld	de, (ix + 15)
-	ld	iy, _.str.4
-	ld	(ix - 15), de
-	push	de
-	push	hl
-	ld	(ix - 9), bc
-	push	bc
-	push	iy
-	call	_printf
-	pop	hl
-	pop	hl
-	pop	hl
-	pop	hl
-	ld	iy, (ix - 6)
+	ld	iy, (ix + 6)
 	ld	hl, (iy + 3)
 	push	hl
 	call	_vdp_select_sprite
 	pop	hl
-	ld	hl, _str.12
-	push	hl
-	call	_puts
-	pop	hl
 	ld	de, 1
-	ld	hl, (ix - 3)
+	ld	hl, (ix + 12)
 	or	a, a
 	sbc	hl, de
 	call	pe, __setflag
-	ld	de, (ix - 3)
+	ld	hl, (ix + 12)
 	jp	p, BB62_2
-	ld	de, 0
+	or	a, a
+	sbc	hl, hl
 BB62_2:
-	ld	bc, _str.13
-	ld	hl, 28
-	ld	(ix - 12), hl
+	ld	iy, (ix + 9)
+	ld	bc, (ix + 15)
+	ld	de, 28
 BB62_3:
-	push	de
-	pop	hl
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
 	jr	z, BB62_5
-	ld	hl, (ix - 9)
-	push	hl
-	inc	hl
-	ld	(ix - 9), hl
-	ld	(ix - 18), de
+	push	iy
+	inc	iy
+	ld	(ix - 6), iy
+	ld	(ix - 3), hl
 	call	_vdp_add_sprite_bitmap
-	ld	bc, _str.13
-	ld	de, (ix - 18)
-	pop	hl
-	dec	de
+	ld	iy, (ix - 6)
+	ld	hl, (ix - 3)
+	ld	de, 28
+	pop	bc
+	ld	bc, (ix + 15)
+	dec	hl
 	jr	BB62_3
 BB62_5:
 	push	bc
-	call	_puts
 	pop	hl
-	ld	hl, (ix - 15)
 	add	hl, bc
 	or	a, a
 	sbc	hl, bc
 	jr	z, BB62_7
-	ld	hl, 31
-	ld	(ix - 12), hl
+	ld	de, 31
 BB62_7:
-	ld	iy, (ix - 6)
-	ld	de, (ix - 12)
+	ld	hl, (ix + 6)
+	push	hl
+	pop	iy
 	add	iy, de
 	ld	hl, (iy)
-	ld	de, (ix - 3)
+	ld	de, (ix + 12)
 	add	hl, de
 	ld	(iy), hl
-	ld	hl, _str.14
-	ld	(ix + 6), hl
 	ld	sp, ix
 	pop	ix
-	jp	_puts
+	ret
 	section	.text,"ax",@progbits
 
 	section	.text,"ax",@progbits
 	public	__ZN6Sprite4showEv
 __ZN6Sprite4showEv:
 	call	__frameset0
-	ld	hl, _str.15
-	push	hl
-	call	_puts
-	pop	hl
 	ld	iy, (ix + 6)
-	lea	hl, iy
 	bit	0, (iy + 27)
 	jr	nz, BB63_2
-	push	hl
-	pop	iy
 	ld	hl, (iy + 3)
 	push	hl
 	call	_vdp_select_sprite
@@ -3059,7 +3018,7 @@ __ZN6Sprite4dumpEv:
 	push	hl
 	ld	hl, (ix - 3)
 	push	hl
-	ld	hl, _.str.9
+	ld	hl, _.str.2.56
 	push	hl
 	call	_printf
 	ld	hl, 24
@@ -3076,7 +3035,7 @@ __ZN6Sprite4dumpEv:
 	push	de
 	ld	hl, (ix - 3)
 	push	hl
-	ld	hl, _.str.10
+	ld	hl, _.str.3.57
 	push	hl
 	call	_printf
 	ld	sp, ix
@@ -3087,7 +3046,7 @@ __ZN6Sprite4dumpEv:
 	section	.text,"ax",@progbits
 	public	__ZN6Sprite5debugEv
 __ZN6Sprite5debugEv:
-	ld	hl, _.str.11
+	ld	hl, _.str.4
 	ld	de, (__ZN6Sprite11sprites_numE)
 	push	de
 	push	hl
@@ -5861,7 +5820,7 @@ _main:
 	ld	de, -1
 	or	a, a
 	sbc	hl, de
-	jp	z, BB127_3
+	jr	z, BB127_3
 	ld	hl, 255
 	push	hl
 	call	__ZN6Sprite4initEi
@@ -5887,36 +5846,14 @@ _main:
 	call	_vdp_cursor_enable
 	pop	hl
 	call	__Z12barrier_initv
-	ld	hl, _str.89
-	push	hl
-	call	_puts
-	pop	hl
 	call	__Z10alien_initv
-	ld	hl, _str.28
-	push	hl
-	call	_puts
-	pop	hl
 	call	__Z9ship_initv
-	ld	hl, _str.29
-	push	hl
-	call	_puts
-	pop	hl
 	call	__Z11bullet_initv
-	ld	hl, _str.30
-	push	hl
-	call	_puts
-	pop	hl
 	call	__Z9bomb_initv
-	ld	hl, _str.31
-	push	hl
-	call	_puts
-	pop	hl
 	ld	hl, __Z17key_event_handler9KEY_EVENT
 	push	hl
 	call	_vdp_set_key_event_handler
 	pop	hl
-	call	_vdp_clear_screen
-	call	_getchar
 	call	__Z9game_loopv
 BB127_3:
 	ld	hl, 1
@@ -6132,65 +6069,25 @@ BB128_25:
 	section	.text,"ax",@progbits
 	public	__Z9game_loopv
 __Z9game_loopv:
-	ld	hl, -27
+	ld	hl, -24
 	call	__frameset
-	ld	hl, _.str.5
-	push	hl
-	call	_printf
-	pop	hl
-	call	_getchar
-	or	a, a
-	sbc	hl, hl
 BB129_1:
-	inc	hl
-	ld	(ix - 18), hl
-	push	hl
-	ld	hl, _.str.6
-	push	hl
-	call	_printf
-	pop	hl
-	pop	hl
-	ld	hl, (_score)
-	push	hl
-	ld	hl, _.str.7.90
-	push	hl
-	call	_printf
-	pop	hl
-	pop	hl
-	call	_getchar
 	ld	hl, (_aliens)
 	push	hl
 	call	__ZN11SpriteArray9next_iterEv
 	pop	hl
-	ld	hl, _str.32
-	push	hl
-	call	_puts
-	pop	hl
-	call	_getchar
 	ld	hl, (_ship)
 	push	hl
 	call	__ZN9RotSprite10next_frameEv
 	pop	hl
-	ld	hl, _str.33
-	push	hl
-	call	_puts
-	pop	hl
-	call	_getchar
-	ld	bc, 0
+	or	a, a
+	sbc	hl, hl
 BB129_2:
-	push	bc
-	pop	hl
+	ld	(ix - 12), hl
 	ld	de, 4
 	or	a, a
 	sbc	hl, de
-	jp	z, BB129_30
-	ld	(ix - 12), bc
-	push	bc
-	ld	hl, _.str.10.91
-	push	hl
-	call	_printf
-	pop	hl
-	pop	hl
+	jr	z, BB129_1
 	ld	hl, -100
 	push	hl
 	call	_vdp_check_key_press
@@ -6201,23 +6098,22 @@ BB129_2:
 	or	a, a
 	sbc	hl, hl
 BB129_5:
-	ld	(ix - 15), hl
+	ld	(ix - 9), hl
 	ld	hl, -102
 	push	hl
 	call	_vdp_check_key_press
-	ld	de, (ix - 15)
+	ld	bc, (ix - 9)
 	pop	hl
-	push	de
-	pop	iy
-	ld	hl, -3
-	push	hl
-	pop	bc
-	add	iy, bc
-	ld	(ix - 9), iy
+	push	bc
+	pop	hl
+	ld	de, -3
+	add	hl, de
 	bit	0, a
 	jr	nz, BB129_7
-	ld	(ix - 9), de
+	push	bc
+	pop	hl
 BB129_7:
+	ld	(ix - 9), hl
 	ld	hl, -106
 	push	hl
 	call	_vdp_check_key_press
@@ -6232,8 +6128,8 @@ BB129_9:
 	ld	hl, -104
 	push	hl
 	call	_vdp_check_key_press
-	pop	hl
 	ld	bc, (ix - 15)
+	pop	hl
 	push	bc
 	pop	hl
 	ld	de, 3
@@ -6243,27 +6139,15 @@ BB129_9:
 	push	bc
 	pop	hl
 BB129_11:
-	ld	(ix - 15), hl
 	ld	de, (_ship)
 	push	hl
-	ld	bc, (ix - 9)
-	push	bc
+	ld	hl, (ix - 9)
+	push	hl
 	push	de
 	call	__ZN4Ship7move_byEii
 	pop	hl
 	pop	hl
 	pop	hl
-	ld	hl, (ix - 15)
-	push	hl
-	ld	hl, (ix - 9)
-	push	hl
-	ld	hl, _.str.11.92
-	push	hl
-	call	_printf
-	pop	hl
-	pop	hl
-	pop	hl
-	call	_getchar
 	ld	hl, (_bullets)
 	ld	de, (_aliens)
 	push	de
@@ -6271,11 +6155,6 @@ BB129_11:
 	call	__ZN11SpriteGroup3hitEPS_
 	pop	hl
 	pop	hl
-	ld	hl, _str.35
-	push	hl
-	call	_puts
-	pop	hl
-	call	_getchar
 	ld	hl, (_bullets)
 	ld	de, (_ship)
 	push	de
@@ -6283,11 +6162,6 @@ BB129_11:
 	call	__ZN11SpriteGroup3hitEP6Sprite
 	pop	hl
 	pop	hl
-	ld	hl, _str.36
-	push	hl
-	call	_puts
-	pop	hl
-	call	_getchar
 	ld	hl, (_aliens)
 	ld	de, (_ship)
 	push	de
@@ -6295,11 +6169,6 @@ BB129_11:
 	call	__ZN11SpriteGroup3hitEP6Sprite
 	pop	hl
 	pop	hl
-	ld	hl, _str.37
-	push	hl
-	call	_puts
-	pop	hl
-	call	_getchar
 	ld	hl, (_bombs)
 	ld	de, (_ship)
 	push	de
@@ -6307,71 +6176,38 @@ BB129_11:
 	call	__ZN11SpriteGroup3hitEP6Sprite
 	pop	hl
 	pop	hl
-	ld	hl, _str.38
-	push	hl
-	call	_puts
-	pop	hl
-	call	_getchar
-	ld	hl, _barrier
-	ld	(ix - 9), hl
-	ld	bc, 0
+	ld	iy, 0
 BB129_12:
-	push	bc
-	pop	hl
-	ld	de, 7
+	lea	hl, iy
+	ld	de, 21
 	or	a, a
 	sbc	hl, de
 	jr	z, BB129_14
-	push	bc
-	ld	hl, _.str.16.93
-	push	hl
-	ld	(ix - 15), bc
-	call	_printf
-	pop	hl
-	pop	hl
-	ld	hl, (ix - 9)
+	lea	de, iy
+	ld	hl, _barrier
+	add	hl, de
+	ld	(ix - 15), hl
 	ld	bc, (hl)
 	ld	de, (_aliens)
 	push	de
 	push	bc
+	ld	(ix - 9), iy
 	call	__ZN9TileArray6is_hitEP11SpriteGroup
 	pop	hl
 	pop	hl
 	ld	hl, (ix - 15)
-	push	hl
-	ld	hl, _.str.17
-	push	hl
-	call	_printf
-	pop	hl
-	pop	hl
-	call	_getchar
-	ld	hl, (ix - 9)
 	ld	hl, (hl)
 	ld	de, (_ship)
 	push	de
 	push	hl
 	call	__ZN9TileArray6is_hitEP6Sprite
-	pop	hl
-	pop	hl
-	ld	hl, (ix - 15)
-	push	hl
-	ld	hl, _.str.18
-	push	hl
-	call	_printf
-	pop	hl
-	pop	hl
-	call	_getchar
-	ld	bc, (ix - 15)
-	inc	bc
 	ld	iy, (ix - 9)
-	lea	iy, iy + 3
-	ld	(ix - 9), iy
+	pop	hl
+	pop	hl
+	ld	de, 3
+	add	iy, de
 	jr	BB129_12
 BB129_14:
-	ld	hl, _str.39
-	push	hl
-	call	_puts
-	pop	hl
 	ld	bc, 0
 	ld	(ix - 9), bc
 BB129_15:
@@ -6386,13 +6222,13 @@ BB129_15:
 	push	hl
 	pop	iy
 	ld	de, (iy + 18)
-	ld	(ix - 21), de
+	ld	(ix - 18), de
 	ld	hl, (iy + 24)
 	ld	bc, (ix - 9)
 	call	__imulu
 	push	hl
 	pop	de
-	ld	iy, (ix - 21)
+	ld	iy, (ix - 18)
 	add	iy, de
 	lea	iy, iy + 12
 	ld	bc, 4
@@ -6413,9 +6249,9 @@ BB129_17:
 	lea	iy, iy - 3
 	jr	BB129_17
 BB129_20:
-	ld	(ix - 21), bc
+	ld	(ix - 18), bc
 	call	_rand
-	ld	bc, (ix - 21)
+	ld	bc, (ix - 18)
 	ld	de, 419431
 	or	a, a
 	sbc	hl, de
@@ -6424,21 +6260,21 @@ BB129_20:
 	ld	hl, 43
 	push	hl
 	call	__Znwj
-	ld	(ix - 24), hl
+	ld	(ix - 21), hl
 	pop	hl
 	ld	iy, (_aliens)
 	ld	hl, (iy + 18)
-	ld	(ix - 27), hl
+	ld	(ix - 24), hl
 	ld	hl, (iy + 24)
 	ld	bc, (ix - 15)
 	call	__imulu
-	ld	de, (ix - 21)
+	ld	de, (ix - 18)
 	add	hl, de
 	ld	bc, 3
 	call	__imulu
 	push	hl
 	pop	de
-	ld	hl, (ix - 27)
+	ld	hl, (ix - 24)
 	add	hl, de
 	ld	hl, (hl)
 	push	hl
@@ -6447,11 +6283,11 @@ BB129_20:
 	pop	hl
 	pop	hl
 	ld	hl, (ix - 6)
-	ld	(ix - 21), hl
+	ld	(ix - 18), hl
 	ld	hl, (ix - 3)
-	ld	(ix - 27), hl
+	ld	(ix - 24), hl
 	ld	hl, __ZTV6Sprite+6
-	ld	iy, (ix - 24)
+	ld	iy, (ix - 21)
 	ld	(iy), hl
 	lea	hl, iy + 27
 	ld	(iy + 27), 0
@@ -6470,9 +6306,9 @@ BB129_20:
 	push	de
 	push	de
 	push	hl
-	ld	hl, (ix - 27)
+	ld	hl, (ix - 24)
 	push	hl
-	ld	hl, (ix - 21)
+	ld	hl, (ix - 18)
 	push	hl
 	push	iy
 	call	__ZN6Sprite11set_detailsEiiiiiiii
@@ -6480,7 +6316,7 @@ BB129_20:
 	add	hl, sp
 	ld	sp, hl
 	ld	hl, __ZTV4Bomb+6
-	ld	iy, (ix - 24)
+	ld	iy, (ix - 21)
 	ld	(iy), hl
 	ld	hl, (_bombs)
 	push	iy
@@ -6497,115 +6333,68 @@ BB129_22:
 	ld	(ix - 9), hl
 	jp	BB129_15
 BB129_23:
-	ld	hl, _str.40
-	push	hl
-	call	_puts
-	pop	hl
 	ld	bc, 0
 BB129_24:
-	ld	iy, (ix - 12)
 	push	bc
 	pop	hl
 	ld	de, 2
 	or	a, a
 	sbc	hl, de
-	jp	z, BB129_29
+	jr	z, BB129_29
+	ld	(ix - 9), bc
 	ld	hl, (_bullets)
 	push	hl
-	ld	(ix - 15), bc
 	call	__ZN11SpriteGroup9next_stepEv
 	pop	hl
 	ld	hl, (_bombs)
 	push	hl
 	call	__ZN11SpriteGroup9next_stepEv
 	pop	hl
-	ld	hl, (ix - 15)
-	push	hl
-	ld	hl, _.str.21
-	push	hl
-	call	_printf
-	pop	hl
-	pop	hl
-	ld	hl, _barrier
-	ld	(ix - 9), hl
-	ld	bc, 0
+	ld	iy, 0
 BB129_26:
-	push	bc
-	pop	hl
-	ld	de, 7
+	lea	hl, iy
+	ld	de, 21
 	or	a, a
 	sbc	hl, de
 	jr	z, BB129_28
-	push	bc
-	ld	hl, _.str.22
-	push	hl
-	ld	(ix - 21), bc
-	call	_printf
-	pop	hl
-	pop	hl
-	ld	bc, (_bombs)
-	ld	hl, (ix - 9)
+	ld	hl, (_bombs)
+	ld	(ix - 15), hl
+	lea	de, iy
+	ld	hl, _barrier
+	add	hl, de
+	ld	(ix - 18), hl
 	ld	de, (hl)
 	push	de
-	push	bc
+	ld	hl, (ix - 15)
+	push	hl
+	ld	(ix - 15), iy
 	call	__ZN11SpriteGroup3hitEP9TileArray
 	pop	hl
-	pop	hl
-	ld	hl, _.str.23
-	push	hl
-	call	_printf
 	pop	hl
 	ld	bc, (_bullets)
-	ld	hl, (ix - 9)
+	ld	hl, (ix - 18)
 	ld	de, (hl)
 	push	de
 	push	bc
 	call	__ZN11SpriteGroup3hitEP9TileArray
+	ld	iy, (ix - 15)
 	pop	hl
 	pop	hl
-	ld	hl, _str.42
-	push	hl
-	call	_puts
-	pop	hl
-	call	_getchar
-	ld	bc, (ix - 21)
-	inc	bc
-	ld	iy, (ix - 9)
-	lea	iy, iy + 3
-	ld	(ix - 9), iy
+	ld	de, 3
+	add	iy, de
 	jr	BB129_26
 BB129_28:
 	ld	hl, 50
 	push	hl
 	call	__Z8wait_cnti
 	pop	hl
-	ld	hl, _str.41
-	push	hl
-	call	_puts
-	pop	hl
-	call	_getchar
-	ld	bc, (ix - 15)
+	ld	bc, (ix - 9)
 	inc	bc
 	jp	BB129_24
 BB129_29:
-	push	iy
-	ld	hl, _.str.26
-	push	hl
-	call	_printf
-	pop	hl
-	pop	hl
-	call	_getchar
-	ld	bc, (ix - 12)
-	inc	bc
+	ld	hl, (ix - 12)
+	inc	hl
 	jp	BB129_2
-BB129_30:
-	ld	hl, _str.34
-	push	hl
-	call	_puts
-	pop	hl
-	call	_getchar
-	ld	hl, (ix - 18)
-	jp	BB129_1
 	section	.text,"ax",@progbits
 
 	section	.text,"ax",@progbits
@@ -7032,6 +6821,11 @@ __ZTI9RotSprite:
 	dl	__ZTS9RotSprite
 	dl	__ZTI6Sprite
 
+	section	.rodata,"a",@progbits
+	private	_str.17
+_str.17:
+	db	"Done", 0
+
 	section	.bss,"aw",@nobits
 	public	__ZN6Sprite15sprites_max_numE
 __ZN6Sprite15sprites_max_numE:
@@ -7072,36 +6866,26 @@ __ZTV6Sprite:
 	section	.rodata,"a",@progbits
 	private	_.str.42
 _.str.42:
-	db	"Setting sprite details... ", 0
-
-	section	.rodata,"a",@progbits
-	private	_.str.2.44
-_.str.2.44:
 	db	"Too many sprites %d out of %d", 10, " used", 0
 
 	section	.rodata,"a",@progbits
-	private	_.str.3.45
-_.str.3.45:
+	private	_.str.1.43
+_.str.1.43:
 	db	"Failed to find free sprite id, %d", 10, 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.2.56
+_.str.2.56:
+	db	"x %d, y %d, w %d, h %d, brd %d, dx %d, dy %d", 10, 0
+
+	section	.rodata,"a",@progbits
+	private	_.str.3.57
+_.str.3.57:
+	db	"Sprite normal %d, die %d, current %d, state %d", 10, 0
 
 	section	.rodata,"a",@progbits
 	private	_.str.4
 _.str.4:
-	db	"add_bitmaps: begin. ID %d | num %d | die %d", 10, 0
-
-	section	.rodata,"a",@progbits
-	private	_.str.9
-_.str.9:
-	db	"x %d, y %d, w %d, h %d, brd %d, dx %d, dy %d", 10, 0
-
-	section	.rodata,"a",@progbits
-	private	_.str.10
-_.str.10:
-	db	"Sprite normal %d, die %d, current %d, state %d", 10, 0
-
-	section	.rodata,"a",@progbits
-	private	_.str.11
-_.str.11:
 	db	"Number of sprites %d", 10, 0
 
 	section	.rodata,"a",@progbits
@@ -7114,31 +6898,6 @@ __ZTS6Sprite:
 __ZTI6Sprite:
 	dl	__ZTVN10__cxxabiv117__class_type_infoE+6
 	dl	__ZTS6Sprite
-
-	section	.rodata,"a",@progbits
-	private	_str.43
-_str.43:
-	db	"Done", 0
-
-	section	.rodata,"a",@progbits
-	private	_str.12
-_str.12:
-	db	"add_bitmaps: sprite selected", 0
-
-	section	.rodata,"a",@progbits
-	private	_str.13
-_str.13:
-	db	"add_bitmaps: vdp_add_sprite_bitmap done", 0
-
-	section	.rodata,"a",@progbits
-	private	_str.14
-_str.14:
-	db	"add_bitmaps: frames increment done", 0
-
-	section	.rodata,"a",@progbits
-	private	_str.15
-_str.15:
-	db	"#Showing sprite......", 0
 
 	section	.rodata,"a",@progbits
 	public	__ZTV11SpriteArray
@@ -7257,21 +7016,6 @@ _score:
 __ZL2sv:
 	rb	3
 
-	section	.rodata,"a",@progbits
-	private	_.str.5
-_.str.5:
-	db	"About to enter while(true)", 0
-
-	section	.rodata,"a",@progbits
-	private	_.str.6
-_.str.6:
-	db	"====================ESTOY LOOPIN %d====================;", 10, 0
-
-	section	.rodata,"a",@progbits
-	private	_.str.7.90
-_.str.7.90:
-	db	"SCORE: %d", 0
-
 	section	.bss,"aw",@nobits
 	public	_aliens
 _aliens:
@@ -7281,16 +7025,6 @@ _aliens:
 	public	_ship
 _ship:
 	rb	3
-
-	section	.rodata,"a",@progbits
-	private	_.str.10.91
-_.str.10.91:
-	db	"game_loop: s=%d", 10, 0
-
-	section	.rodata,"a",@progbits
-	private	_.str.11.92
-_.str.11.92:
-	db	"ship->move_by(%d %d)", 10, 0
 
 	section	.bss,"aw",@nobits
 	public	_bullets
@@ -7302,45 +7036,10 @@ _bullets:
 _bombs:
 	rb	3
 
-	section	.rodata,"a",@progbits
-	private	_.str.16.93
-_.str.16.93:
-	db	"barrier initial loop [b=%d]", 10, 0
-
 	section	.bss,"aw",@nobits
 	public	_barrier
 _barrier:
 	rb	21
-
-	section	.rodata,"a",@progbits
-	private	_.str.17
-_.str.17:
-	db	"barrier[%d]->hit( aliens);", 10, 0
-
-	section	.rodata,"a",@progbits
-	private	_.str.18
-_.str.18:
-	db	"barrier[%d]->hit( ship);", 10, 0
-
-	section	.rodata,"a",@progbits
-	private	_.str.21
-_.str.21:
-	db	"    barrier collision loop [w=%d]", 10, 0
-
-	section	.rodata,"a",@progbits
-	private	_.str.22
-_.str.22:
-	db	"        barrier %d: |", 0
-
-	section	.rodata,"a",@progbits
-	private	_.str.23
-_.str.23:
-	db	" bombs hit done |", 0
-
-	section	.rodata,"a",@progbits
-	private	_.str.26
-_.str.26:
-	db	"game_loop: s=%d complete", 10, 0
 
 	section	.bss,"aw",@nobits
 	private	__ZL14prev_key_event.0
@@ -7385,86 +7084,6 @@ __ZTV6Bullet:
 	dl	__ZN6Sprite6hit_byEPS_
 	dl	__ZN6Bullet7hittingEP6Sprite
 	dl	__ZN6Bullet7hittingEP9TileArray
-
-	section	.rodata,"a",@progbits
-	private	_str.89
-_str.89:
-	db	"barrier_init done", 0
-
-	section	.rodata,"a",@progbits
-	private	_str.28
-_str.28:
-	db	"alien_init done", 0
-
-	section	.rodata,"a",@progbits
-	private	_str.29
-_str.29:
-	db	"Ship_init done", 0
-
-	section	.rodata,"a",@progbits
-	private	_str.30
-_str.30:
-	db	"bullet_init done", 0
-
-	section	.rodata,"a",@progbits
-	private	_str.31
-_str.31:
-	db	"bomb_init done", 0
-
-	section	.rodata,"a",@progbits
-	private	_str.32
-_str.32:
-	db	"game_loop: aliens->next_iter();", 0
-
-	section	.rodata,"a",@progbits
-	private	_str.33
-_str.33:
-	db	"game_loop: ship->next_frame();", 0
-
-	section	.rodata,"a",@progbits
-	private	_str.34
-_str.34:
-	db	"Time for next frame", 0
-
-	section	.rodata,"a",@progbits
-	private	_str.35
-_str.35:
-	db	"bullets->hit( aliens );", 0
-
-	section	.rodata,"a",@progbits
-	private	_str.36
-_str.36:
-	db	"bullets->hit( ship );", 0
-
-	section	.rodata,"a",@progbits
-	private	_str.37
-_str.37:
-	db	"aliens->hit( ship );", 0
-
-	section	.rodata,"a",@progbits
-	private	_str.38
-_str.38:
-	db	"bombs->hit( ship );", 0
-
-	section	.rodata,"a",@progbits
-	private	_str.39
-_str.39:
-	db	"aliens bombing loop", 0
-
-	section	.rodata,"a",@progbits
-	private	_str.40
-_str.40:
-	db	"advance projectiles loop", 0
-
-	section	.rodata,"a",@progbits
-	private	_str.41
-_str.41:
-	db	"    finished that w", 0
-
-	section	.rodata,"a",@progbits
-	private	_str.42
-_str.42:
-	db	" bullets hit done ", 0
 
 	section	.text,"ax",@progbits
 	public	__ZN9RotSpriteC1Eiiiiiiii
@@ -7514,7 +7133,6 @@ _str.42:
 	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
 	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
 	ident	"clang version 15.0.0 (https://github.com/jacobly0/llvm-project 5f8512f22751066573aa48ac848a6d2195838ac3)"
-	extern	_getchar
 	extern	_vdp_load_sprite_bitmaps
 	extern	__Unwind_SjLj_Register
 	extern	_vdp_check_key_press
