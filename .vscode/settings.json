@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "*.src": "platformio-debug.asm",
+        "stdio.h": "c",
+        "atomic": "cpp",
+        "*.tcc": "cpp",
+        "chrono": "cpp",
+        "compare": "cpp",
+        "optional": "cpp",
+        "numeric": "cpp",
+        "sstream": "cpp",
+        "cmath": "cpp",
+        "*.inc": "cpp",
+        "*.def": "cpp",
+        "vdp_key.h": "c"
+    }
+}

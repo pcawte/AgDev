@@ -107,13 +107,9 @@ make install V=1 DESTDIR=$CEDEV_PLUS_AGDEV/ --debug=j,m
 mkdir $CEDEV_PLUS_AGDEV/CEdev/bin/
 cp -r $BASEDIR/CEdev_zip/bin/. $CEDEV_PLUS_AGDEV/CEdev/bin/
 #
-# copy over AgDev example folders
-mkdir $CEDEV_PLUS_AGDEV/CEdev/AgExamples/
-cp -r $AGDEV_GIT/AgExamples/* $CEDEV_PLUS_AGDEV/CEdev/AgExamples/
-mkdir $CEDEV_PLUS_AGDEV/CEdev/sprite-demos/
-cp -r $AGDEV_GIT/sprite-demos/* $CEDEV_PLUS_AGDEV/CEdev/sprite-demos/
-mkdir $CEDEV_PLUS_AGDEV/CEdev/tests/
-cp -r $AGDEV_GIT/tests/* $CEDEV_PLUS_AGDEV/CEdev/tests/
+# copy over AgDev example folder
+mkdir $CEDEV_PLUS_AGDEV/CEdev/examples/
+cp -r $AGDEV_GIT/examples/* $CEDEV_PLUS_AGDEV/CEdev/examples/
 #
 # copy resulting build to base directory
 if [ -d  $ORIGDIR/AgDev_build/ ]; then
