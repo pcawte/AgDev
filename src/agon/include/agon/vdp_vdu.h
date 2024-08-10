@@ -163,6 +163,8 @@ void vdp_redefine_character_special( int char_num, uint8_t b0, uint8_t b1, uint8
 void vdp_define_character( int char_num, uint8_t *data ); // uses VDP2.3.0 redefine special char 23,0,0x90
 // VDU 23, 0, &91: Reset all system font characters to original definition
 void vdp_reset_system_font( void );
+// VDU 23, 0, &92, char, bitmapId;: Map character char to display bitmapId
+void vdp_map_char_to_bitmap( int char_num, int bitmap_num );
 // VDU 23, 0, &93, x; y;: Get ASCII code of character at graphics position x, y
 void vdp_request_ascii_code_at_graphics_position( int x, int y, bool wait );
 // 
