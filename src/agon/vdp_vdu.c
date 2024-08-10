@@ -1036,7 +1036,7 @@ void vdp_adv_call_offset_block_conditional( int bufferId, int offset, int block 
 void vdp_adv_copy_multiple( int bufferId, int num_buffers, ... )
 {
 	va_list args;
-	uint16_t buffer_list[num_buffers];
+	uint16_t buffer_list[num_buffers+1];
 	vdu_adv_copy_multiple.BID = bufferId;
 	va_start( args, num_buffers );
 	for (int b = 0; b < num_buffers; b++)
@@ -1044,8 +1044,9 @@ void vdp_adv_copy_multiple( int bufferId, int num_buffers, ... )
 		buffer_list[b] = va_arg( args, int );
 	}
 	va_end( args );
+	buffer_list[num_buffers] = -1; // Terminate the list
 	VDP_PUTS( vdu_adv_copy_multiple );
-	mos_puts( (char*)buffer_list, num_buffers*2, 0 );
+	mos_puts( (char*)buffer_list, (num_buffers+1)*2, 0 );
 }
 
 void vdp_adv_consolidate( int bufferID )
@@ -1065,7 +1066,7 @@ void vdp_adv_split( int bufferID, int blockSize )
 void vdp_adv_split_multiple( int bufferId, int blockSize, int num_buffers, ... )
 {
 	va_list args;
-	uint16_t buffer_list[num_buffers];
+	uint16_t buffer_list[num_buffers+1];
 	vdu_adv_split_multiple.BID = bufferId;
 	vdu_adv_split_multiple.w0 = blockSize;
 	va_start( args, num_buffers );
@@ -1074,8 +1075,9 @@ void vdp_adv_split_multiple( int bufferId, int blockSize, int num_buffers, ... )
 		buffer_list[b] = va_arg( args, int );
 	}
 	va_end( args );
+	buffer_list[num_buffers] = -1; // Terminate the list
 	VDP_PUTS( vdu_adv_split_multiple );
-	mos_puts( (char*)buffer_list, num_buffers*2, 0 );
+	mos_puts( (char*)buffer_list, (num_buffers+1)*2, 0 );
 }
 
 void vdp_adv_split_multiple_from( int bufferID, int blockSize, int targetBufferID )
@@ -1097,7 +1099,7 @@ void vdp_adv_split_by_width( int bufferID, int width, int blockCount )
 void vdp_adv_split_by_width_multiple( int bufferId, int width, int num_buffers, ... )
 {
 	va_list args;
-	uint16_t buffer_list[num_buffers];
+	uint16_t buffer_list[num_buffers+1];
 	vdu_adv_split_by_width_multiple.BID = bufferId;
 	vdu_adv_split_by_width_multiple.w0 = width;
 	va_start( args, num_buffers );
@@ -1106,8 +1108,9 @@ void vdp_adv_split_by_width_multiple( int bufferId, int width, int num_buffers, 
 		buffer_list[b] = va_arg( args, int );
 	}
 	va_end( args );
+	buffer_list[num_buffers] = -1; // Terminate the list
 	VDP_PUTS( vdu_adv_split_by_width_multiple );
-	mos_puts( (char*)buffer_list, num_buffers*2, 0 );
+	mos_puts( (char*)buffer_list, (num_buffers+1)*2, 0 );
 }
 
 void vdp_adv_split_by_width_multiple_from( int bufferID, int width, int blockCount, int targetBufferID )
@@ -1122,7 +1125,7 @@ void vdp_adv_split_by_width_multiple_from( int bufferID, int width, int blockCou
 void vdp_adv_spread_multiple( int bufferId, int num_buffers, ... )
 {
 	va_list args;
-	uint16_t buffer_list[num_buffers];
+	uint16_t buffer_list[num_buffers+1];
 	vdu_adv_spread_multiple.BID = bufferId;
 	va_start( args, num_buffers );
 	for (int b = 0; b < num_buffers; b++)
@@ -1130,8 +1133,9 @@ void vdp_adv_spread_multiple( int bufferId, int num_buffers, ... )
 		buffer_list[b] = va_arg( args, int );
 	}
 	va_end( args );
+	buffer_list[num_buffers] = -1; // Terminate the list
 	VDP_PUTS( vdu_adv_spread_multiple );
-	mos_puts( (char*)buffer_list, num_buffers*2, 0 );
+	mos_puts( (char*)buffer_list, (num_buffers+1)*2, 0 );
 }
 
 void vdp_adv_spread_multiple_from( int bufferID, int targetBufferID )
@@ -1182,7 +1186,7 @@ void vdp_adv_reverse_block_data( int bufferID, int options, int valueSize, int c
 void vdp_adv_copy_multiple_by_reference( int bufferId, int num_buffers, ... )
 {
 	va_list args;
-	uint16_t buffer_list[num_buffers];
+	uint16_t buffer_list[num_buffers+1];
 	vdu_adv_copy_multiple_by_reference.BID = bufferId;
 	va_start( args, num_buffers );
 	for (int b = 0; b < num_buffers; b++)
@@ -1190,14 +1194,15 @@ void vdp_adv_copy_multiple_by_reference( int bufferId, int num_buffers, ... )
 		buffer_list[b] = va_arg( args, int );
 	}
 	va_end( args );
+	buffer_list[num_buffers] = -1; // Terminate the list
 	VDP_PUTS( vdu_adv_copy_multiple_by_reference );
-	mos_puts( (char*)buffer_list, num_buffers*2, 0 );
+	mos_puts( (char*)buffer_list, (num_buffers+1)*2, 0 );
 }
 
 void vdp_adv_copy_multiple_consolidate( int bufferId, int num_buffers, ... )
 {
 	va_list args;
-	uint16_t buffer_list[num_buffers];
+	uint16_t buffer_list[num_buffers+1];
 	vdu_adv_copy_multiple_consolidate.BID = bufferId;
 	va_start( args, num_buffers );
 	for (int b = 0; b < num_buffers; b++)
@@ -1205,8 +1210,9 @@ void vdp_adv_copy_multiple_consolidate( int bufferId, int num_buffers, ... )
 		buffer_list[b] = va_arg( args, int );
 	}
 	va_end( args );
+	buffer_list[num_buffers] = -1; // Terminate the list
 	VDP_PUTS( vdu_adv_copy_multiple_consolidate );
-	mos_puts( (char*)buffer_list, num_buffers*2, 0 );
+	mos_puts( (char*)buffer_list, (num_buffers+1)*2, 0 );
 }
 
 void vdp_adv_compress_buffer( int targetBufferID, int sourceBufferId )
