@@ -99,6 +99,7 @@ LINK = $(call NATIVEPATH,$(BIN)/ez80-link.exe)
 RM = ( del /q /f $1 2>nul || call )
 RMDIR = ( rmdir /s /q $1 2>nul || call )
 NATIVEMKDR = ( mkdir $1 2>nul || call )
+COPYDIR ?= ( xcopy $1 $2 /S /Q /Y /I /K 1>nul 2>nul || call )
 QUOTE_ARG = "$(subst ",',$1)"#'
 else
 NATIVEPATH = $(subst \,/,$1)
@@ -109,6 +110,7 @@ LINK = $(call NATIVEPATH,$(BIN)/ez80-link)
 RM = rm -f $1
 RMDIR = rm -rf $1
 NATIVEMKDR = mkdir -p $1
+COPYDIR ?= cp -r $1 $2
 QUOTE_ARG = '$(subst ','\'',$1)'#'
 endif
 
