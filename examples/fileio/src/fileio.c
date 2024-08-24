@@ -20,9 +20,10 @@ void cat_file( FILE *fp );
 void read_file( FILE *fp, int num, int pos, int origin, const char *message );
 int seek_file( FILE *fp, int pos, int origin, const char *message );
 void putint( int i );
-
+int remove(const char *fname); //TODO this fixes a compiler error, even though this is also in stdio.h. Why is this necessary?
 
 const int max_line_len = 82;        // 80 characters + CR/LF pair
+
 
 int main( void )
 {
