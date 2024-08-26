@@ -1,4 +1,4 @@
-#include <Sprite/SpriteList.hpp>
+#include "SpriteList.hpp"
 
 ////////////// SpriteList Class - derived from SpriteGroup //////////////
 

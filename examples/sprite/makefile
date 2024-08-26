@@ -3,7 +3,7 @@
 # ----------------------------
 
 NAME = sprite
-DESCRIPTION = "Ag C Toolchain Demo"
+DESCRIPTION = "Agon Sprite Demo"
 COMPRESSED = NO
 LDHAS_ARG_PROCESSING = 0
 

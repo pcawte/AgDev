@@ -3,7 +3,7 @@
 # ----------------------------
 
 NAME = stdin
-DESCRIPTION = "Ag C Toolchain Demo"
+DESCRIPTION = "stdin-redirect"
 COMPRESSED = NO
 
 CFLAGS = -Wall -Wextra -Oz

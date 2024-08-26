@@ -3,7 +3,7 @@
 # ----------------------------
 
 NAME = printf
-DESCRIPTION = "Ag C Toolchain Demo"
+DESCRIPTION = "printf demo"
 COMPRESSED = NO
 
 CFLAGS = -Wall -Wextra -Oz

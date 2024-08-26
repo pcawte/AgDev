@@ -1,7 +1,5 @@
-// VDU commands
-
-#include "vdp_vdu.h"
-#include "vdp_key.h"
+#include <agon/vdp_vdu.h>
+#include <agon/vdp_key.h>
 #include <stdio.h>
 #include <mos_api.h>
 #include <stdbool.h>

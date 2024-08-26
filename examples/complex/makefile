@@ -3,7 +3,7 @@
 # ----------------------------
 
 NAME = complex
-DESCRIPTION = "Ag C Toolchain Demo"
+DESCRIPTION = "Complex Numbers Demo"
 COMPRESSED = NO
 
 CFLAGS = -Wall -Wextra -Oz
