@@ -4,9 +4,9 @@
 
 // Overall configuration constants
 
-#define SC_MODE 1
-#define SC_WIDTH 512
-#define SC_HEIGHT 384
+#define SC_MODE 0
+#define SC_WIDTH 640
+#define SC_HEIGHT 480
 
 #define MAX_SPRITES 255						// Maximum number of simultaneous sprites
 

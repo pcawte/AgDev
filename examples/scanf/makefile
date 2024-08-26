@@ -3,7 +3,7 @@
 # ----------------------------
 
 NAME = scanf
-DESCRIPTION = "Ag C Toolchain Demo"
+DESCRIPTION = "Scanf Demo"
 COMPRESSED = NO
 
 CFLAGS = -Wall -Wextra -Oz

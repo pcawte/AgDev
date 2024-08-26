@@ -2,7 +2,7 @@
 
 #define _BOMB_HPP
 
-#include <Sprite/Sprite.hpp>
+#include "Sprite/Sprite.hpp"
 
 void bomb_init();
 

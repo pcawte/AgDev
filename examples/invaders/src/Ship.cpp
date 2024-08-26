@@ -1,5 +1,5 @@
 #include "Ship.hpp"
-#include <Sprite/DummySpriteGroup.hpp>
+#include "Sprite/DummySpriteGroup.hpp"
 #include "config.hpp"
 #include <agon/vdp_vdu.h>
 #include <stdio.h>
@@ -46,14 +46,22 @@ void ship_init()
 								SHIP_BITMAP_ID_NUM, SHIP_BITMAP_ID_START );			
 
 	ship = new Ship( SHIP_X, SHIP_Y, 0, 0, SHIP_WIDTH, SHIP_HEIGHT, SHIP_BORDER );
+
 	ship->add_bitmaps( SHIP_BITMAP_ID_START, SHIP_BITMAP_ID_NUM );
 	ship->add_bitmaps(4, 4, 1);														// add die frame bitmaps
-
+	printf("ship_init: Added ship bitmaps\n");
 	ship->add_rotations( rot_ship, SHIP_NUM_ROT, 0, true );
+	printf("ship_init: Added ship rotations\n");
 	ship->show();
+	printf("!ship_init: showing ship\n");
+
 
 	viewport = new DummySpriteGroup( 0, 0, SC_WIDTH, SC_HEIGHT );
+	printf("ship_init: DummySpriteGroup\n");
+
 	viewport->add( ship );
+	printf("ship_init: ship added to viewport\n");
+
 }
 
 // Ship members functions ////////////

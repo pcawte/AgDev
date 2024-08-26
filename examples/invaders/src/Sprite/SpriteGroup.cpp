@@ -1,4 +1,4 @@
-#include <Sprite/SpriteList.hpp>
+#include "SpriteList.hpp"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <agon/vdp_vdu.h>

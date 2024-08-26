@@ -3,7 +3,7 @@
 # ----------------------------
 
 NAME = invader
-DESCRIPTION = "Ag C Toolchain Demo"
+DESCRIPTION = "Agon Invaders"
 COMPRESSED = NO
 LDHAS_ARG_PROCESSING = 0
 

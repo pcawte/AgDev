@@ -3,7 +3,7 @@
 # ----------------------------
 
 NAME = stdio2
-DESCRIPTION = "Ag C Toolchain Demo"
+DESCRIPTION = "stdio2"
 COMPRESSED = NO
 LDHAS_ARG_PROCESSING = 0
 

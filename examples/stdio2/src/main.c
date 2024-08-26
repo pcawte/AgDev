@@ -26,8 +26,8 @@ int main(void)
         fprintf( fp_out, "Line %d: Hello, world.\n", i );
 
 
-    printf( "Enter a file name: " );
-    if ( scanf( "%80s", buffer ) != 1 ) {
+    printf( "Enter a path to a file: " );
+    if ( scanf( "%80s", buffer ) != 1 ) { //TODO respond to other returned status codes
         printf( "Error entering file name\nQuitting\n" ); return 1;
     }
     printf( "Opening file '%s'\n", buffer );

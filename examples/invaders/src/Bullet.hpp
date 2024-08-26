@@ -2,7 +2,7 @@
 
 #define _BULLET_HPP
 
-#include <Sprite/Sprite.hpp>
+#include "Sprite/Sprite.hpp"
 
 
 void bullet_init();

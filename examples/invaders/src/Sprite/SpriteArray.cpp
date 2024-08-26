@@ -1,4 +1,4 @@
-#include <Sprite/SpriteArray.hpp>
+#include "SpriteArray.hpp"
 #include <stdio.h>
 
 ////////////// SpriteArray Class - derived from SpriteGroup //////////////

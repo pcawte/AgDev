@@ -3,7 +3,7 @@
 # ----------------------------
 
 NAME = time
-DESCRIPTION = "Ag C Toolchain Demo"
+DESCRIPTION = "Time Demo"
 COMPRESSED = NO
 
 CFLAGS = -Wall -Wextra -Oz

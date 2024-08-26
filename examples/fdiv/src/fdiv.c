@@ -12,9 +12,6 @@
 int main(void)
 {
     float f;
-//    int i;
-
     f = 50.0/9.0;
-//    i = f;
     printf( "%f\n\r", f);
 }

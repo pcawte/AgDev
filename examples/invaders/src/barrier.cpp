@@ -1,5 +1,5 @@
 #include "barrier.hpp"
-#include <Sprite/Tile.hpp>
+#include "Sprite/Tile.hpp"
 #include "config.hpp"
 #include <agon/vdp_vdu.h>
 
