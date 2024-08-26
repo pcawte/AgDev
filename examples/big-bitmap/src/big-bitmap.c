@@ -4,8 +4,7 @@
 #include <mos_api.h>
 #include <stdbool.h>
 #include <stdlib.h>
-
-#include "vdp_vdu.h"
+#include <agon/vdp_vdu.h>
 
 int main( void )
 {
@@ -14,29 +13,23 @@ int main( void )
 	int img_width;
 	int img_height;
 	char fname[41];
-	int load_rows;
+	int screen_mode;
 
-	printf( "Enter file name: " );
+	printf( "Enter file name for RGBA bitmap: " );
 	scanf( "%40s", fname );
 	printf( "Enter width and height: " );
 	scanf( "%d %d", &img_width, &img_height );
-	printf( "For %s (%d, %d) enter number of rows to load: ", fname, img_width, img_height );
-	scanf( "%d", &load_rows );
+	printf( "Enter screen mode to use: " );
+	scanf( "%d", &screen_mode );
 
 	vdp_select_bitmap( 1 );
-	printf( "Loading bitmap (%d,%d) to VDP\n", img_width, load_rows );
-	if ( vdp_load_bitmap_file( fname, img_width, load_rows ) ) {
+	printf( "Sending bitmap to VDP...\n");
+	if ( vdp_load_bitmap_file( fname, img_width, img_height ) ) {
 		printf( "Error loading bitmap. Quitting.\n" );
 		return 1;
 	}
-	vdp_mode( 3 );
+	vdp_mode( screen_mode );
 	vdp_logical_scr_dims( false );
-
-	mos_puts( "Large bitmap test program\r\n", 0, 0 );
-	mos_puts( "=========================\r\n", 0, 0 );
-
-	vdp_draw_bitmap( 0, 480-427 );
-
-//	printf( "Press any key to continue...\n" );
-//	getchar();	
+	vdp_clear_screen();
+	vdp_draw_bitmap( (sv->scrWidth)/2-(img_width/2), (sv->scrHeight)/2-(img_height)/2 );
 }
