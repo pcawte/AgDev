@@ -3,7 +3,7 @@
 # ----------------------------
 
 NAME = args
-DESCRIPTION = "Ag C Toolchain Demo"
+DESCRIPTION = "AgDev Arguments Demo"
 COMPRESSED = NO
 LDHAS_ARG_PROCESSING = 1
 
